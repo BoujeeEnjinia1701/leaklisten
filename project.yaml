@@ -1,0 +1,17 @@
+# Card metadata consumed by https://designmolecule.com
+name: LeakListen
+slug: leaklisten
+area: Smart Cities
+status: concept          # concept | design | prototype | tested | released
+shortlisted: false
+pitch: >-
+  An acoustic leak sensor that clamps onto water mains and valves and listens overnight for the noise signature of leaks.
+problem: >-
+  A large share of treated city water is lost to leaks before it reaches customers, and leaks are found by slow manual surveys.
+budget_usd: 130
+difficulty: 3  # 1 easiest, 5 hardest
+hero_image: media/hero.png
+licenses:
+  hardware: CERN-OHL-S-2.0
+  software: MIT
+tags: [smart-cities, open-hardware, cern-ohl-s]
