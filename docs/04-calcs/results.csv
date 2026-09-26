@@ -1,0 +1,16 @@
+id,value,target,status
+R1,185 m on ductile iron at central efficiency (105 to 325 m),100 m on iron,At risk
+R2,4 m on PVC at central efficiency (2 to 7 m),30 m on plastic,Not met
+R3,mounted resonance 776 to 1553 Hz,5 Hz to 2 kHz within 3 dB,At risk
+R4,1.03 ug/rtHz,1 ug/rtHz or less,At risk
+R5,20 s with weekly time sync,under 60 s a month,Met on paper
+R6,10.3 years or more on energy,5 years,Met on paper
+R7,-9.7 dB at 1 km under an iron cover (EU868 SF12); range 0.53 km,90 % delivery at 1 km,Not met
+R8,raw samples processed and deleted on device,only levels leave,Met by design
+R9,90 N at a 0.3 mm coating,100 N,At risk
+R10,10 min task estimate,"10 min, no entry",Not verifiable at TRL 3
+R11,IP68 by design; logger floats on its lanyard,"IP68, -20 to +50 degC",Met by design
+R12,"63 x 267 mm, 0.93 kg","70 x 300 mm, 1.0 kg",Met on paper
+R13,random variation negligible; site events unknown,1 per 20 loggers per month,Not verifiable at TRL 3
+R14,24 B LoRaWAN 1.0.3 uplink,standard LoRaWAN,Met by design
+R15,$109.00,$130,Met on paper

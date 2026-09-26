@@ -1,7 +1,9 @@
-"""LeakListen concept massing model and media (TRL 2).
+"""LeakListen concept media (TRL 3), generated from the parametric model.
 
 Run from the repo root:  python cad/src/concept_media.py
-Proportions and main parts only; not for fabrication.
+The LeakListen parts come from cad/src/model.py (PARAMS, build_parts); the street, soil,
+chamber, main and valve are context. Figures on the sheet and in the flow diagram come from
+docs/04-calcs/sizing.py (LKL-CAL-001). Not for fabrication.
 
 Coordinates in mm. Street surface at Z = 0, water main along X at Z = -1000, chamber
 opening centered on X = 0, Y = 0. The street, soil and chamber are context (hero only) and
@@ -10,9 +12,10 @@ the valve chamber can be seen. Existing utility assets (pipe, valve) are grey wi
 """
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / ".kit"))
+sys.path[:0] = [str(Path(__file__).resolve().parents[2] / ".kit"), str(Path(__file__).resolve().parent)]
 from build123d import Box, Cylinder, Pos, Rot, Solid, Plane, Vector
 from concept import Part, render_all, human_figure
+from model import PARAMS as MP, build_parts, site_context  # noqa: E402
 
 # ---------------- key dimensions ----------------
 PIPE_Z = -1000.0          # main axis depth (about 0.9 m cover to crown)
@@ -73,50 +76,25 @@ body = Pos(0, 0, PIPE_Z) * Box(280, 210, 260)
 bonnet = Pos(0, 0, PIPE_Z + 130 + 150) * Cylinder(75, 300)
 spindle = Pos(0, 0, -575) * Cylinder(18, 150)
 valve = flanges + body + bonnet + spindle
-cap = Pos(0, 0, -490) * Box(50, 50, 20)          # square spindle cap, top at Z = -480
 
-# ---------------- LeakListen parts ----------------
-# 2 Pot magnet, 32 mm, on the spindle cap
-magnet = Pos(0, 0, -474) * Cylinder(16, 12)
-# 1 Sensor puck: aluminium body, 40 mm dia x 34 mm, hollow for the piezo and preamp
-puck = Pos(0, 0, -451) * (Cylinder(20, 34) - Pos(0, 0, 3) * Cylinder(16, 26))
-# 3 Piezo disc and seismic mass, bonded to the puck base
-piezo = Pos(0, 0, -461) * (Cylinder(14, 2) + Pos(0, 0, 3.5) * Cylinder(9, 5))
-# 4 Charge preamplifier board in the puck
-preamp = Pos(0, 0, -447) * Box(22, 22, 3)
-# 5 Sensor cable, 2 m, shielded, M12 IP68 plug at the logger (shown shortened)
-LX = -200.0               # logger hangs on the -X side of the opening, clear of the street slab in the hero view
-cable = (rod((0, 0, -434), (0, 0, -380), 3.5) + rod((0, 0, -380), (-60, 0, -350), 3.5)
-         + rod((-60, 0, -350), (-175, 0, -350), 3.5) + rod((-175, 0, -350), (LX, 0, -330), 3.5))
-# 6 Logger housing: 63 mm PVC tube with sealed end caps, hangs under the cover frame
-logger = Pos(LX, 0, -210) * (Cylinder(31.5, 240) - Cylinder(27, 222))
-# 7 Main board: STM32WL LoRaWAN module, 24-bit ADC, hybrid capacitor
-board = Pos(LX, 0, -165) * Box(38, 8, 110)
-# 8 Primary cell: Li-SOCl2 C size, 3.6 V
-cell = Pos(LX - 1, 13, -265) * Cylinder(13, 50)
-desiccant = Pos(LX, -12, -265) * Box(22, 10, 50)
-# 9 Hanger: stainless strap hooked over the cover frame
-hanger = (Pos(LX - 60, 0, -50) * Box(80, 30, 6)          # plate under the frame flange
-          + Pos(LX - 97, 0, -25) * Box(6, 30, 56)          # hook over the frame
-          + rod((LX - 20, 0, -53), (LX, 0, -90), 3))       # lanyard to the logger cap
-# 10 Antenna: flat LoRa antenna on the hanger plate, just below the cover
-antenna = Pos(LX - 50, 0, -60) * Rot(180, 0, 0) * Cylinder(35, 12)
-antenna_lead = rod((LX - 30, 0, -66), (LX - 8, 0, -90), 2.5)
+# ---------------- LeakListen parts (from the parametric model) ----------------
+B = build_parts(MP)
+cap = site_context(MP)["cap"]
+assert MP["cap_top_z"] == -480.0  # the context valve spindle above is drawn for this cap height
 
 parts = [
     Part("Valve spindle cap (existing)", cap, "#4B5563"),
-    Part("Sensor puck body", puck, "#0F766E", 1, (150, 0, 20)),
-    Part("Pot magnet, 32 mm", magnet, "#B91C1C", 2, (150, 0, -40)),
-    Part("Piezo disc and seismic mass", piezo, "#D4A017", 3, (150, 0, 95)),
-    Part("Charge preamplifier", preamp, "#16A34A", 4, (150, 0, 135)),
-    Part("Sensor cable, M12 IP68", cable, "#111827", 5, (60, 0, 0)),
-    Part("Logger housing, IP68", logger, "#0E7490", 6, (-120, 0, 0)),
-    Part("Main board, LoRaWAN", board, "#2563EB", 7, (110, 0, 60)),
-    Part("Primary cell, Li-SOCl2 C", cell, "#C2410C", 8, (-120, 0, -170)),
-    Part("Desiccant pack", desiccant, "#E5E7EB", None, (-60, 0, -170)),
-    Part("Hanger strap and hook", hanger, "#A16207", 9, (-80, 0, 260)),
-    Part("Flat LoRa antenna", antenna, "#7C3AED", 10, (120, 0, 200)),
-    Part("Antenna lead", antenna_lead, "#111827", None, (120, 0, 200)),
+    Part("Sensor puck body", B[1], "#0F766E", 1, (150, 0, 20)),
+    Part("Pot magnet, 32 mm", B[2], "#B91C1C", 2, (150, 0, -40)),
+    Part("Piezo disc and seismic mass", B[3], "#D4A017", 3, (150, 0, 95)),
+    Part("Charge preamplifier", B[4], "#16A34A", 4, (150, 0, 135)),
+    Part("Sensor cable, M12 IP68", B[5], "#111827", 5, (60, 0, 0)),
+    Part("Logger housing, IP68", B[6], "#0E7490", 6, (-120, 0, 0)),
+    Part("Main board, LoRaWAN", B[7], "#2563EB", 7, (110, 0, 60)),
+    Part("Primary cell, Li-SOCl2 C", B[8], "#C2410C", 8, (-120, 0, -170)),
+    Part("Desiccant and consumables", B[11], "#E5E7EB", None, (-60, 0, -170)),
+    Part("Hanger strap and hook", B[9], "#A16207", 9, (-80, 0, 260)),
+    Part("Flat LoRa antenna", B[10], "#7C3AED", 10, (120, 0, 200)),
 ]
 
 # The existing main and valve are shown in the hero only, so the exploded view and cutaway frame the logger
@@ -132,17 +110,17 @@ lifted, lifted_context = lift(parts), lift(context)
 
 render_all(
     lifted, project="LeakListen", title="Clamp-on acoustic leak logger concept", dwg_no="LKL-DWG-010",
-    key_figures=["Magnet-on piezo sensor; 5 Hz to 2 kHz band (target)",
+    key_figures=["Magnet-on piezo sensor, 53 g seismic mass; about 1.0 ug/rtHz",
                  "Listens 02:00 to 04:00; 12 x 20 s windows a night",
-                 "About 1 mAh/day; C cell life about 10 years (estimate)",
-                 "One LoRaWAN summary a night; raw audio stays on device",
-                 "Installed from the surface; no chamber entry",
-                 "About $108 in parts (indicative)"],
+                 "About 1.2 mAh/day; C cell life 10 years or more",
+                 "One 24-byte LoRaWAN summary a night; raw audio stays on device",
+                 "Hears about 185 m on iron, about 4 m on PVC (estimates)",
+                 "Installed from the surface; about $109 in parts"],
     scale_figure=False, context=lifted_context,
-    flow={"title": "nightly data flow per logger, kB (estimates: 240 s at 8 kS/s, 16 bit; 12 spectra of 64 bands)", "unit": "kB",
+    flow={"title": "nightly data flow per logger, kB (LKL-CAL-001 estimates: 240 s at 8 kS/s, 16 bit; 12 spectra of 64 bands)", "unit": "kB",
           "stages": [("Pipe vibration", "5 Hz to 2 kHz"),
                      ("Sampled audio", 3840), ("Band spectra", 1.5),
-                     ("Nightly summary", 0.05), ("Trend and leak flag", "on server or TwinKit")],
+                     ("Nightly summary", 0.024), ("Trend and leak flag", "on server or TwinKit")],
           "losses": [(1, "Raw samples deleted on device", 3838)]},
 )
 

@@ -1,20 +1,20 @@
 # LeakListen
 
-![TRL 2](https://img.shields.io/badge/TRL-2%20of%209-0F766E) ![Hardware: CERN-OHL-S-2.0](https://img.shields.io/badge/hardware-CERN--OHL--S--2.0-111827) ![Software: MIT](https://img.shields.io/badge/software-MIT-111827)
+![TRL 3](https://img.shields.io/badge/TRL-3%20of%209-0F766E) ![Hardware: CERN-OHL-S-2.0](https://img.shields.io/badge/hardware-CERN--OHL--S--2.0-111827) ![Software: MIT](https://img.shields.io/badge/software-MIT-111827)
 
-**Area:** Smart Cities · **TRL:** 2 of 9 (concept formulated) · **Prototype budget:** about $130 USD · **Difficulty:** 3 of 5
+**Area:** Smart Cities · **TRL:** 3 of 9 (proof of concept on paper) · **Prototype budget:** about $130 USD · **Difficulty:** 3 of 5
 
 An acoustic leak sensor that clamps onto water mains and valves and listens overnight for the noise signature of leaks.
 
 ![LeakListen concept](media/hero.png)
 
-[Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [Review note](docs/REVIEW.md)
+[Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement LKL-DWG-001 (PDF)](cad/drawings/LKL-DWG-001.pdf) · [Sizing calculations](docs/04-calcs/01-sizing.md) · [Review note](docs/REVIEW.md)
 
 ## Concept rationale
 
 Leaks on pressurized mains make a steady hiss that travels along the pipe wall, and it is easiest to hear at night, when demand and traffic are low. A logger that listens to every valve in a district for a few minutes each night, and flags the ones whose quietest level has risen, turns a slow street-by-street survey into a short list of places to check. LeakListen does this with a magnet-on piezo sensor, a logger that hangs under the chamber cover, one primary cell for years of life and a single small LoRaWAN message a night.
 
-It is open and garage-buildable because the utilities with the highest losses are often the least able to buy and maintain a fleet of closed commercial loggers. The parts are a turned aluminium puck, a piezo disc, a PVC tube, a standard LoRaWAN module and a lithium cell, for about $108 per logger, and the data format is documented so any network server, including the lab's TwinKit gateway, can read it.
+It is open and garage-buildable because the utilities with the highest losses are often the least able to buy and maintain a fleet of closed commercial loggers. The parts are a turned aluminium puck, a piezo disc, a PVC tube, a standard LoRaWAN module and a lithium cell, for about $109 per logger, and the data format is documented so any network server, including the lab's TwinKit gateway, can read it.
 
 ## Burning platform
 
@@ -55,15 +55,15 @@ A large share of treated city water is lost to leaks before it reaches customers
 
 ## Concept
 
-A magnetic piezo sensor clips onto a valve spindle cap and a sealed logger hangs under the chamber cover, placed from the surface with no chamber entry. Each night between 02:00 and 04:00 the logger records twelve 20 s windows, computes levels and a 64-band spectrum from 5 Hz to 2 kHz, deletes the raw samples and sends about 50 bytes over LoRaWAN. A server (or the lab's TwinKit gateway) flags a logger whose night-time minimum level rises and stays up, and a crew then pinpoints the leak with standard tools.
+A magnetic piezo sensor clips onto a valve spindle cap and a sealed logger hangs under the chamber cover, placed from the surface with no chamber entry. Each night between 02:00 and 04:00 the logger records twelve 20 s windows, computes levels and a 64-band spectrum from 5 Hz to 2 kHz, deletes the raw samples and sends a 24-byte summary over LoRaWAN. A server (or the lab's TwinKit gateway) flags a logger whose night-time minimum level rises and stays up, and a crew then pinpoints the leak with standard tools.
 
-Estimated performance (TRL 2, to be checked at TRL 3): about 1.15 mAh a day and about 10 years on one C-size lithium cell; about 0.7 kg; about $108 in parts. Not met or at risk: detection on plastic pipes (R2), the radio link from under a cast-iron cover (R7), and magnet attachment to non-ferrous fittings (R9). Detection distance on iron pipes and the false alarm rate are unverified.
+Estimated performance at TRL 3 ([LKL-CAL-001](docs/04-calcs/01-sizing.md)): about 1.2 mAh a day and 10 years or more on one C-size lithium cell; 0.93 kg; $109.00 in parts. The reference leak (5 L/min at 3 bar) is heard about 185 m along an iron main, with a wide uncertainty. Not met: detection on plastic mains (R2, a few metres with a contact sensor) and the radio link from under a cast-iron cover (R7, about 0.5 km instead of 1 km). At risk: detection on iron (R1), sensor bandwidth (R3) and noise (R4), and magnet hold on coated caps (R9). Install time and the false alarm rate need field work.
 
-Full design precis: [docs/02-concept.md](docs/02-concept.md) · Requirements: [docs/03-requirements.md](docs/03-requirements.md)
+Full design precis: [docs/02-concept.md](docs/02-concept.md) · Requirements: [docs/03-requirements.md](docs/03-requirements.md) · Decisions: [docs/decisions/0001-trl2-review-decisions.md](docs/decisions/0001-trl2-review-decisions.md) · Model: [cad/src/model.py](cad/src/model.py)
 
 ## Key components
 
-- Aluminium sensor puck with a 32 mm pot magnet, piezo disc and charge preamplifier
+- Aluminium sensor puck with a 32 mm pot magnet, a piezo disc under a 53 g brass mass and a charge preamplifier
 - 2 m shielded sensor cable with an M12 IP68 plug
 - IP68 PVC logger tube with an STM32WL LoRaWAN board (FieldNode core) and a 24-bit ADC
 - Lithium thionyl chloride C cell, primary, about 7.7 Ah
