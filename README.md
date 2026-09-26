@@ -14,7 +14,7 @@ An acoustic leak sensor that clamps onto water mains and valves and listens over
 
 Leaks on pressurized mains make a steady hiss that travels along the pipe wall, and it is easiest to hear at night, when demand and traffic are low. A logger that listens to every valve in a district for a few minutes each night, and flags the ones whose quietest level has risen, turns a slow street-by-street survey into a short list of places to check. LeakListen does this with a magnet-on piezo sensor, a logger that hangs under the chamber cover, one primary cell for years of life and a single small LoRaWAN message a night.
 
-It is open and garage-buildable because the utilities with the highest losses are often the least able to buy and maintain a fleet of closed commercial loggers. The parts are a turned aluminium puck, a piezo disc, a PVC tube, a standard LoRaWAN module and a lithium cell, for about $109 per logger, and the data format is documented so any network server, including the lab's TwinKit gateway, can read it.
+It is open and garage-buildable because the utilities with the highest losses are often the least able to buy and maintain a fleet of closed commercial loggers. The parts are a turned aluminium puck, a piezo disc, a PVC tube, a standard LoRaWAN module and a lithium cell, for about $113 per logger, and the data format is documented so any network server, including the lab's TwinKit gateway, can read it.
 
 ## Burning platform
 
@@ -47,7 +47,7 @@ High-income networks are not immune. The United States still has about 240,000 w
 
 ## What sparked the idea
 
-It came out of a September 2026 review of Design Molecule's applied research areas against the open projects already in the lab. The trigger in the wider world is the ASCE 2025 Report Card's finding that the United States still has about 240,000 main breaks a year ([ASCE](https://infrastructurereportcard.org/cat-item/drinking-water-infrastructure/)), alongside the regulator-set leakage targets that water companies in England and Wales now work to ([Discover Water](https://www.discoverwater.co.uk/leaking-pipes)): even well-funded networks are still finding leaks late.
+The starting point was the way Tokyo finds hidden leaks. Inspectors of the Tokyo Metropolitan Government Bureau of Waterworks press the tip of a listening rod against a water meter, gate valve or fire hydrant and listen for leak noise through a diaphragm, alongside night-time minimum flow measurements, electronic detectors, correlators and noise loggers; with this sustained effort the city's leakage rate fell from 10.2 % in fiscal 1992 to 3.5 % in fiscal 2024 ([Bureau of Waterworks, *Prevention of Leakage in Tokyo 2025*](https://www.english.metro.tokyo.lg.jp/documents/d/english/knowledge_and_tech_r07rousui)). Few utilities can staff that many trained listeners. LeakListen asks whether a cheap, open logger left on the same gate valves could do the first round of that listening every night, so the scarce experts go only where a valve has started to hiss.
 
 ## Problem
 
@@ -57,13 +57,13 @@ A large share of treated city water is lost to leaks before it reaches customers
 
 A magnetic piezo sensor clips onto a valve spindle cap and a sealed logger hangs under the chamber cover, placed from the surface with no chamber entry. Each night between 02:00 and 04:00 the logger records twelve 20 s windows, computes levels and a 64-band spectrum from 5 Hz to 2 kHz, deletes the raw samples and sends a 24-byte summary over LoRaWAN. A server (or the lab's TwinKit gateway) flags a logger whose night-time minimum level rises and stays up, and a crew then pinpoints the leak with standard tools.
 
-Estimated performance at TRL 3 ([LKL-CAL-001](docs/04-calcs/01-sizing.md)): about 1.2 mAh a day and 10 years or more on one C-size lithium cell; 0.93 kg; $109.00 in parts. The reference leak (5 L/min at 3 bar) is heard about 185 m along an iron main, with a wide uncertainty. Not met: detection on plastic mains (R2, a few metres with a contact sensor) and the radio link from under a cast-iron cover (R7, about 0.5 km instead of 1 km). At risk: detection on iron (R1), sensor bandwidth (R3) and noise (R4), and magnet hold on coated caps (R9). Install time and the false alarm rate need field work.
+Estimated performance at TRL 3 ([LKL-CAL-001](docs/04-calcs/01-sizing.md)): about 1.2 mAh a day and 10 years or more on one C-size lithium cell; 0.98 kg; $113.00 in parts. The reference leak (5 L/min at 3 bar) is heard about 185 m along an iron main, with a wide uncertainty. The magnet-on sensor is for metallic mains; plastic networks are served by a hydrophone variant on hydrants, not yet sized (R2). Under a cast-iron cover the radio reaches about 0.5 km, so a gateway is planned within 0.5 km of each such district (R7, at risk until cover loss is measured). Also at risk: detection on iron (R1), sensor bandwidth (R3) and noise (R4). A 42 mm magnet now holds 125 N on a coated cap (R9 met on paper). Install time and the false alarm rate need field work.
 
-Full design precis: [docs/02-concept.md](docs/02-concept.md) · Requirements: [docs/03-requirements.md](docs/03-requirements.md) · Decisions: [docs/decisions/0001-trl2-review-decisions.md](docs/decisions/0001-trl2-review-decisions.md) · Model: [cad/src/model.py](cad/src/model.py)
+Full design precis: [docs/02-concept.md](docs/02-concept.md) · Requirements: [docs/03-requirements.md](docs/03-requirements.md) · Decisions: [DDR-001](docs/decisions/0001-trl2-review-decisions.md), [DDR-002](docs/decisions/0002-recommendations-accepted.md) · Model: [cad/src/model.py](cad/src/model.py)
 
 ## Key components
 
-- Aluminium sensor puck with a 32 mm pot magnet, a piezo disc under a 53 g brass mass and a charge preamplifier
+- Aluminium sensor puck with a 42 mm pot magnet (with keeper plate), a piezo disc under a 53 g brass mass and a charge preamplifier
 - 2 m shielded sensor cable with an M12 IP68 plug
 - IP68 PVC logger tube with an STM32WL LoRaWAN board (FieldNode core) and a 24-bit ADC
 - Lithium thionyl chloride C cell, primary, about 7.7 Ah
@@ -102,4 +102,4 @@ Controlled documents follow the portfolio [documentation standard](.kit/STANDARD
 - **Hardware** (CAD, drawings, BOM, electronics): [CERN-OHL-S v2](LICENSE)
 - **Software** (firmware, scripts, notebooks): [MIT](LICENSE-SOFTWARE)
 
-A project of the [Design Molecule](https://designmolecule.com) lab. Smart cities set.
+A project of the [Design Molecule](https://designmolecule.com) lab.

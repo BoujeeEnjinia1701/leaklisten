@@ -1,4 +1,4 @@
-"""LeakListen sizing calculations, LKL-CAL-001 v0.1 (TRL 3).
+"""LeakListen sizing calculations, LKL-CAL-001 v0.2 (TRL 3, recommendations accepted, LKL-DDR-002).
 
 Run from the repo root:  python docs/04-calcs/sizing.py
 Prints every number quoted in docs/04-calcs/01-sizing.md. Each line carries a tag such as
@@ -29,7 +29,7 @@ def db(x):
     return 10 * LOG10(x)
 
 
-print("LeakListen sizing, LKL-CAL-001 v0.1")
+print("LeakListen sizing, LKL-CAL-001 v0.2")
 print(f"Geometry from cad/src/model.py: logger {P['tube_od']:.0f} x {P['logger_len']:.0f} mm, "
       f"puck {P['puck_d']:.0f} x {P['puck_h']:.0f} mm, seismic mass {P['mass_d']:.0f} x {P['mass_h']:.0f} mm brass")
 
@@ -160,6 +160,11 @@ for rname, (f, ptx, sf) in RADIO.items():
 need = {r: link[(r, "iron cover (central)")][0] for r in RADIO}
 tag("D3", f"cover loss that still closes 1 km with fade margin: EU868 SF12 "
           f"{20 + need['EU868 SF12 +14 dBm']:.1f} dB, US915 SF9 {20 + need['US915 SF9 +20 dBm']:.1f} dB")
+GW_KM = 0.5                             # planned gateway distance in districts with iron covers (LKL-DDR-002)
+for rname, (f, ptx, sf) in RADIO.items():
+    budget = ptx + G_NODE - L_NODE + G_GW - L_GW - sens(sf)
+    tag("D5", f"{rname}: margin at {GW_KM} km after 10 dB fade margin, iron cover 20 / 30 dB: "
+              f"{budget - hata_urban(f, GW_KM) - 20 - FADE:+.1f} / {budget - hata_urban(f, GW_KM) - 30 - FADE:+.1f} dB")
 tag("D4", "EU868 limit 14 dBm ERP (16.15 dBm EIRP): the TRL 2 figure of +20 dBm is not permitted in EU868")
 
 # ================================================================== E. Leak noise attenuation (R1, R2)
@@ -304,7 +309,7 @@ tag("H2", f"with a weekly network time correction (LoRaWAN 1.0.3 DeviceTimeReq):
 # ================================================================== I. Magnet hold (R9)
 print("\nI. Magnet hold on the spindle cap")
 G0, IRON = 0.6, 0.7
-for rated, label in ((290.0, "32 mm pot magnet (fitted)"), (600.0, "42 mm pot magnet (option)")):
+for rated, label in ((290.0, "32 mm pot magnet (TRL 3 v0.1)"), (P["magnet_rated_n"], f"{P['magnet_d']:.0f} mm pot magnet (fitted)")):
     vals = [rated * IRON / (1 + g / G0) ** 2 for g in (0.1, 0.3, 0.5, 1.0)]
     tag("I1", f"{label}, rated {rated:.0f} N: on iron with a 0.1 / 0.3 / 0.5 / 1.0 mm coating gap "
               + " / ".join(f"{v:.0f}" for v in vals) + " N")
@@ -375,14 +380,14 @@ pvc = rng["PVC DN150"]
 eu = link[("EU868 SF12 +14 dBm", "iron cover (central)")]
 STATUS = [
     ("R1", f"{iron[1]:.0f} m on ductile iron at central efficiency ({iron[0]:.0f} to {iron[2]:.0f} m)", "100 m on iron", "At risk"),
-    ("R2", f"{pvc[1]:.0f} m on PVC at central efficiency ({pvc[0]:.0f} to {pvc[2]:.0f} m)", "30 m on plastic", "Not met"),
+    ("R2", f"hydrophone variant not sized; contact sensor {pvc[1]:.0f} m on PVC (out of its scope)", "30 m on plastic, hydrophone variant", "Open, variant not sized at TRL 3"),
     ("R3", f"mounted resonance {math.sqrt(5e6 / m_stack) / 2 / math.pi:.0f} to {math.sqrt(2e7 / m_stack) / 2 / math.pi:.0f} Hz", "5 Hz to 2 kHz within 3 dB", "At risk"),
     ("R4", f"{r4 * 1e6:.2f} ug/rtHz", "1 ug/rtHz or less", "Met on paper" if r4 <= 1e-6 else "At risk"),
     ("R5", f"{ppm_w * 1e-6 * 7 * 86400:.0f} s with weekly time sync", "under 60 s a month", "Met on paper"),
     ("R6", f"{min(v[1] for v in life.values()):.1f} years or more on energy", "5 years", "Met on paper"),
-    ("R7", f"{eu[0]:+.1f} dB at 1 km under an iron cover (EU868 SF12); range {eu[1]:.2f} km", "90 % delivery at 1 km", "Not met"),
+    ("R7", f"range {eu[1]:.2f} km under an iron cover at 20 dB (EU868 SF12); {link[('US915 SF9 +20 dBm', 'iron cover (central)')][1]:.2f} km US915 SF9; cover loss unmeasured", "90 % delivery to a gateway within 0.5 km (iron cover)", "At risk"),
     ("R8", "raw samples processed and deleted on device", "only levels leave", "Met by design"),
-    ("R9", f"{290 * IRON / (1 + 0.3 / G0) ** 2:.0f} N at a 0.3 mm coating", "100 N", "At risk"),
+    ("R9", f"{P['magnet_rated_n'] * IRON / (1 + 0.5 / G0) ** 2:.0f} N at a 0.5 mm coating ({P['magnet_rated_n'] * IRON / (1 + 0.3 / G0) ** 2:.0f} N at 0.3 mm)", "100 N", "Met on paper" if P['magnet_rated_n'] * IRON / (1 + 0.5 / G0) ** 2 >= 100 else "At risk"),
     ("R10", f"{sum(TASKS.values())} min task estimate", "10 min, no entry", "Not verifiable at TRL 3"),
     ("R11", "IP68 by design; logger floats on its lanyard", "IP68, -20 to +50 degC", "Met by design"),
     ("R12", f"63 x {P['logger_len'] + 27:.0f} mm, {total_m:.2f} kg", "70 x 300 mm, 1.0 kg", "Met on paper"),

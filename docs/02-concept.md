@@ -3,7 +3,7 @@ doc_id: LKL-PRC-001
 title: LeakListen design precis
 project: LeakListen
 doc_type: Design precis
-version: "0.3"
+version: "0.4"
 status: Draft
 date: '2026-09-25'
 author: Amish Chadha
@@ -21,15 +21,19 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: TRL 3 design choices adopted for TRL 3 (LKL-DDR-001); numbers replaced by LKL-CAL-001; 53 g seismic mass, 24-byte summary, regional transmit power, weekly time correction; links to the model and LKL-DWG-001
+- version: "0.4"
+  date: '2026-09-25'
+  author: Amish Chadha
+  change: "Recommendations accepted by Amish (DDR-002): 42 mm pot magnet with keeper plate; contact sensor scoped to metallic mains, hydrophone variant for plastic; district gateway within 0.5 km under iron covers; numbers from LKL-CAL-001 v0.2; LKL-DWG-001 Rev P2"
 ---
 
 # LeakListen design precis
 
 ## Summary
 
-LeakListen is a battery-powered acoustic leak logger that hangs under a valve chamber cover, sticks a magnetic vibration sensor onto the valve spindle cap, listens to the pipe for a few minutes each night, and sends one small LoRaWAN summary a day. A leak on a pressurized main makes a steady hiss that travels along the pipe wall; when a logger's quietest night-time level rises and stays up for several nights, the server flags that street for a follow-up survey. The TRL 3 calculations (LKL-CAL-001) give about 1.2 mAh a day, 10 years or more on one C-size lithium cell, 0.93 kg and $109.00 in parts. They also show the two weak points: the reference leak is heard about 185 m along an iron main but only a few metres along a plastic one (R2 not met), and the radio reaches about 0.5 km, not 1 km, from under a cast-iron cover (R7 not met).
+LeakListen is a battery-powered acoustic leak logger that hangs under a valve chamber cover, sticks a magnetic vibration sensor onto the valve spindle cap, listens to the pipe for a few minutes each night, and sends one small LoRaWAN summary a day. A leak on a pressurized main makes a steady hiss that travels along the pipe wall; when a logger's quietest night-time level rises and stays up for several nights, the server flags that street for a follow-up survey. The TRL 3 calculations (LKL-CAL-001 v0.2) give about 1.2 mAh a day, 10 years or more on one C-size lithium cell, 0.98 kg and $113.00 in parts. They also show the two weak points, now answered by decisions Amish accepted on 2026-09-25 (LKL-DDR-002). The reference leak is heard about 185 m along an iron main but only a few metres along a plastic one, so the magnet-on sensor is scoped to metallic mains and plastic networks are left to a hydrophone variant (R2, not yet sized). The radio reaches about 0.5 km, not 1 km, from under a cast-iron cover, so a gateway is planned within 0.5 km of each such district (R7, at risk until the cover loss is measured).
 
-Figure 1. Concept in a valve chamber, street and chamber shown in section ([media/hero.png](../media/hero.png)). Figure 2. Exploded view with BOM numbers ([media/exploded.png](../media/exploded.png)). Figure 3. Cutaway of the logger and sensor ([media/cutaway.png](../media/cutaway.png)). Figure 4. Nightly data flow ([media/flow.png](../media/flow.png)). Figure 5. General arrangement, drawing LKL-DWG-001 Rev P1 ([cad/drawings/LKL-DWG-001.pdf](../cad/drawings/LKL-DWG-001.pdf)), from the parametric model [cad/src/model.py](../cad/src/model.py).
+Figure 1. Concept in a valve chamber, street and chamber shown in section ([media/hero.png](../media/hero.png)). Figure 2. Exploded view with BOM numbers ([media/exploded.png](../media/exploded.png)). Figure 3. Cutaway of the logger and sensor ([media/cutaway.png](../media/cutaway.png)). Figure 4. Nightly data flow ([media/flow.png](../media/flow.png)). Figure 5. General arrangement, drawing LKL-DWG-001 Rev P2 ([cad/drawings/LKL-DWG-001.pdf](../cad/drawings/LKL-DWG-001.pdf)), from the parametric model [cad/src/model.py](../cad/src/model.py).
 
 ## How it works
 
@@ -48,7 +52,7 @@ Table 1. Main components.
 | No. | Component | Key figures | Role |
 | --- | --- | --- | --- |
 | 1 | Sensor puck body | Aluminium, 40 mm diameter x 42 mm, potted | Stiff, sealed carrier for the sensor and preamplifier |
-| 2 | Pot magnet | 32 mm, about 290 N nominal pull on thick flat steel | Attaches to the spindle cap with no tools |
+| 2 | Pot magnet | 42 mm, about 600 N nominal pull on thick flat steel; keeper plate for transport (LKL-DDR-002; was 32 mm, 290 N) | Attaches to the spindle cap with no tools; 125 N on a 0.5 mm coating (R9) |
 | 3 | Piezo disc and seismic mass | 27 mm brass-backed piezo disc in compression under a 20 x 20 mm brass mass, about 53 g; about 157 pC/g | Turns pipe vibration into charge |
 | 4 | Charge preamplifier | Low-noise JFET-input stage, 1 nF and 53 MΩ feedback (3 Hz high-pass), then 40 dB; about 1.0 µg/√Hz | Low-noise, low-frequency front end (R3, R4) |
 | 5 | Sensor cable | 2 m shielded PUR, M12 IP68 plug | Lets the puck sit on the valve while the logger stays near the cover |
@@ -60,7 +64,7 @@ Table 1. Main components.
 
 ## Key design choices
 
-These choices were proposed at TRL 2 and are adopted as recommended for TRL 3 under Amish's 2026-09-25 instruction, open for his review (LKL-DDR-001).
+These choices were proposed at TRL 2 and were decided by Amish on 2026-09-25: go with recommendation (LKL-DDR-001, confirmed in LKL-DDR-002). The last three follow from the TRL 3 review, also decided by Amish on 2026-09-25 (LKL-DDR-002).
 
 - **Contact sensor on the valve, not a hydrophone.** A magnet-on sensor needs no pipe tapping and no contact with drinking water. Hydrophones hear further on plastic pipes but need a hydrant or tapping point; this is kept as an option for plastic networks (D3), and LKL-CAL-001 shows it is needed to hear any distance on PVC or PE.
 - **Noise-level screening, not correlation.** Correlation needs time-synchronized raw audio from pairs of loggers and much more data over the radio. Nightly level and spectrum screening fits LoRaWAN and a primary cell (D1); correlation is recorded as a later variant.
@@ -68,6 +72,9 @@ These choices were proposed at TRL 2 and are adopted as recommended for TRL 3 un
 - **Reuse the FieldNode radio core.** The STM32WL module, payload conventions and network settings are shared with FieldNode so fixes carry across; FieldNode's solar charger and enclosure are not used (D4). Transmit power and the link budget method follow FieldNode's FND-CAL-001.
 - **Compression-mode sensor with a heavy mass.** A 53 g brass mass on the disc in compression gives five times the TRL 2 sensitivity while keeping the sensor's own resonance near 200 kHz, far above the band. A disc used as a bender would be as sensitive but would resonate inside the band.
 - **Privacy by design.** Raw samples never leave the logger (R8, a fixed requirement under D6). A contact sensor on a valve is a poor microphone, but the rule keeps the design acceptable for street deployment.
+- **Contact sensor for metallic mains, hydrophone variant for plastic.** LKL-CAL-001 shows a contact sensor hears only a few metres along PVC or PE, so the magnet-on sensor's scope is metallic mains (R1), and R2 applies to the hydrophone variant on a hydrant or tapping point, which is not yet sized.
+- **District gateway under iron covers.** The flat antenna stays under the cover. Where covers are cast iron, a gateway (TwinKit or a partner's) is planned within about 0.5 km of the district; a through-cover antenna or composite cover is used only where the utility agrees. The cover loss is to be measured before deployment (TRL 4, on hold).
+- **42 mm pot magnet.** About 600 N rated, it holds 125 N on a cap with 0.5 mm of paint and rust, against 60 N for the 32 mm magnet, for $4 more. It ships with a keeper plate fitted.
 
 ## Key numbers (LKL-CAL-001)
 
@@ -81,20 +88,20 @@ Table 2. Key numbers.
 | Daily charge | 1.15 mAh (EU868 SF7) to 1.22 mAh (EU868 SF12) | R6 |
 | Battery life on energy | 10.3 to 12.8 years; taken as 10 years | R6 (5 years) |
 | Airtime | 1.97 s per uplink at SF12; 5.9 s a day worst case | R14 |
-| Link under an iron cover (20 dB assumed) | -9.7 dB at 1 km; about 0.53 km range (EU868 SF12) | **R7 not met** |
-| Detection distance, reference leak | About 185 m on ductile iron (93 to 370 m); about 4 m on PVC | R1 at risk, **R2 not met** |
+| Link under an iron cover (20 dB assumed) | About 0.53 km range (EU868 SF12); +0.9 dB at the planned 0.5 km gateway distance, -1.2 dB for US915 SF9 | R7 at risk |
+| Detection distance, reference leak | About 185 m on ductile iron (93 to 370 m); about 4 m on PVC with the contact sensor, out of its scope | R1 at risk; R2 open (hydrophone variant) |
 | Sensor self-noise | 1.03 µg/√Hz worst from 100 Hz to 1 kHz | R4 at risk |
-| Mounted resonance | About 780 to 1,550 Hz | R3 at risk |
-| Magnet hold on iron | 149 N bare, 90 N at a 0.3 mm coating | R9 at risk |
+| Mounted resonance | About 695 to 1,390 Hz with the 42 mm magnet | R3 at risk |
+| Magnet hold on iron, 42 mm magnet | 309 N bare, 187 N at 0.3 mm, 125 N at a 0.5 mm coating | R9 met on paper |
 | Clock | 20 s worst with a weekly time correction | R5 |
-| Size and mass | 63 x 240 mm tube, 267 mm overall; 0.93 kg | R12 |
-| Parts cost | $109.00 against $130 | R15 |
+| Size and mass | 63 x 240 mm tube, 267 mm overall; 0.98 kg | R12 |
+| Parts cost | $113.00 against $130 | R15 |
 
 **Energy.** Listening, 12 mA for about 252 s a night, is 59 % of the worst day; sleep at 4 µA and the cell's own self-discharge make up most of the rest. The radio adds only 0.005 to 0.08 mAh a day at +14 dBm.
 
-**Radio.** The flat antenna under the cover is the weak link. To close 1 km, the cover may cost no more than about 10 dB, which suggests a through-cover antenna, a composite cover or a closer gateway; the choice is proposed in `docs/REVIEW.md`, awaiting Amish.
+**Radio.** The flat antenna under the cover is the weak link. To close 1 km, the cover may cost no more than about 10 dB. Decided by Amish, 2026-09-25 (LKL-DDR-002): measure the cover loss first, then plan a gateway within about 0.5 km of each district with iron covers, with a through-cover antenna or composite cover where a utility agrees. At 0.5 km the EU868 link has +0.9 dB to spare at a 20 dB cover loss, and the US915 SF9 link misses by 1.2 dB.
 
-**Cost.** $109.00 in parts (see [bom/bom.csv](../bom/bom.csv)), under the $130 budget.
+**Cost.** $113.00 in parts, including $4 for the 42 mm magnet (see [bom/bom.csv](../bom/bom.csv)), under the $130 budget.
 
 ## Safety
 
@@ -102,16 +109,17 @@ Table 2. Key numbers.
 >
 > The lithium thionyl chloride primary cell can vent, burn or explode if shorted, crushed, heated above its rating or charged. Fit a fuse or PTC and reverse protection, never fit a charging circuit, and store and ship cells under the dangerous goods rules for lithium metal cells.
 >
-> The pot magnet can pinch fingers and affect pacemakers and implanted devices. Carry it with its keeper plate fitted.
+> The 42 mm pot magnet pulls about twice as hard as the 32 mm one it replaces, and can pinch fingers badly and affect pacemakers and implanted devices. Carry it with its keeper plate fitted and remove the plate only at the cap.
 >
 > Placing anything on a public water network needs the utility's written permission. Nothing in LeakListen touches drinking water.
 
 ## Open questions
 
-- [ ] Detection distance on iron and plastic pipes (R1, R2): estimated in LKL-CAL-001, but the leak source strength and pipe losses need field recordings of known leaks.
-- [ ] Radio loss through cast-iron, ductile iron and composite covers (R7): assumed 10 to 30 dB in LKL-CAL-001, not measured. Through-cover antenna, composite cover or closer gateway: proposed, awaiting Amish.
+- [ ] Detection distance on iron pipes (R1): estimated in LKL-CAL-001, but the leak source strength and pipe losses need field recordings of known leaks.
+- [ ] Sizing the hydrophone variant for plastic networks (R2).
+- [ ] Radio loss through cast-iron, ductile iron and composite covers (R7): assumed 10 to 30 dB in LKL-CAL-001, not measured. The response is decided (district gateway within 0.5 km by default, LKL-DDR-002); the measurement is TRL 4 work and on hold.
 - [ ] Sensor self-noise (R4): 1.03 µg/√Hz on assumed data; the ceramic's d33 and the op-amp noise need checking against chosen parts.
 - [ ] Threshold rules for the leak flag, and how to handle pumps, pressure reducing valves and night-time customer use (R13).
-- [ ] Adapter for brass, bronze and plastic fittings, and a 42 mm magnet for coated caps (R9; the magnet is proposed, awaiting Amish).
+- [ ] Adapter for brass, bronze and plastic fittings (the 42 mm magnet for coated caps is decided, LKL-DDR-002).
 - [ ] Whether time synchronization for correlation between neighboring loggers is worth adding later.
-- [ ] Whether a logger calibration check (a small shaker bench) belongs in this repo or in CalRig, which today covers temperature, humidity and particles only.
+- [ ] Whether a logger calibration check (a small shaker bench) belongs in this repo or in CalRig, which today covers temperature, humidity and particles only (proposed, awaiting Amish).

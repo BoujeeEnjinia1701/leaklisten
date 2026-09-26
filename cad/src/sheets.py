@@ -1,4 +1,4 @@
-"""LeakListen general arrangement sheet LKL-DWG-001, Rev P1 (TRL 3).
+"""LeakListen general arrangement sheet LKL-DWG-001, Rev P2 (TRL 3).
 
 Run from the repo root:  python cad/src/sheets.py
 Writes cad/drawings/LKL-DWG-001.svg, .pdf and .png from the parametric model in
@@ -93,10 +93,11 @@ def main():
     asm = assembly(with_site=True)
     views = safe_project_views(asm, work)
     bb = asm.bounding_box()
-    s = Sheet(project="LeakListen", title="General arrangement, logger installed", dwg_no="LKL-DWG-001", rev="P1",
+    s = Sheet(project="LeakListen", title="General arrangement, logger installed", dwg_no="LKL-DWG-001", rev="P2",
               author="Amish Chadha", date=DATE, scale=None, theme="technical",
               material="PVC, aluminium, stainless; bought-in parts per bom/bom.csv. PRELIMINARY, NOT FOR FABRICATION",
-              revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", DATE, "AC")])
+              revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", DATE, "AC"),
+                         ("P2", "42 mm pot magnet (LKL-DDR-002)", DATE, "AC")])
     s.add_ortho(views)
     k = s.scale
     c = ortho_cells(s, views)
@@ -141,7 +142,7 @@ def main():
     s.add_svg(views["iso"], 276, 32, 140, 100, label="Isometric view", sublabel="Not to scale; spindle cap and frame edge grey context")
     s.add_notes("Main dimensions and interfaces (mm)", [
         f"Logger PVC tube {P['tube_od']:.0f} OD x {P['tube_wall']:.0f} wall x {P['logger_len']:.0f}; {P['logger_len'] + 27:.0f} with socket and gland",
-        f"Sensor puck {P['puck_d']:.0f} x {P['puck_h']:.0f} aluminium on a {P['magnet_d']:.0f} mm pot magnet; stack {D['sensor_stack_h']:.0f}",
+        f"Sensor puck {P['puck_d']:.0f} x {P['puck_h']:.0f} aluminium on a {P['magnet_d']:.0f} mm pot magnet (keeper plate in transport); stack {D['sensor_stack_h']:.0f}",
         f"Seismic mass brass {P['mass_d']:.0f} x {P['mass_h']:.0f} on a 27 mm piezo disc (compression)",
         f"Spindle cap {P['cap_sq']:.0f} square, top {-P['cap_top_z']:.0f} below street (example site)",
         f"Hanger strap {P['strap_w']:.0f} x {P['strap_t']} stainless over the frame; lanyard {P['lanyard_d']:.0f}",

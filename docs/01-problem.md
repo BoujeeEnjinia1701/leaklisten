@@ -3,7 +3,7 @@ doc_id: LKL-PRB-001
 title: LeakListen problem statement
 project: LeakListen
 doc_type: Problem statement
-version: "0.3"
+version: "0.4"
 status: Draft
 date: '2026-09-25'
 author: Amish Chadha
@@ -21,6 +21,10 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: "TRL 3, reflect the TRL 2 review items adopted for TRL 3 (LKL-DDR-001) and the findings of LKL-CAL-001 in the constraints, prior work and open questions"
+- version: "0.4"
+  date: '2026-09-25'
+  author: Amish Chadha
+  change: "Recommendations accepted by Amish (DDR-002): open questions on plastic mains and cover loss updated; LKL-DDR-001 items now decided"
 ---
 
 # LeakListen problem statement
@@ -70,13 +74,13 @@ Many leaks never reach the surface and can run for months because nobody hears t
 - **Acoustic leak detection** is the standard method for hidden leaks. Research at the National Research Council of Canada characterized leak signals in plastic pipes and found that most of the energy measured by hydrophones was below 50 Hz and that plastic pipes attenuate leak noise strongly ([Hunaidi and Chu, *Applied Acoustics*, 1999](https://www.sciencedirect.com/science/article/pii/S0003682X99000134)). A low-cost sensor must therefore reach down to a few hertz and will hear less far on plastic pipes.
 - **Commercial noise and correlating loggers** are proven. For example, Gutermann's ZONESCAN 820 loggers correlate automatically between all relevant logger pairs each day and report leak positions to better than 1 m ([Gutermann](https://en.gutermann-water.com/)). These are closed products; LeakListen aims at the simpler, cheaper noise-level screening task, with open hardware and data.
 - **Performance-based non-revenue water programs** show that finding and fixing leaks pays back, which is why the World Bank promotes them ([World Bank](https://blogs.worldbank.org/en/ppps/what-do-private-companies-look-performance-based-non-revenue-water-project); [Kingdom et al., 2006](https://documents1.worldbank.org/curated/en/385761468330326484/pdf/394050Reducing1e0water0WSS81PUBLIC1.pdf)).
-- **Lab siblings.** LeakListen reuses the STM32WL LoRaWAN core and payload conventions of FieldNode (not its solar power, which cannot work in a chamber), adopted for TRL 3 in LKL-DDR-001 D4, and reports to the lab's TwinKit gateway, which already lists leak detection among its water supply uses.
+- **Lab siblings.** LeakListen reuses the STM32WL LoRaWAN core and payload conventions of FieldNode (not its solar power, which cannot work in a chamber), decided by Amish on 2026-09-25 (LKL-DDR-001 D4, LKL-DDR-002), and reports to the lab's TwinKit gateway, which already lists leak detection among its water supply uses.
 - **Leak noise in plastic pipes.** Gao et al. modeled leak noise in buried plastic pipes as a fluid-dominated wave with a flat source spectrum and showed that the signals are low frequency and narrow band ([Gao, Brennan, Joseph, Muggleton and Hunaidi, *Journal of Sound and Vibration*, 2004](https://www.sciencedirect.com/science/article/pii/S0022460X03011647)). LKL-CAL-001 uses the same model form to estimate detection distance.
 
 ## Open questions
 
-- [ ] Which pipe materials and diameters dominate the first partner utility's network? LKL-CAL-001 estimates about 185 m on iron but only a few metres on plastic for a contact sensor on a valve, so the answer sets whether the hydrophone variant is needed.
-- [ ] How much does a cast-iron cover attenuate LoRa in practice? LKL-CAL-001 assumes 20 dB, which limits the link to about 0.5 km; the response (through-cover antenna, composite cover or a closer gateway) awaits Amish.
+- [ ] Which pipe materials and diameters dominate the first partner utility's network? LKL-CAL-001 estimates about 185 m on iron but only a few metres on plastic for a contact sensor on a valve, so the answer sets how soon the hydrophone variant, which serves plastic mains under LKL-DDR-002, is needed.
+- [ ] How much does a cast-iron cover attenuate LoRa in practice? LKL-CAL-001 assumes 20 dB, which limits the link to about 0.5 km. The response is decided (LKL-DDR-002): measure first, then a gateway within about 0.5 km of each such district by default, with a through-cover antenna where a utility agrees.
 - [ ] What night-time background noise (pumps, pressure reducing valves, traffic, customer use) will cause false alarms?
 - [ ] Will the partner utility allow magnets on valve spindle caps and hydrants, and who may place loggers?
 - [ ] Is a nightly noise-level flag enough for the utility, or is correlation between loggers needed to be useful?

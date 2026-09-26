@@ -1,4 +1,4 @@
-"""LeakListen parametric model (build123d), TRL 3, massing-plus level of detail.
+"""LeakListen parametric model (build123d), TRL 3, massing-plus level of detail (42 mm magnet per LKL-DDR-002).
 
 Run from the repo root:  python cad/src/model.py
 Exports STEP and STL into cad/step and cad/stl:
@@ -29,8 +29,8 @@ PARAMS = {
     "puck_d": 40.0, "puck_h": 42.0, "puck_wall": 4.0, "puck_base": 3.0,
     "piezo_d": 27.0, "piezo_t": 0.5, "mass_d": 20.0, "mass_h": 20.0,
     "preamp": (22.0, 22.0, 1.6),
-    # 2 pot magnet
-    "magnet_d": 32.0, "magnet_h": 12.0,
+    # 2 pot magnet: 42 mm, about 600 N rated (LKL-DDR-002; was 32 mm, 290 N at TRL 3 v0.1)
+    "magnet_d": 42.0, "magnet_h": 12.0, "magnet_rated_n": 600.0,
     # 5 sensor cable: 4-core shielded PUR, M12 plug at the logger end
     "cable_d": 6.0, "cable_len": 2000.0, "m12_d": 20.0, "m12_len": 45.0,
     # 6 logger housing: PVC tube with two O-ring plugs (flush, so the OD stays the tube OD)

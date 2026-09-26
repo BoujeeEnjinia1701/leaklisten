@@ -36,14 +36,14 @@ Requirements not met or at risk:
 
 ### Proposed, awaiting Amish
 
-1. **Screening versus correlation (pitch-level).** Option A: nightly noise-level screening only (this concept; fits LoRaWAN and a primary cell). Option B: add time-synchronized raw audio for correlation between neighboring loggers (pinpoints leaks, but needs GNSS or radio time sync, much more data and a larger battery). Recommendation: A for TRL 3, with B recorded as a later variant.
-2. **Radio from under covers.** Option A: flat antenna under the cover (this concept). Option B: through-cover antenna in a drilled or composite cover (needs utility consent). Option C: a nearby gateway per district. Recommendation: A, with a link budget at TRL 3 deciding whether B is needed.
-3. **Sensor type.** Piezo disc with a charge amplifier (cheap, this concept) versus a MEMS accelerometer (simpler, likely noisier at low levels) versus a hydrophone on hydrants (hears further on plastic, needs a tapping). Recommendation: piezo disc, with the hydrophone kept as an option for plastic networks.
-4. **Reuse of the FieldNode radio core** (STM32WL module and payload conventions, without FieldNode's solar power). Recommendation: yes, to share fixes across the lab.
-5. **Primary cell size.** C size about 7.7 Ah (this concept, about 10 years) versus D size about 19 Ah (longer margin, larger tube). Recommendation: C size.
-6. **Privacy rule.** Raw samples never leave the device (R8). Recommendation: keep as a fixed requirement.
-7. **First partner utility and region** for co-design and a pilot district.
-8. **Whether a vibration calibration check belongs here or in CalRig** (CalRig today covers temperature, humidity and particles only).
+1. **Screening versus correlation (pitch-level).** Option A: nightly noise-level screening only (this concept; fits LoRaWAN and a primary cell). Option B: add time-synchronized raw audio for correlation between neighboring loggers (pinpoints leaks, but needs GNSS or radio time sync, much more data and a larger battery). Recommendation: A for TRL 3, with B recorded as a later variant. **Decided by Amish, 2026-09-25: go with recommendation** (LKL-DDR-001, LKL-DDR-002).
+2. **Radio from under covers.** Option A: flat antenna under the cover (this concept). Option B: through-cover antenna in a drilled or composite cover (needs utility consent). Option C: a nearby gateway per district. Recommendation: A, with a link budget at TRL 3 deciding whether B is needed. **Decided by Amish, 2026-09-25: go with recommendation** (LKL-DDR-001, LKL-DDR-002).
+3. **Sensor type.** Piezo disc with a charge amplifier (cheap, this concept) versus a MEMS accelerometer (simpler, likely noisier at low levels) versus a hydrophone on hydrants (hears further on plastic, needs a tapping). Recommendation: piezo disc, with the hydrophone kept as an option for plastic networks. **Decided by Amish, 2026-09-25: go with recommendation** (LKL-DDR-001, LKL-DDR-002).
+4. **Reuse of the FieldNode radio core** (STM32WL module and payload conventions, without FieldNode's solar power). Recommendation: yes, to share fixes across the lab. **Decided by Amish, 2026-09-25: go with recommendation** (LKL-DDR-001, LKL-DDR-002).
+5. **Primary cell size.** C size about 7.7 Ah (this concept, about 10 years) versus D size about 19 Ah (longer margin, larger tube). Recommendation: C size. **Decided by Amish, 2026-09-25: go with recommendation** (LKL-DDR-001, LKL-DDR-002).
+6. **Privacy rule.** Raw samples never leave the device (R8). Recommendation: keep as a fixed requirement. **Decided by Amish, 2026-09-25: go with recommendation** (LKL-DDR-001, LKL-DDR-002).
+7. **First partner utility and region** for co-design and a pilot district. No recommendation; still Proposed, awaiting Amish.
+8. **Whether a vibration calibration check belongs here or in CalRig** (CalRig today covers temperature, humidity and particles only). No recommendation; still Proposed, awaiting Amish.
 
 No change to `project.yaml`: the pitch and problem still match the numbers found, and the budget holds.
 
@@ -95,15 +95,15 @@ Key numbers: 1.15 to 1.22 mAh a day; 1.97 s per uplink at SF12; 157 pC/g sensor;
 
 ### Decisions recorded (LKL-DDR-001)
 
-Adopted as recommended for TRL 3 under Amish's 2026-09-25 instruction, open for his review: D1 nightly noise-level screening, correlation as a later variant; D2 flat antenna under the cover, with the link budget deciding whether more is needed (it is, see item 3 below); D3 piezo disc sensor, hydrophone kept as an option for plastic networks; D4 reuse of the FieldNode STM32WL core and payload conventions without its solar power; D5 C-size cell; D6 raw samples never leave the device, R8 fixed. No new budget, pitch or problem wording was recommended, so `budget_usd` stays at $130 and `project.yaml` and `README.md` keep the existing pitch and problem lines.
+Adopted as recommended for TRL 3 under Amish's 2026-09-25 instruction, open for his review (since **Decided by Amish, 2026-09-25: go with recommendation**, LKL-DDR-002): D1 nightly noise-level screening, correlation as a later variant; D2 flat antenna under the cover, with the link budget deciding whether more is needed (it is, see item 3 below); D3 piezo disc sensor, hydrophone kept as an option for plastic networks; D4 reuse of the FieldNode STM32WL core and payload conventions without its solar power; D5 C-size cell; D6 raw samples never leave the device, R8 fixed. No new budget, pitch or problem wording was recommended, so `budget_usd` stays at $130 and `project.yaml` and `README.md` keep the existing pitch and problem lines.
 
 ### Still awaiting Amish
 
 1. **O1, first partner utility and region** for co-design and a pilot district. No preference stated.
 2. **O2, vibration calibration check here or in CalRig.** No recommendation was made. CalRig's TRL 3 scope is still temperature, humidity and particles.
-3. **New, radio under iron covers (R7).** Options: (a) a through-cover antenna or composite cover, which needs utility consent; (b) plan a gateway within about 0.5 km of each district (TwinKit or partner); (c) relax R7 to 0.5 km under iron covers. Recommendation: measure cover loss first; then (b) as the default because it touches no utility asset, with (a) where a utility agrees. Not applied.
-4. **New, plastic mains (R2).** Options: (a) restate the contact sensor's scope as metallic mains and make the hydrophone variant (D3) the answer for plastic networks; (b) keep R2 for the contact sensor and accept it is not met; (c) relax R2. Recommendation: (a). Not applied; the pitch would still hold, since hydrophones also mount on existing fittings.
-5. **New, 42 mm pot magnet (R9).** About +$4 ($113.00, under budget); holds 125 N at a 0.5 mm coating. Recommendation: yes, with a keeper plate as for the 32 mm magnet. Not applied.
+3. **New, radio under iron covers (R7).** Options: (a) a through-cover antenna or composite cover, which needs utility consent; (b) plan a gateway within about 0.5 km of each district (TwinKit or partner); (c) relax R7 to 0.5 km under iron covers. Recommendation: measure cover loss first; then (b) as the default because it touches no utility asset, with (a) where a utility agrees. **Decided by Amish, 2026-09-25: go with recommendation** (LKL-DDR-002 D7); the measurement is TRL 4 and on hold.
+4. **New, plastic mains (R2).** Options: (a) restate the contact sensor's scope as metallic mains and make the hydrophone variant (D3) the answer for plastic networks; (b) keep R2 for the contact sensor and accept it is not met; (c) relax R2. Recommendation: (a). **Decided by Amish, 2026-09-25: go with recommendation** (LKL-DDR-002 D8); the pitch still holds, since hydrophones also mount on existing fittings.
+5. **New, 42 mm pot magnet (R9).** About +$4 ($113.00, under budget); holds 125 N at a 0.5 mm coating. Recommendation: yes, with a keeper plate as for the 32 mm magnet. **Decided by Amish, 2026-09-25: go with recommendation** (LKL-DDR-002 D9).
 
 Suggestions only, not in the repo: request the full 64-band spectrum from a flagged logger by downlink; a pointed hardened contact stud under the magnet to stiffen the mount (R3).
 
@@ -132,3 +132,52 @@ Suggestions only, not in the repo: request the full 64-band spectrum from a flag
 ### Recommended next step
 
 TRL 4 is on hold by Amish's instruction; this repo stops at TRL 3. Amish's review is needed on D1 to D6, O1 and O2, and items 3 to 5 above. For the record only, TRL 4 would need: a bench build of the sensor puck and logger; a lab test report (TST, `environment: lab`) covering sensor sensitivity and self-noise against a reference accelerometer on a shaker, magnet pull on coated iron caps, mounted resonance, LoRa loss through iron and composite covers, sleep and listening current, and a submersion check; and build log entries. None of this has been started.
+
+## Session 2026-09-25: recommendations accepted
+
+On 2026-09-25 Amish wrote: "i accept all your recommendations, go with them across all repos." Every item with a recommendation is now "Decided by Amish, 2026-09-25: go with recommendation", recorded in `docs/decisions/0002-recommendations-accepted.md` (LKL-DDR-002 v0.1). Items without a recommendation stay open. The repo stays at TRL 3.
+
+### Decisions applied and what changed
+
+- **D1 to D6** (LKL-DDR-001): screening, flat antenna, piezo sensor, FieldNode core, C cell, privacy rule. Already built into the TRL 3 design; LKL-DDR-001 raised to v0.2 with the new status wording.
+- **D7, radio under iron covers (R7).** Measure cover loss first (TRL 4, on hold), then plan a gateway within about 0.5 km of each district with iron covers, with a through-cover antenna or composite cover where a utility agrees. R7 restated from "gateway within 1 km" to "gateway within 0.5 km under iron covers, 1 km where a composite cover or through-cover antenna is agreed". New LKL-CAL-001 line [D5]: margin at 0.5 km under a 20 dB cover +0.9 dB (EU868 SF12) and -1.2 dB (US915 SF9); -9.1 dB under a tight 30 dB cover. R7: not met (-9.7 dB at 1 km) to at risk.
+- **D8, plastic mains (R2).** The contact sensor's scope is metallic mains (R1); R2 applies to the hydrophone variant, which is not yet sized. R2: not met (4 m on PVC) to open.
+- **D9, 42 mm magnet (R9).** `cad/src/model.py` magnet 32 to 42 mm (rated 290 to 600 N, new parameter `magnet_rated_n`); STEP and STL re-exported; BOM line 2 $5 to $9, total $109.00 to $113.00 (budget $130 unchanged, margin $21.00 to $17.00); hold at a 0.5 mm coating 60 to 125 N, at 0.3 mm 90 to 187 N. R9: at risk to met on paper. Side effects: puck and magnet 210 to 262 g, mounted resonance 776 to 1,553 Hz becomes 695 to 1,389 Hz (flat to 376 to 752 Hz, R3 still at risk and slightly worse); total mass 0.93 to 0.98 kg (R12 met with 20 g to spare).
+- Documents: LKL-PRB-001 v0.4, LKL-PRC-001 v0.4, LKL-REQ-001 v0.4, LKL-CAL-001 v0.2 (script re-run, `results.csv` rewritten), LKL-DDR-001 v0.2, new LKL-DDR-002 v0.1; LKL-DWG-001 Rev P1 to P2 (magnet); `media/` re-rendered (magnet label, key figures) and checked; `bom/bom-notes.md` updated; `project.yaml` evidence list adds LKL-DDR-002. No budget, pitch or problem change was recommended, so `budget_usd`, `pitch` and `problem` are unchanged.
+- README: "What sparked the idea" rewritten around Tokyo's listening-rod leak surveys on gate valves (leakage 10.2 % in fiscal 1992 to 3.5 % in fiscal 2024, Tokyo Bureau of Waterworks); cost, mass and requirement text updated. All PDFs and drawings regenerated so the footer reads designmolecule.com.
+
+### Requirement status (LKL-CAL-001 v0.2)
+
+None not met (was 2), 4 at risk, 1 open, 2 not verifiable at TRL 3, 5 met on paper, 3 met by design.
+
+| ID | Status | Key number |
+| --- | --- | --- |
+| R1 Metallic mains | At risk | About 185 m on ductile iron; 93 to 370 m over plausible pipe losses |
+| R3 Bandwidth | At risk | Mount resonance 695 to 1,389 Hz, flat only to 376 to 752 Hz |
+| R4 Self-noise | At risk | 1.03 µg/√Hz against 1 µg/√Hz |
+| R7 Radio link | At risk | +0.9 dB at 0.5 km (EU868 SF12), -1.2 dB (US915 SF9); cover loss unmeasured |
+| R2 Plastic mains | Open | Hydrophone variant not sized |
+| R10, R13 | Not verifiable at TRL 3 | Field work needed |
+| R5, R6, R9, R12, R15 | Met on paper | 20 s clock; 10.3 years; 125 N at 0.5 mm; 0.98 kg; $113.00 |
+| R8, R11, R14 | Met by design | |
+
+### Still awaiting Amish
+
+1. **O1, first partner utility and region** for co-design and a pilot district. No recommendation.
+2. **O2, vibration calibration check here or in CalRig.** No recommendation.
+
+The two suggestions in the TRL 3 section (full spectrum by downlink; a hardened contact stud) were suggestions, not recommendations, and remain outside the repo.
+
+### Cross-repo actions
+
+- **TwinKit:** D7 plans a gateway within about 0.5 km of each district with cast-iron covers, denser than TwinKit's current sizing assumes. Raise with TwinKit; TwinKit not edited.
+- **FieldNode:** no action; D4 (shared STM32WL core and payload conventions) is consistent with FieldNode's TRL 3 figures.
+- **CalRig:** depends on O2, which is still open; no action yet.
+
+### Safety
+
+Unchanged, plus: the 42 mm magnet pulls about twice as hard as the 32 mm one, so the pinch hazard rises; it ships with its keeper plate fitted and the pacemaker warning stays on the label.
+
+### TRL 4
+
+TRL 4 remains on hold by Amish's instruction. Decided but on hold: measuring LoRa loss through cast-iron and composite covers (D7) and any field link check. No build, test, purchasing, PCB or firmware work was done.
