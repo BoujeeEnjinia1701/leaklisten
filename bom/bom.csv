@@ -1,6 +1,12 @@
 item,qty,spec,supplier,unit_cost_usd,make_buy,notes
-Contact piezo sensor with magnetic clamp,,,,,,
-Low-noise amplifier,,,,,,
-Microcontroller with overnight recording and spectral analysis,,,,,,
-Battery and LoRa radio,,,,,,
-Valve chamber enclosure,,,,,,
+1 Sensor puck body,1,"Aluminium, 40 mm diameter x 34 mm, turned, with potting and cable gland",Local machinist or online turning service,8.00,make,Indicative price; stiff base for good vibration coupling
+2 Pot magnet,1,"32 mm neodymium pot magnet, about 290 N nominal pull on thick flat steel, with keeper plate",Magnet supplier,5.00,buy,Indicative price; hold on a painted spindle cap is marginal against R9
+3 Piezo disc and seismic mass,1,"27 mm brass-backed piezo disc with a small brass mass, epoxy bonded",Electronics distributor,2.00,buy,Indicative price
+4 Charge preamplifier,1,"Low-noise JFET-input op-amp stage, high-pass near 3 Hz, gain about 40 dB, small potted board",Electronics distributor,6.00,buy,Indicative price; noise not yet estimated (R4)
+5 Sensor cable,1,"2 m shielded PUR cable, 4-core, M12 IP68 plug at the logger end",Industrial connector supplier,12.00,buy,Indicative price
+6 Logger housing,1,"63 mm PVC tube, 240 mm long, two O-ring end caps, M12 IP68 panel socket, antenna gland",Plumbing supplier plus connector supplier,12.00,make,Indicative price; IP68 target (R11)
+7 Main board,1,"STM32WL LoRaWAN module (FieldNode core), 24-bit audio ADC, RTC, hybrid layer capacitor, fuse and reverse protection",Electronics distributor,30.00,buy,Indicative price including a small two-layer board
+8 Primary cell,1,"Lithium thionyl chloride C size, 3.6 V, about 7.7 Ah, with solder tabs",Battery distributor,12.00,buy,Indicative price; primary cell only; never charge; ships as lithium metal dangerous goods
+9 Hanger strap and hook,1,"1.5 mm stainless strap bent to hook over the cover frame, stainless lanyard",Local fabricator,6.00,make,Indicative price; frame shapes vary by utility
+10 Flat LoRa antenna,1,"About 70 mm flat disc antenna for the regional LoRaWAN band, 1 m low-loss lead",Electronics distributor,10.00,buy,Indicative price; radio through a cast-iron cover is unverified (R7)
+11 Desiccant and consumables,1,"Desiccant pack, spare O-rings, fasteners, potting compound, owner and lithium warning label",Local hardware and electronics shops,5.00,buy,Indicative price; no exploded-view callout
