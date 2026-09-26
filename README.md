@@ -43,7 +43,7 @@ High-income networks are not immune. The United States still has about 240,000 w
 | England and Wales | Companies leaked an average of 2,967 million litres a day from April 2022 to March 2025, and all have leakage reduction targets ([Discover Water](https://www.discoverwater.co.uk/leaking-pipes)). |
 | Southeast Asia | A study of 47 utilities in Indonesia, Malaysia, Thailand, the Philippines and Vietnam found non-revenue water averaging 30 %, ranging from 4 to 65 % ([Kingdom et al., 2006](https://documents1.worldbank.org/curated/en/385761468330326484/pdf/394050Reducing1e0water0WSS81PUBLIC1.pdf)). |
 | Developing countries generally | About 45 million m³ a day lost to leakage ([Kingdom et al., 2006](https://documents1.worldbank.org/curated/en/385761468330326484/pdf/394050Reducing1e0water0WSS81PUBLIC1.pdf)); a low-cost open logger suits utilities starting a leak program. |
-| Sub-Saharan Africa | Many networks run intermittent supply. LeakListen only hears leaks on pressurized pipes, so it fits zones with continuous supply, and a pilot there would test that limit. |
+| South Africa | About 22 million people, 39 % of the population, were affected by intermittent water supply in 2017, and 65 of 231 municipalities supplied water intermittently ([Loubser, Chimbanga and Jacobs, 2021, *Water SA*](https://scielo.org.za/scielo.php?pid=S1816-79502021000100001&script=sci_arttext)). LeakListen only hears leaks on pressurized pipes, so it fits zones with continuous supply, and a pilot there would test that limit. |
 
 ## What sparked the idea
 
@@ -96,6 +96,12 @@ The working bill of materials is in [bom/bom.csv](bom/bom.csv).
 ## Documentation
 
 Controlled documents follow the portfolio [documentation standard](.kit/STANDARDS.md). Each carries a document ID (LKL-PRC-001 for the precis), a version and a revision history. Branded PDFs are built with `python .kit/render.py` and attached to GitHub Releases when a document is tagged, for example `LKL-PRC-001/v1.0`.
+
+## Credits
+
+Designed by Amish Chadha. See [CONTRIBUTORS.md](CONTRIBUTORS.md) for roles. To cite this design, use [CITATION.cff](CITATION.cff) (GitHub shows it as "Cite this repository").
+
+AI assistance (Claude) was used to accelerate concept renders, prototype documentation and first-pass sizing calculations. Design direction and all decisions are Amish Chadha's, recorded in this repository's decision records (`docs/decisions/`).
 
 ## Licenses
 

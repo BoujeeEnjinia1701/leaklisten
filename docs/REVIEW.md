@@ -1,5 +1,13 @@
 # Review note: LeakListen
 
+## Session 2026-09-26: sources strengthened
+
+Amish asked on 2026-09-26 to fix the weaker sources. README change only; no controlled document changed. All other README sources (World Bank, Kingdom et al. 2006, ASCE 2025, Discover Water, Tokyo Bureau of Waterworks) were re-checked and support their claims.
+
+| Where | Old source | New source |
+| --- | --- | --- |
+| Country row: Sub-Saharan Africa | None | Replaced by South Africa, citing [Loubser, Chimbanga and Jacobs, 2021, *Water SA*](https://scielo.org.za/scielo.php?pid=S1816-79502021000100001&script=sci_arttext) (22 million people, 39 % of the population, on intermittent supply in 2017) |
+
 ## Session 2026-09-25: /populate to a strong TRL 2
 
 ### What was done
