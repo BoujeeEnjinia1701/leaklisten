@@ -6,9 +6,9 @@
 
 An acoustic leak sensor that clamps onto water mains and valves and listens overnight for the noise signature of leaks.
 
-![LeakListen concept](media/hero.png)
+![LeakListen: acoustic leak logger for water valve chambers, product render](media/render-hero.png)
 
-[Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement LKL-DWG-001 (PDF)](cad/drawings/LKL-DWG-001.pdf) · [Sizing calculations](docs/04-calcs/01-sizing.md) · [Review note](docs/REVIEW.md)
+[Exploded render](media/render-exploded.png) · [Detail render](media/render-detail.png) · [Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement LKL-DWG-001 (PDF)](cad/drawings/LKL-DWG-001.pdf) · [Sizing calculations](docs/04-calcs/01-sizing.md) · [Review note](docs/REVIEW.md)
 
 ## Concept rationale
 

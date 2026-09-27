@@ -189,3 +189,33 @@ Unchanged, plus: the 42 mm magnet pulls about twice as hard as the 32 mm one, so
 ### TRL 4
 
 TRL 4 remains on hold by Amish's instruction. Decided but on hold: measuring LoRa loss through cast-iron and composite covers (D7) and any field link check. No build, test, purchasing, PCB or firmware work was done.
+
+## Session 2026-09-26: product appearance model and photoreal renders
+
+Amish chose LeakListen for the first batch of product renders on 2026-09-26.
+
+### What was done
+
+- `cad/src/product_model.py` (new): appearance model for photoreal renders only, with `product_parts()`, `TITLE` and three `RENDER_VIEWS` (hero with compact chamber context, exploded, and a detail view without context). It adds:
+  - logger tube with filleted end plugs, a parting groove and O-ring line on each plug, a teal name band, the owner and lithium warning label with print, the antenna gland and a ribbed M12 panel socket;
+  - main board with its module shield can and components facing the front, the hybrid layer capacitor, the C cell with terminals and label band, and the desiccant pack (fabric);
+  - flat antenna radome with filleted edges, a seam line and a teal mark, and its lead;
+  - stainless hanger strap with a rounded bend, rivets and a lanyard eye, and the stainless lanyard;
+  - sensor cable on a smoothed route with a molded M12 plug and knurled coupling nut;
+  - bead-blasted aluminium sensor puck with grip flutes, a lid seam, a teal ring and a cable gland, on the 42 mm pot magnet; piezo disc, ceramic, 53 g brass mass and preamplifier inside;
+  - context (not in the BOM): the square spindle cap, spindle and gate valve bonnet top (bonnet top at Z = -570 mm, as `cad/src/concept_media.py`), and a slice of cover frame, roof slab and street. The chamber cover is left off so the antenna shows, and the main is not drawn, to keep the render compact.
+- `README.md`: the hero image now points to `media/render-hero.png`, with a link to `media/render-exploded.png`. The render files are produced separately.
+- Every main dimension, position and interface comes from `PARAMS`, `derived()` and `site_context()` in `cad/src/model.py`. `model.py`, the BOM, the calculation note and the drawing are unchanged.
+
+### Differences between the appearance model and model.py
+
+1. **Status light pipe on the top plug.** A small green light pipe (shown lit) is not in model.py or the BOM. It would let the technician confirm the logger is awake before closing the cover, at a small energy cost. Proposed, awaiting Amish. Recommendation: keep it as a brief blink on the magnet-swipe or power-up only, and add it to BOM line 7 if accepted; otherwise delete the part from `product_model.py`.
+2. **Main board orientation.** The board sits at the back of model.py's 8 mm board envelope with its components facing the front (-Y), so they show in the exploded view. The envelope is unchanged. Proposed, awaiting Amish. Recommendation: accept; no change to model.py is needed.
+3. **Sensor cable route.** The direct run in model.py is drawn with softened bends through the same points, and the cable leaves the puck through a gland on the lid. The 2 m cable length and both end interfaces are unchanged. Proposed, awaiting Amish. Recommendation: accept as appearance only.
+4. **Context extent.** The cover frame slice is 220 mm deep (model.py's `site_context()` frame is 120 mm), and a roof slab, street slice and valve bonnet top are added for the render. These are existing assets, not LeakListen parts. Proposed, awaiting Amish. Recommendation: accept as render context only.
+
+Noted, not changed: in model.py the hanger plate overlaps the antenna disc by about 10 mm in X, and the lanyard starts inside the antenna. The appearance model keeps these positions. Proposed, awaiting Amish: shorten the plate or move the antenna about 10 mm toward +X in model.py at the next design revision.
+
+### TRL
+
+Appearance only: no tolerances, no fabrication detail, no PCB layout and no TRL 4 work. `trl: 3` is unchanged, and TRL 4 remains on hold.
