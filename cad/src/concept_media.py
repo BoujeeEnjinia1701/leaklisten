@@ -15,7 +15,7 @@ from pathlib import Path
 sys.path[:0] = [str(Path(__file__).resolve().parents[2] / ".kit"), str(Path(__file__).resolve().parent)]
 from build123d import Box, Cylinder, Pos, Rot, Solid, Plane, Vector
 from concept import Part, render_all, human_figure
-from model import PARAMS as MP, build_parts, site_context  # noqa: E402
+from model import PARAMS as MP, build_components, site_context  # noqa: E402
 
 # ---------------- key dimensions ----------------
 PIPE_Z = -1000.0          # main axis depth (about 0.9 m cover to crown)
@@ -77,24 +77,36 @@ bonnet = Pos(0, 0, PIPE_Z + 130 + 150) * Cylinder(75, 300)
 spindle = Pos(0, 0, -575) * Cylinder(18, 150)
 valve = flanges + body + bonnet + spindle
 
-# ---------------- LeakListen parts (from the parametric model) ----------------
-B = build_parts(MP)
+# ---------------- LeakListen parts (from the parametric model, LKL-DDR-003 constructable design) ----------------
+C = build_components(MP)
 cap = site_context(MP)["cap"]
 assert MP["cap_top_z"] == -480.0  # the context valve spindle above is drawn for this cap height
 
+
+def grp(*keys):
+    out = None
+    for k in keys:
+        out = C[k].shape if out is None else out + C[k].shape
+    return out
+
+
 parts = [
     Part("Valve spindle cap (existing)", cap, "#4B5563"),
-    Part("Sensor puck body", B[1], "#0F766E", 1, (150, 0, 20)),
-    Part(f"Pot magnet, {MP['magnet_d']:.0f} mm", B[2], "#B91C1C", 2, (150, 0, -40)),
-    Part("Piezo disc and seismic mass", B[3], "#D4A017", 3, (150, 0, 95)),
-    Part("Charge preamplifier", B[4], "#16A34A", 4, (150, 0, 135)),
-    Part("Sensor cable, M12 IP68", B[5], "#111827", 5, (60, 0, 0)),
-    Part("Logger housing, IP68", B[6], "#0E7490", 6, (-120, 0, 0)),
-    Part("Main board, LoRaWAN", B[7], "#2563EB", 7, (110, 0, 60)),
-    Part("Primary cell, Li-SOCl2 C", B[8], "#C2410C", 8, (-120, 0, -170)),
-    Part("Desiccant and consumables", B[11], "#E5E7EB", None, (-60, 0, -170)),
-    Part("Hanger strap and hook", B[9], "#A16207", 9, (-80, 0, 260)),
-    Part("Flat LoRa antenna", B[10], "#7C3AED", 10, (120, 0, 200)),
+    Part("Sensor puck body, potted", grp("puck", "potting"), "#0F766E", 1, (170, 0, 20)),
+    Part(f"Pot magnet, {MP['magnet_d']:.0f} mm", grp("magnet"), "#B91C1C", 2, (170, 0, -50)),
+    Part("Piezo disc and seismic mass", grp("piezo", "mass"), "#D4A017", 3, (170, 0, 95)),
+    Part("Charge preamplifier", grp("preamp"), "#16A34A", 4, (170, 0, 140)),
+    Part("Sensor cable, M12 IP68", grp("cable", "m12_plug"), "#111827", 5, (60, 0, -40)),
+    Part("Logger housing, IP68", grp("tube", "botplug", "topplug", "socket", "top_orings", "bot_orings", "screws_top", "screws_bot"),
+         "#0E7490", 6, (-150, 0, 0)),
+    Part("Main board, LoRaWAN", grp("board", "hlc"), "#2563EB", 7, (100, -90, 30)),
+    Part("Primary cell, Li-SOCl2 C", grp("cell"), "#C2410C", 8, (100, 90, -40)),
+    Part("Neck bar hanger and lanyard", grp("bar_outer", "bar_inner", "inserts", "feet", "lockpin", "bracket", "bracket_bolt", "lanyard"),
+         "#A16207", 9, (0, 0, 230)),
+    Part("Flat LoRa antenna", grp("antenna", "ant_nut", "ant_lead"), "#7C3AED", 10, (150, 0, 420)),
+    Part("Desiccant", grp("desiccant"), "#E5E7EB", None, (100, 90, 60)),
+    Part("Internal chassis", grp("chassis", "standoffs", "board_standoffs"), "#94A3B8", 12, (100, 0, 0)),
+    Part("Eye bolt and SMA bulkhead", grp("eyebolt", "sma"), "#374151", 13, (-150, 0, 90)),
 ]
 
 # The existing main and valve are shown in the hero only, so the exploded view and cutaway frame the logger
@@ -115,7 +127,7 @@ render_all(
                  "About 1.2 mAh/day; C cell life 10 years or more",
                  "One 24-byte LoRaWAN summary a night; raw audio stays on device",
                  "Hears about 185 m on iron (estimate); hydrophone variant for plastic",
-                 "Installed from the surface; about $113 in parts"],
+                 "Hangs from a neck bar; placed from the surface; about $141 in parts"],
     scale_figure=False, context=lifted_context,
     flow={"title": "nightly data flow per logger, kB (LKL-CAL-001 estimates: 240 s at 8 kS/s, 16 bit; 12 spectra of 64 bands)", "unit": "kB",
           "stages": [("Pipe vibration", "5 Hz to 2 kHz"),
@@ -126,5 +138,6 @@ render_all(
 
 # Hero with a plain-language note (the default note would list every context part by name)
 from concept import _render  # noqa: E402
-_render(parts + context, Path("media") / "hero.png", title="LeakListen",
+hero_parts = [Part(p.name, keep_back(p.shape), p.color, p.bom, p.explode, p.alpha) if p.bom == 9 else p for p in parts]
+_render(hero_parts + context, Path("media") / "hero.png", title="LeakListen",
         note="Grey figure: 1.75 m person for scale. Street, soil and valve chamber shown in section.")

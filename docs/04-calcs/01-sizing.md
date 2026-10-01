@@ -3,9 +3,9 @@ doc_id: LKL-CAL-001
 title: LeakListen sizing calculations
 project: LeakListen
 doc_type: Calculation
-version: "0.2"
+version: "0.3"
 status: Draft
-date: '2026-09-25'
+date: '2026-10-01'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -17,17 +17,21 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: "Recommendations accepted by Amish (DDR-002): 42 mm magnet fitted; R2 restated for the hydrophone variant; R7 against a gateway within 0.5 km under iron covers; results re-run"
+- version: "0.3"
+  date: '2026-10-01'
+  author: Amish Chadha
+  change: "Constructable design (LKL-DDR-003): mass, cost, resonance, flooding, cable reach and install time re-run; R12 not met on mass; cost reported against the value-engineering target"
 ---
 
 # LeakListen sizing calculations
 
-On paper, LeakListen meets eight of its fifteen requirements (five on paper, three by design), has four at risk, misses none, leaves two that cannot be checked until there is field data and leaves one (R2) open until the hydrophone variant is sized. Version 0.1 of this note found two misses. R7 (radio link) was not met at 1 km: with a flat antenna under a cast-iron cover, and an assumed 20 dB cover loss, the link closes to about 0.53 km. Under LKL-DDR-002 a gateway is now planned within 0.5 km of each district with iron covers, and R7 is at risk rather than not met, because the margin at 0.5 km is only +0.9 dB and the cover loss is unmeasured. R2 (plastic mains) was not met: a contact sensor on a valve hears the reference leak only a few metres along PVC or PE pipe. R2 now applies to the hydrophone variant, and the contact sensor's scope is metallic mains. The 42 mm magnet fitted under LKL-DDR-002 moves R9 to met on paper. On iron mains the central estimate is about 185 m against the 100 m target, but the range spans about 93 to 370 m for plausible pipe losses, so R1 is at risk rather than met. The calculations changed four things in the TRL 2 concept: the seismic mass grows from about 11 g to about 53 g so that the sensor meets its noise target, the nightly summary shrinks from about 50 to 24 bytes so that it fits every LoRaWAN region, transmit power follows the regional limit (+14 dBm in EU868, not +20 dBm), and the clock is corrected weekly by the network. Every number in this note is printed by `docs/04-calcs/sizing.py`; the tag in brackets, for example [C1], is the line of that script's output that carries it.
+On paper, LeakListen meets six of its fifteen requirements (three on paper, three by design), has four at risk, misses one (R12, mass, since the constructable design added a neck bar hanger, LKL-DDR-003), is USD 11 over its value-engineering target on cost (R15), leaves two that cannot be checked until there is field data and leaves one (R2) open until the hydrophone variant is sized. Version 0.1 of this note found two misses. R7 (radio link) was not met at 1 km: with a flat antenna under a cast-iron cover, and an assumed 20 dB cover loss, the link closes to about 0.53 km. Under LKL-DDR-002 a gateway is now planned within 0.5 km of each district with iron covers, and R7 is at risk rather than not met, because the margin at 0.5 km is only +0.9 dB and the cover loss is unmeasured. R2 (plastic mains) was not met: a contact sensor on a valve hears the reference leak only a few metres along PVC or PE pipe. R2 now applies to the hydrophone variant, and the contact sensor's scope is metallic mains. The 42 mm magnet fitted under LKL-DDR-002 moves R9 to met on paper. On iron mains the central estimate is about 185 m against the 100 m target, but the range spans about 93 to 370 m for plausible pipe losses, so R1 is at risk rather than met. The calculations changed four things in the TRL 2 concept: the seismic mass grows from about 11 g to about 53 g so that the sensor meets its noise target, the nightly summary shrinks from about 50 to 24 bytes so that it fits every LoRaWAN region, transmit power follows the regional limit (+14 dBm in EU868, not +20 dBm), and the clock is corrected weekly by the network. Every number in this note is printed by `docs/04-calcs/sizing.py`; the tag in brackets, for example [C1], is the line of that script's output that carries it.
 
 > **Safety:** These are first-principles estimates for a paper proof of concept. They do not replace confined space procedures, a lithium cell safety review or the utility's permission. Valve chambers can hold low-oxygen or toxic air; nothing in this note needs anyone to enter one. See LKL-PRC-001, Safety.
 
 ## Scope and method
 
-The note checks every requirement in LKL-REQ-001 v0.4 against the design in LKL-PRC-001 v0.4 and the parametric model `cad/src/model.py`. The script imports the model's `PARAMS`, derived dimensions and part solids, so the puck, seismic mass, logger tube, cable run and part volumes used here are the ones in the STEP files and in drawing LKL-DWG-001. It also reads `bom/bom.csv` and `budget_usd` in `project.yaml`, and writes the status table to `docs/04-calcs/results.csv`. Run it from the repo root with `python docs/04-calcs/sizing.py`.
+The note checks every requirement in LKL-REQ-001 v0.5 against the design in LKL-PRC-001 v0.5 and the parametric model `cad/src/model.py`. The script imports the model's `PARAMS`, derived dimensions and part solids, so the puck, seismic mass, logger tube, cable run and part volumes used here are the ones in the STEP files and in drawing LKL-DWG-001. It also reads `bom/bom.csv` and `budget_usd` in `project.yaml`, and writes the status table to `docs/04-calcs/results.csv`. Run it from the repo root with `python docs/04-calcs/sizing.py`.
 
 The design case is a DN150 gate valve in a concrete chamber under a cast-iron cover, with the spindle cap 0.48 m below the street, a network pressure of 3 bar (44 psi) at night, and a LoRaWAN gateway 30 m up in an urban area, 0.5 km away in districts with iron covers (LKL-DDR-002) and 1 km away elsewhere.
 
@@ -112,7 +116,7 @@ Bold values miss 1 km. The urban Hata path loss at 1 km is 127.3 dB at 868 MHz a
 - **Sensitivity.** In compression, a piezo disc's charge output is d33 times the seismic mass. The TRL 2 mass of about 11 g gives 32 pC/g; the TRL 3 mass, a brass cylinder 20 mm x 20 mm of about 53 g, gives 157 pC/g. The disc has 21.8 nF; the charge amplifier uses 1 nF and 53 MΩ [F1].
 - **Self-noise.** Op-amp voltage noise across the disc capacitance, the feedback resistor's current noise and the disc's dielectric loss give 1.03 µg/√Hz at 100 Hz, 0.83 at 300 Hz and 0.76 at 1 kHz, and 2.95 µg/√Hz at 10 Hz. With the TRL 2 mass the figures were five times higher [F2]. The worst value from 100 Hz to 1 kHz is 1.03 µg/√Hz against the 1 µg/√Hz target [F3], so **R4 is at risk**, 3 % over the target on assumed ceramic and op-amp data. The ADC's contribution is negligible after the 40 dB stage [F4].
 - **Seismic resonance.** In compression the disc and mass resonate far above the band, near 200 kHz [F5]. A disc used as a bender, the other way to raise sensitivity, would resonate inside the band.
-- **Mounted resonance.** With the 42 mm magnet the puck and magnet weigh about 262 g (210 g with the 32 mm magnet of v0.1). On a contact stiffness of 5 to 20 MN/m, typical of a magnet on a painted cap but assumed, they resonate at 695 to 1,389 Hz and stay within 3 dB only up to 376 to 752 Hz [F6]; the heavier magnet lowers both by about 10 %. A fixed correction cannot remove a resonance that changes from site to site, so **R3 is at risk** above about 380 Hz. This matters for R1: the band that sets the detection distance on iron is the 800 Hz third octave (section G), at the edge of the flat range. Near the resonance the mount amplifies the leak and the background alike, so the level is site-dependent rather than lost; the nightly trend compares a logger with itself, which tolerates this better than an absolute threshold would.
+- **Mounted resonance.** With the 42 mm magnet and the 8 mm puck base of LKL-DDR-003 the puck and magnet weigh about 277 g (262 g in v0.2, 210 g with the 32 mm magnet of v0.1). On a contact stiffness of 5 to 20 MN/m, typical of a magnet on a painted cap but assumed, they resonate at 676 to 1,352 Hz and stay within 3 dB only up to 366 to 732 Hz [F6]; the heavier magnet and base lower both by about 13 %. A fixed correction cannot remove a resonance that changes from site to site, so **R3 is at risk** above about 370 Hz. This matters for R1: the band that sets the detection distance on iron is the 800 Hz third octave (section G), at the edge of the flat range. Near the resonance the mount amplifies the leak and the background alike, so the level is site-dependent rather than lost; the nightly trend compares a logger with itself, which tolerates this better than an absolute threshold would.
 
 ## G. Detection distance (R1, R2)
 
@@ -145,19 +149,19 @@ The reference leak (5 L/min at 3 bar) is a 24.5 m/s jet through a 2.7 mm orifice
 | 32 mm pot, 290 N rated (v0.1, replaced) | 149 N | **90 N** | **60 N** | **29 N** |
 | 42 mm pot, about 600 N rated (fitted) | 309 N | 187 N | 125 N | **59 N** |
 
-- **R9 is met on paper.** The 32 mm magnet of v0.1 met 100 N only on a bare or lightly coated cap. The 42 mm magnet fitted under LKL-DDR-002 (it fits the 50 mm cap) meets it up to a 0.5 mm coating, and only a heavy 1 mm coating defeats it. The magnet itself carries only about 2.8 N of static load, since the puck sits on top of the cap [I2]; the 100 N target covers a snagged cable or a knock. Non-ferrous caps, outside R9's target, still need an adapter. The larger magnet roughly doubles the pinch hazard; it ships with its keeper plate fitted.
+- **R9 is met on paper.** The 32 mm magnet of v0.1 met 100 N only on a bare or lightly coated cap. The 42 mm magnet fitted under LKL-DDR-002 (it fits the 50 mm cap) meets it up to a 0.5 mm coating, and only a heavy 1 mm coating defeats it. The magnet itself carries only about 3.0 N of static load, since the puck sits on top of the cap [I2]; the 100 N target covers a snagged cable or a knock. Non-ferrous caps, outside R9's target, still need an adapter. The larger magnet roughly doubles the pinch hazard; it ships with its keeper plate fitted.
 
 ## J. Chamber survival (R11)
 
 - **Submersion.** 1 m of water puts 9.8 kPa on the O-rings and the M12 socket [J1], well within the rating of static O-ring seals and IP68 connectors.
-- **Flooding.** The logger body weighs about 462 g and displaces 748 g of water, so in a flooded chamber it floats up against the lanyard with 2.8 N [J2]. The lanyard and the hanger must carry that; they do by a wide margin.
+- **Flooding.** The logger body (tube, flanged plugs, fittings, chassis and electronics) weighs about 551 g and displaces 748 g of water, so in a flooded chamber it floats up against the lanyard with 1.9 N [J2]. The lanyard, eye bolt and neck bar carry that by a wide margin.
 - **Condensation.** The free air in the tube holds about 5 mg of water at saturation; a 10 g silica gel pack holds about 2,000 mg [J3]. Long-term vapour ingress through the seals cannot be estimated on paper. **R11 is met by design**; a submersion test is TRL 4 work and on hold.
 
 ## K. Size, mass and installation (R10, R12)
 
-- **Size and mass.** The logger is 63 mm in diameter and 240 mm long, 267 mm with its socket and gland. By part volume and density the whole set weighs 0.98 kg: the PVC housing 325 g, the cable 140 g, the cell 90 g and the puck, magnet and mass about 260 g [K1]. **R12 is met on paper**, with only 20 g to spare after the 42 mm magnet added about 53 g; the TRL 2 estimate of 0.7 kg was light, and the solid PVC end plugs in the massing model are heavier than moulded ones would be.
-- **Reach.** The cable plug sits 0.39 m below the street, so the 2 m cable with 0.3 m of slack reaches a spindle cap 2.09 m down, covering chambers up to the 1.5 m of R10 [K2].
-- **Time.** The task estimate is 10 min: 3 min for cones and cover, 2 min to lower the puck on a pole, 1 min to hang the logger, 2 min to check the network join and 2 min to close up [K3]. It sits at the R10 limit and has not been shown with a crew, so **R10 is not verifiable at TRL 3**.
+- **Size and mass.** The logger is 63 mm in diameter (68 mm over the radial screw heads) and 240 mm long flange to flange, 283 mm with its socket and eye bolt, within R12's 70 x 300 mm. Made parts are weighed from their model volume and material, bought parts from catalogue figures. The whole set weighs 1.35 kg [K1]: the housing with its acetal plugs 365 g, the neck bar with feet and lanyard 322 g, the cable 140 g, the magnet 126 g, the cell 90 g, the puck body 78 g and the antenna 70 g. The logger, cable and sensor alone weigh 0.96 kg. **R12 is not met** on mass: the neck bar that replaced the concept's 51 g strap (LKL-DDR-003, P1) puts the set 0.35 kg over 1.0 kg. Restating R12 for the logger, cable and sensor, with the bar counted as site hardware, is proposed in LKL-DDR-003 (A1).
+- **Reach.** The cable plug sits 0.48 m below the street, so the 2 m cable with 0.3 m of slack reaches a spindle cap 2.18 m down, covering chambers up to the 1.5 m of R10 [K2].
+- **Time.** The task estimate is 11 min: 3 min for cones and cover, 2 min to lower the puck on a pole, 2 min to set the neck bar with the logger and antenna already fitted and plug in the cable, 2 min to check the network join and 2 min to close up [K3]. It is 1 min over the R10 target and has not been shown with a crew, so **R10 is not verifiable at TRL 3**.
 
 ## L. False alarms (R13)
 
@@ -165,26 +169,26 @@ Random night-to-night scatter in the minimum level does not cause false alarms: 
 
 ## M. Cost (R15)
 
-Eleven BOM lines, every one priced, total $113.00 against the $130 budget, a margin of $17.00 [M1]. The larger seismic mass adds $1 and the 42 mm magnet $4 (from $109.00 in v0.1). **R15 is met on paper.**
+Thirteen BOM lines, every one priced [M1]. Value-engineering target: USD 130 (`budget_usd`, a hypothetical control target, not a limit). Estimated cost of the constructable design: USD 141 (USD 11 over the target). The constructable design added USD 28 to the USD 113 of v0.2: the neck bar (USD 12 more than the strap), the turned plugs, O-rings and screws (USD 4), the chassis (USD 4), the eye bolt and SMA bulkhead (USD 7) and the thicker puck (USD 1). **R15 is USD 11 over the value-engineering target.**
 
 ## N. Requirement status
 
-*Table 6. Requirement status from this note [N]. None is not met; at risk first, then open.*
+*Table 6. Requirement status from this note [N]. Not met first, then at risk, then open.*
 
 | ID | Requirement | Value | Target | Status |
 | --- | --- | --- | --- | --- |
+| R12 | Size and mass | 68 x 283 mm; 1.35 kg with the neck bar (logger, cable and sensor 0.96 kg) | 70 x 300 mm, 1.0 kg | **Not met (mass)** |
 | R1 | Hear a leak on metallic mains | 185 m on ductile iron at central efficiency (105 to 325 m over source efficiency, 93 to 370 m over pipe loss) | 100 m | **At risk** |
-| R3 | Sensor bandwidth | Mounted resonance 695 to 1,389 Hz; flat to 376 to 752 Hz | 5 Hz to 2 kHz, ±3 dB after correction | **At risk** |
+| R3 | Sensor bandwidth | Mounted resonance 676 to 1,352 Hz; flat to 366 to 732 Hz | 5 Hz to 2 kHz, ±3 dB after correction | **At risk** |
 | R4 | Sensor self-noise | 1.03 µg/√Hz worst from 100 Hz to 1 kHz | 1 µg/√Hz | **At risk** |
 | R7 | Radio link | Range 0.53 km under an iron cover at 20 dB (EU868 SF12), 0.46 km (US915 SF9); cover loss unmeasured | 90 % delivery to a gateway within 0.5 km under iron covers | **At risk** |
 | R2 | Hear a leak on plastic mains | Hydrophone variant not sized; the contact sensor (out of scope for plastic) hears 4 m on PVC | 30 m, hydrophone variant | Open, variant not sized at TRL 3 |
-| R10 | Install from the surface | 10 min task estimate; reach to 2.09 m | 10 min, 1.5 m, no entry | Not verifiable at TRL 3 |
+| R10 | Install from the surface | 11 min task estimate; reach to 2.18 m | 10 min, 1.5 m, no entry | Not verifiable at TRL 3 |
 | R13 | Leak flag quality | Random scatter negligible; site events unknown | 1 per 20 loggers per month | Not verifiable at TRL 3 |
 | R5 | Night listening | 20 s worst with weekly time correction | 12 windows, under 1 min a month | Met on paper |
 | R6 | Battery life | 10.3 years or more on energy | 5 years | Met on paper |
 | R9 | Attachment | 125 N at a 0.5 mm coating (187 N at 0.3 mm, 309 N bare) | 100 N | Met on paper |
-| R12 | Size and mass | 63 x 267 mm, 0.98 kg | 70 x 300 mm, 1.0 kg | Met on paper |
-| R15 | Cost | $113.00 | $130 | Met on paper |
+| R15 | Cost | $141.00 | $130 value-engineering target | USD 11 over the value-engineering target |
 | R8 | Data and privacy | Processed as sampled, deleted on device | Only levels and spectra leave | Met by design |
 | R11 | Survive the chamber | IP68 parts; floats on its lanyard when flooded | IP68, -20 to +50 °C | Met by design |
 | R14 | Open and interoperable | 24-byte LoRaWAN 1.0.3 uplink, documented | Standard LoRaWAN | Met by design |
@@ -201,5 +205,5 @@ Eleven BOM lines, every one priced, total $113.00 against the $130 budget, a mar
 | About 12.8 years on energy, about 10 years life | 10.3 to 12.8 years [C1] | Stands |
 | Radio at 20 dBm, 120 mA | +14 dBm in EU868 [D4] | Changed |
 | Magnet hold about 95 N, marginal | 90 N at 0.3 mm, 60 N at 0.5 mm [I1] | Stood; 42 mm magnet fitted (LKL-DDR-002) |
-| 63 x 240 mm, about 0.7 kg | 63 x 240 mm (267 mm overall), 0.98 kg [K1] | Mass changed; the precis is updated |
-| About $108 in parts | $113.00 [M1] | Changed by $5 (mass $1, magnet $4) |
+| 63 x 240 mm, about 0.7 kg | 63 x 240 mm (283 mm overall), 1.35 kg with the neck bar [K1] | Mass changed (v0.2: 0.98 kg); the precis is updated |
+| About $108 in parts | $141.00 [M1] | Changed: $113.00 in v0.2 (mass $1, magnet $4); constructable design $28 more |

@@ -1,5 +1,55 @@
 # Review note: LeakListen
 
+## Session 2026-10-01: kit 1.7.0, constructable design and prototype build plan
+
+Kit 1.7.0 installed (`.kit/`, `.claude/commands/`, `CLAUDE.md` replaced by `.kit/CLAUDE.md`). Following `/build-plan` and STANDARDS section 18, under Amish's 2026-09-30 instruction to make the design physically buildable and his 2026-10-01 instruction to treat the budget as a value-engineering target.
+
+### What was done
+
+- Constructability review of `cad/src/model.py` with build123d checks; the model is now built component by component and runs 72 checks (`python cad/src/model.py --check`), all passing.
+- `docs/decisions/0003-design-for-construction.md` (LKL-DDR-003 v0.1, Draft, open for Amish's review): every change below, its reason and the knock-on effects.
+- `docs/05-build-plan.md` (LKL-BLD-001 v0.1) with `cad/src/build_plan_media.py`: overview, 9 making sketches (`cad/drawings/LKL-DWG-101` to `109`), 8 joint pictures, 15 step pictures and a wiring diagram in `docs/05-build-plan/`.
+- `docs/06-design-decisions.md` (LKL-DEC-001 v0.1): 6 open decisions, 6 items to confirm when parts are bought, a value engineering section and the decisions made to date.
+- `bom/bom.csv`: lines 1, 6 and 9 repriced, lines 12 (internal chassis) and 13 (top plug fittings) added; `bom/bom-notes.md` updated.
+- Calculations re-run: LKL-CAL-001 v0.3 and `docs/04-calcs/results.csv`. LKL-REQ-001 v0.5 and LKL-PRC-001 v0.5 updated to match.
+- STEP and STL regenerated (`leaklisten-assembly`, `logger`, `sensor-puck`, and new `neck-bar`); LKL-DWG-001 Rev P4 (with `cad/src/sheets.py` brought in line with the kit 1.7 sheet layout); concept media regenerated (`hero`, `exploded`, `cutaway`, `flow`, `concept-blueprint`, `model.glb`).
+- `project.yaml`: `design_state: constructable`, LKL-DDR-003, LKL-BLD-001 and LKL-DEC-001 added to `trl_evidence`; `budget_usd` unchanged at 130. README: links line, value-engineering wording, key components and a "Building the prototype" section.
+
+### Design changes made for construction (LKL-DDR-003)
+
+1. Hanger: the stainless strap "hooked over the cover frame" (which could only sit under the cover and rock it) became a telescopic aluminium neck bar wedged across the chamber neck below the frame on two rubber levelling feet; the logger hangs from it on a wire rope lanyard.
+2. Antenna: on a 40 x 3 mm bracket bolted across the bar, held by its own stud; 20 mm under the cover (was 8 mm), and no longer overlapping the hanger (the overlap flagged in this note on 2026-09-26 is resolved).
+3. End plugs: flanged acetal plugs with two O-rings each, held by three radial M4 screws outboard of the O-rings; tube cut to 232 mm so the logger stays 240 mm flange to flange.
+4. Top plug: an M6 eye bolt for the lanyard and an IP67 SMA bulkhead for the antenna, in place of one "antenna and lanyard gland".
+5. Inside the logger: a printed chassis hung from the top plug on two standoffs, with the board on standoffs, clips for the cell and capacitor and a desiccant pocket.
+6. Bottom plug: a front-mount M12 panel socket in an M16 thread.
+7. Puck base thickened from 3 to 8 mm and tapped M6 for the magnet's stud.
+8. Puck bore stepped so a round 31 mm preamplifier board sits on the step clear of the seismic mass, with potting above the board only.
+9. Logger lowered to 180 mm below the street to hang under the bar; the cable still reaches caps 2.18 m deep.
+
+### Key results
+
+- Mass 1.35 kg with the neck bar (logger, cable and sensor 0.96 kg): **R12 not met** on mass (1.0 kg). Size 68 x 283 mm still meets R12's 70 x 300 mm.
+- Value-engineering target: USD 130. Estimated cost of the constructable design: USD 141 (USD 11 over the target).
+- R3 slightly worse: mounted resonance 676 to 1,352 Hz (was 695 to 1,389 Hz). Install task estimate 11 min (R10, not verifiable at TRL 3). Logger still floats on its lanyard when flooded (1.9 N).
+- Requirement status: 1 not met (R12), 4 at risk (R1, R3, R4, R7), 1 open (R2), 2 not verifiable (R10, R13), 3 met on paper (R5, R6, R9), 3 met by design (R8, R11, R14), R15 USD 11 over its value-engineering target.
+
+### Proposed, awaiting Amish
+
+All in the design decisions register (LKL-DEC-001): accept LKL-DDR-003 as a whole; A1, restate R12's mass limit for the logger, cable and sensor (recommended); A2, neck bar versus a drilled wall bracket for other neck sizes (neck bar recommended for the prototype); O1 and O2 carried from LKL-DDR-002; the 2026-09-26 appearance-model items.
+
+### Safety
+
+No change to the safety case. The neck bar removes a hazard the concept had (a strap under the cover seat would rock the cover under traffic). The build plan carries stop points for the lithium thionyl chloride cell and the magnet, and keeps all work at the bench or the surface.
+
+### Stale, to redo on Amish's Mac
+
+The photoreal renders (`media/render-*.png`, referenced by the README but not present in this copy), `media/card.png`, `media/social-preview.png` and the appearance model `cad/src/product_model.py` still show the concept strap hanger, the fused end plugs and the single top gland. The design changed visibly, so they are stale. `cad/src/model.py` keeps the concept strap parameters only so `product_model.py` still runs.
+
+### Recommended next step
+
+Amish reviews LKL-DDR-003 and the register. TRL 4 (building and testing to the plan) remains on hold.
+
 ## Session 2026-09-26: sources strengthened
 
 Amish asked on 2026-09-26 to fix the weaker sources. README change only; no controlled document changed. All other README sources (World Bank, Kingdom et al. 2006, ASCE 2025, Discover Water, Tokyo Bureau of Waterworks) were re-checked and support their claims.

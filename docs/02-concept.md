@@ -3,9 +3,9 @@ doc_id: LKL-PRC-001
 title: LeakListen design precis
 project: LeakListen
 doc_type: Design precis
-version: "0.4"
+version: "0.5"
 status: Draft
-date: '2026-09-25'
+date: '2026-10-01'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -25,19 +25,23 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: "Recommendations accepted by Amish (DDR-002): 42 mm pot magnet with keeper plate; contact sensor scoped to metallic mains, hydrophone variant for plastic; district gateway within 0.5 km under iron covers; numbers from LKL-CAL-001 v0.2; LKL-DWG-001 Rev P2"
+- version: "0.5"
+  date: '2026-10-01'
+  author: Amish Chadha
+  change: "Constructable design (LKL-DDR-003): neck bar hanger in place of the strap, flanged end plugs, eye bolt and SMA bulkhead, internal chassis, 8 mm puck base; numbers from LKL-CAL-001 v0.3; LKL-DWG-001 Rev P4; cost against the value-engineering target"
 ---
 
 # LeakListen design precis
 
 ## Summary
 
-LeakListen is a battery-powered acoustic leak logger that hangs under a valve chamber cover, sticks a magnetic vibration sensor onto the valve spindle cap, listens to the pipe for a few minutes each night, and sends one small LoRaWAN summary a day. A leak on a pressurized main makes a steady hiss that travels along the pipe wall; when a logger's quietest night-time level rises and stays up for several nights, the server flags that street for a follow-up survey. The TRL 3 calculations (LKL-CAL-001 v0.2) give about 1.2 mAh a day, 10 years or more on one C-size lithium cell, 0.98 kg and $113.00 in parts. They also show the two weak points, now answered by decisions Amish accepted on 2026-09-25 (LKL-DDR-002). The reference leak is heard about 185 m along an iron main but only a few metres along a plastic one, so the magnet-on sensor is scoped to metallic mains and plastic networks are left to a hydrophone variant (R2, not yet sized). The radio reaches about 0.5 km, not 1 km, from under a cast-iron cover, so a gateway is planned within 0.5 km of each such district (R7, at risk until the cover loss is measured).
+LeakListen is a battery-powered acoustic leak logger that hangs under a valve chamber cover, sticks a magnetic vibration sensor onto the valve spindle cap, listens to the pipe for a few minutes each night, and sends one small LoRaWAN summary a day. A leak on a pressurized main makes a steady hiss that travels along the pipe wall; when a logger's quietest night-time level rises and stays up for several nights, the server flags that street for a follow-up survey. The TRL 3 calculations (LKL-CAL-001 v0.3) give about 1.2 mAh a day, 10 years or more on one C-size lithium cell, 1.35 kg with the neck bar hanger and about $141 in parts for the constructable design (LKL-DDR-003). They also show the two weak points, now answered by decisions Amish accepted on 2026-09-25 (LKL-DDR-002). The reference leak is heard about 185 m along an iron main but only a few metres along a plastic one, so the magnet-on sensor is scoped to metallic mains and plastic networks are left to a hydrophone variant (R2, not yet sized). The radio reaches about 0.5 km, not 1 km, from under a cast-iron cover, so a gateway is planned within 0.5 km of each such district (R7, at risk until the cover loss is measured).
 
-Figure 1. Concept in a valve chamber, street and chamber shown in section ([media/hero.png](../media/hero.png)). Figure 2. Exploded view with BOM numbers ([media/exploded.png](../media/exploded.png)). Figure 3. Cutaway of the logger and sensor ([media/cutaway.png](../media/cutaway.png)). Figure 4. Nightly data flow ([media/flow.png](../media/flow.png)). Figure 5. General arrangement, drawing LKL-DWG-001 Rev P2 ([cad/drawings/LKL-DWG-001.pdf](../cad/drawings/LKL-DWG-001.pdf)), from the parametric model [cad/src/model.py](../cad/src/model.py).
+Figure 1. Concept in a valve chamber, street and chamber shown in section ([media/hero.png](../media/hero.png)). Figure 2. Exploded view with BOM numbers ([media/exploded.png](../media/exploded.png)). Figure 3. Cutaway of the logger and sensor ([media/cutaway.png](../media/cutaway.png)). Figure 4. Nightly data flow ([media/flow.png](../media/flow.png)). Figure 5. General arrangement, drawing LKL-DWG-001 Rev P4 ([cad/drawings/LKL-DWG-001.pdf](../cad/drawings/LKL-DWG-001.pdf)), from the parametric model [cad/src/model.py](../cad/src/model.py).
 
 ## How it works
 
-1. **Place from the surface.** A technician lifts the cover, lowers the sensor puck on its cable with a pole until the magnet snaps onto the valve spindle cap, and hooks the hanger over the cover frame so the logger hangs in the opening and the flat antenna sits just under the cover. Nobody enters the chamber.
+1. **Place from the surface.** A technician lifts the cover, lowers the sensor puck on its cable with a pole until the magnet snaps onto the valve spindle cap, and sets the neck bar, with the logger and antenna already fitted, across the chamber neck just below the cover frame, winding out one rubber foot by hand; the logger hangs from the bar on a lanyard and the flat antenna sits on the bar 20 mm under the cover. Nobody enters the chamber. (The concept hooked a strap over the frame; that is not buildable without lifting the cover off its seat, LKL-DDR-003.)
 2. **Listen at night.** A real-time clock wakes the logger between 02:00 and 04:00, when demand and traffic noise are lowest. It records 12 windows of 20 s at 8 kS/s from the piezo sensor through a charge preamplifier and a 24-bit ADC. Once a week it asks the network for the time (LoRaWAN 1.0.3 DeviceTimeReq) so the clock stays within 20 s.
 3. **Process on the device.** For each window the microcontroller computes the RMS level and a 64-band spectrum from 5 Hz to 2 kHz, in fixed point, with three FFT stages at 8,000, 1,000 and 250 S/s so that even the 0.49 Hz wide bottom band is resolved. It keeps the minimum and the 10th percentile level across the night (leaks are steady; traffic and water use are not) and a band spectrum. Raw samples are then deleted.
 4. **Send one summary.** 24 bytes (two night levels, 16 band levels, peak band, steadiness, battery voltage, temperature, flags) go by LoRaWAN to any network server, such as the lab's TwinKit gateway, at +14 dBm in EU868 or up to +20 dBm in US915. The frame fits every EU868 rate and US915 at SF9 or faster.
@@ -56,11 +60,13 @@ Table 1. Main components.
 | 3 | Piezo disc and seismic mass | 27 mm brass-backed piezo disc in compression under a 20 x 20 mm brass mass, about 53 g; about 157 pC/g | Turns pipe vibration into charge |
 | 4 | Charge preamplifier | Low-noise JFET-input stage, 1 nF and 53 MΩ feedback (3 Hz high-pass), then 40 dB; about 1.0 µg/√Hz | Low-noise, low-frequency front end (R3, R4) |
 | 5 | Sensor cable | 2 m shielded PUR, M12 IP68 plug | Lets the puck sit on the valve while the logger stays near the cover |
-| 6 | Logger housing | 63 mm PVC tube, 240 mm, two O-ring end caps, M12 socket | IP68 enclosure (R11) |
+| 6 | Logger housing | 63 mm PVC tube, 240 mm flange to flange, two flanged acetal end plugs with two O-rings each and three radial screws, M12 panel socket | IP68 enclosure (R11) |
 | 7 | Main board | STM32WL LoRaWAN module (FieldNode core), 24-bit audio ADC, RTC, hybrid layer capacitor of 0.1 F or more | Scheduling, spectrum, radio |
 | 8 | Primary cell | Li-SOCl2, C size, 3.6 V, about 7.7 Ah | Years of life without charging (R6) |
-| 9 | Hanger strap and hook | Stainless strap hooked over the cover frame | Surface installation (R10) |
-| 10 | Flat LoRa antenna | About 70 mm disc on the hanger, 1 m lead | Radio as close to the cover as possible (R7) |
+| 9 | Neck bar hanger | Telescopic 20 and 16 mm square aluminium tube with two rubber levelling feet, wedged across the chamber neck below the frame; wire rope lanyard and snap hook | Surface installation (R10) without disturbing the cover |
+| 10 | Flat LoRa antenna | About 70 mm disc on a bracket on the neck bar, 20 mm under the cover; 1 m lead with an SMA plug | Radio as close to the cover as possible (R7) |
+| 12 | Internal chassis | Printed PETG spine hung from the top plug, clips for the cell and capacitor, desiccant pocket | Holds the electronics; lifts out with the top plug |
+| 13 | Top plug fittings | M6 eye bolt (lanyard) and IP67 SMA bulkhead (antenna) | Each sealed on its own washer or O-ring |
 
 ## Key design choices
 
@@ -91,17 +97,17 @@ Table 2. Key numbers.
 | Link under an iron cover (20 dB assumed) | About 0.53 km range (EU868 SF12); +0.9 dB at the planned 0.5 km gateway distance, -1.2 dB for US915 SF9 | R7 at risk |
 | Detection distance, reference leak | About 185 m on ductile iron (93 to 370 m); about 4 m on PVC with the contact sensor, out of its scope | R1 at risk; R2 open (hydrophone variant) |
 | Sensor self-noise | 1.03 µg/√Hz worst from 100 Hz to 1 kHz | R4 at risk |
-| Mounted resonance | About 695 to 1,390 Hz with the 42 mm magnet | R3 at risk |
+| Mounted resonance | About 676 to 1,350 Hz with the 42 mm magnet and 8 mm puck base | R3 at risk |
 | Magnet hold on iron, 42 mm magnet | 309 N bare, 187 N at 0.3 mm, 125 N at a 0.5 mm coating | R9 met on paper |
 | Clock | 20 s worst with a weekly time correction | R5 |
-| Size and mass | 63 x 240 mm tube, 267 mm overall; 0.98 kg | R12 |
-| Parts cost | $113.00 against $130 | R15 |
+| Size and mass | 63 mm tube (68 mm over the screw heads), 283 mm overall; 1.35 kg with the neck bar, 0.96 kg for the logger, cable and sensor | R12 not met on mass (restatement proposed, LKL-DDR-003 A1) |
+| Parts cost | About $141 against a value-engineering target of $130 | R15: USD 11 over the target |
 
 **Energy.** Listening, 12 mA for about 252 s a night, is 59 % of the worst day; sleep at 4 µA and the cell's own self-discharge make up most of the rest. The radio adds only 0.005 to 0.08 mAh a day at +14 dBm.
 
 **Radio.** The flat antenna under the cover is the weak link. To close 1 km, the cover may cost no more than about 10 dB. Decided by Amish, 2026-09-25 (LKL-DDR-002): measure the cover loss first, then plan a gateway within about 0.5 km of each district with iron covers, with a through-cover antenna or composite cover where a utility agrees. At 0.5 km the EU868 link has +0.9 dB to spare at a 20 dB cover loss, and the US915 SF9 link misses by 1.2 dB.
 
-**Cost.** $113.00 in parts, including $4 for the 42 mm magnet (see [bom/bom.csv](../bom/bom.csv)), under the $130 budget.
+**Cost.** Value-engineering target: USD 130. Estimated cost of the constructable design: USD 141 (USD 11 over the target), see [bom/bom.csv](../bom/bom.csv). The neck bar, the turned end plugs, the chassis and the top plug fittings added USD 28 to the concept's USD 113.
 
 ## Safety
 

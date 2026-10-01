@@ -1,4 +1,4 @@
-"""LeakListen sizing calculations, LKL-CAL-001 v0.2 (TRL 3, recommendations accepted, LKL-DDR-002).
+"""LeakListen sizing calculations, LKL-CAL-001 v0.3 (TRL 3, constructable design, LKL-DDR-003).
 
 Run from the repo root:  python docs/04-calcs/sizing.py
 Prints every number quoted in docs/04-calcs/01-sizing.md. Each line carries a tag such as
@@ -15,7 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "cad" / "src"))
-from model import PARAMS as P, derived, build_parts  # noqa: E402
+from model import PARAMS as P, derived, build_parts, component_masses  # noqa: E402
 
 D = derived(P)
 LOG10 = math.log10
@@ -29,7 +29,7 @@ def db(x):
     return 10 * LOG10(x)
 
 
-print("LeakListen sizing, LKL-CAL-001 v0.2")
+print("LeakListen sizing, LKL-CAL-001 v0.3")
 print(f"Geometry from cad/src/model.py: logger {P['tube_od']:.0f} x {P['logger_len']:.0f} mm, "
       f"puck {P['puck_d']:.0f} x {P['puck_h']:.0f} mm, seismic mass {P['mass_d']:.0f} x {P['mass_h']:.0f} mm brass")
 
@@ -319,17 +319,25 @@ tag("I2", f"static load on the magnet: puck and 0.5 m of cable {w_hang:.1f} N (s
 # ================================================================== J. Chamber survival (R11)
 print("\nJ. Chamber survival")
 tag("J1", f"1 m submersion: {RHO * 9.81 * 1 / 1000:.1f} kPa on the O-rings and M12 socket")
-DENS = {1: 2700, 2: 7500, 4: 1850, 6: 1400, 9: 7900}
-masses = {k: parts[k].volume * 1e-9 * DENS[k] for k in DENS}
-masses[3] = m_seis + parts[3].volume * 0 + 0.003
-masses[1] += 0.012                  # potting in the puck
-masses[4] = 0.004
-masses[5] = 0.055 * P["cable_len"] / 1000 + 0.030
-masses[7] = 0.035
-masses[8] = 0.090
-masses[10] = 0.040 + 0.030
-masses[11] = 0.012
-logger_m = masses[6] + masses[7] + masses[8] + masses[11]
+# mass by BOM line: made parts from their model volume and material (cad/src/model.py,
+# component_masses), bought parts from catalogue figures
+MM = component_masses(P)
+masses = {
+    1: MM[1],                                   # turned aluminium puck body
+    2: parts[2].volume * 1e-9 * 7500,           # pot magnet with its stud
+    3: m_seis + 0.003,                          # brass mass and piezo disc
+    4: 0.004,                                   # preamplifier board
+    5: 0.055 * P["cable_len"] / 1000 + 0.030,   # cable and molded M12 plug
+    6: MM[6] + 0.020 + 0.010,                   # tube and acetal plugs (model), M12 socket, O-rings and screws
+    7: 0.035,                                   # main board and capacitor
+    8: 0.090,                                   # C cell
+    9: MM[9] + 2 * 0.030 + 0.010 + 0.030,       # neck bar tubes, inserts, bracket (model); feet, pin and bolt, lanyard
+    10: 0.040 + 0.030,                          # antenna with stud and nut, lead
+    11: 0.012 + MM.get(11, 0.0),                # desiccant and potting
+    12: MM[12] + 0.006,                         # printed chassis (model), standoffs and screws
+    13: 0.012 + 0.008,                          # eye bolt with washer and nut, SMA bulkhead
+}
+logger_m = masses[6] + masses[7] + masses[8] + masses[11] - MM.get(11, 0.0) + masses[12] + masses[13]
 buoy = D["logger_vol_l"]
 tag("J2", f"logger body {logger_m * 1000:.0f} g against {buoy * 1000:.0f} g of displaced water: "
           f"{'floats' if logger_m < buoy else 'sinks'} when flooded, held by the lanyard ({(buoy - logger_m) * 9.81:.1f} N up)")
@@ -340,15 +348,16 @@ tag("J3", f"free air in the tube about {air_l * 0.6:.2f} L holds {air_l * 0.6 * 
 # ================================================================== K. Size, mass and installation (R10, R12)
 print("\nK. Size, mass and installation")
 total_m = sum(masses.values())
-tag("K1", f"logger {P['tube_od']:.0f} mm diameter, {P['logger_len']:.0f} mm tube, "
-          f"{P['logger_len'] + 27:.0f} mm with socket and gland; mass by part: "
+tag("K1", f"logger {P['tube_od']:.0f} mm diameter ({P['tube_od'] + 5:.0f} mm over the radial screw heads), "
+          f"{P['logger_len']:.0f} mm flange to flange, {D['overall_len']:.0f} mm with socket and eye bolt; mass by BOM line: "
           + ", ".join(f"{k} {masses[k] * 1000:.0f} g" for k in sorted(masses)) + f"; total {total_m:.2f} kg")
 SLACK = 300.0
 plug_depth = abs(D["logger_bot_z"]) + 15.0 + P["m12_len"]
 reach = plug_depth + P["cable_len"] - SLACK
 tag("K2", f"cable plug {plug_depth / 1000:.2f} m below the street; 2 m cable with 0.3 m slack reaches a spindle cap "
           f"{reach / 1000:.2f} m below the street (chambers up to 1.5 m deep)")
-TASKS = {"set out cones and lift cover": 3, "lower puck by pole onto cap": 2, "hang logger and antenna": 1,
+TASKS = {"set out cones and lift cover": 3, "lower puck by pole onto cap": 2,
+         "set the neck bar with logger and antenna fitted, plug in the cable": 2,
          "check join by app or LED": 2, "replace cover and clear site": 2}
 tag("K3", "install task estimate " + ", ".join(f"{k} {v}" for k, v in TASKS.items()) + f" min: {sum(TASKS.values())} min")
 
@@ -371,7 +380,10 @@ print("\nM. Parts cost")
 rows = list(csv.DictReader(open(ROOT / "bom" / "bom.csv")))
 cost = sum(float(r["qty"]) * float(r["unit_cost_usd"]) for r in rows)
 budget = float(re.search(r"^budget_usd:\s*([\d.]+)", (ROOT / "project.yaml").read_text(), re.M).group(1))
-tag("M1", f"{len(rows)} BOM lines, all priced: ${cost:.2f} against budget_usd ${budget:.0f} (margin ${budget - cost:.2f})")
+diff = cost - budget
+tag("M1", f"{len(rows)} BOM lines, all priced. Value-engineering target (budget_usd, a hypothetical control target): "
+          f"${budget:.0f}; estimated cost of the constructable design ${cost:.2f} "
+          f"(${abs(diff):.2f} {'over' if diff > 0 else 'under'} the target)")
 
 # ================================================================== N. Status
 print("\nN. Requirement status")
@@ -390,10 +402,12 @@ STATUS = [
     ("R9", f"{P['magnet_rated_n'] * IRON / (1 + 0.5 / G0) ** 2:.0f} N at a 0.5 mm coating ({P['magnet_rated_n'] * IRON / (1 + 0.3 / G0) ** 2:.0f} N at 0.3 mm)", "100 N", "Met on paper" if P['magnet_rated_n'] * IRON / (1 + 0.5 / G0) ** 2 >= 100 else "At risk"),
     ("R10", f"{sum(TASKS.values())} min task estimate", "10 min, no entry", "Not verifiable at TRL 3"),
     ("R11", "IP68 by design; logger floats on its lanyard", "IP68, -20 to +50 degC", "Met by design"),
-    ("R12", f"63 x {P['logger_len'] + 27:.0f} mm, {total_m:.2f} kg", "70 x 300 mm, 1.0 kg", "Met on paper"),
+    ("R12", f"{P['tube_od'] + 5:.0f} x {D['overall_len']:.0f} mm, {total_m:.2f} kg with the neck bar", "70 x 300 mm, 1.0 kg",
+     "Met on paper" if total_m <= 1.0 else "Not met (mass)"),
     ("R13", "random variation negligible; site events unknown", "1 per 20 loggers per month", "Not verifiable at TRL 3"),
     ("R14", f"{APP} B LoRaWAN 1.0.3 uplink", "standard LoRaWAN", "Met by design"),
-    ("R15", f"${cost:.2f}", f"${budget:.0f}", "Met on paper"),
+    ("R15", f"${cost:.2f}", f"${budget:.0f} value-engineering target",
+     f"${abs(diff):.2f} {'over' if diff > 0 else 'under'} the value-engineering target"),
 ]
 with open(ROOT / "docs" / "04-calcs" / "results.csv", "w", newline="") as fh:
     w = csv.writer(fh)
