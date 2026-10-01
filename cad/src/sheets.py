@@ -93,11 +93,12 @@ def main():
     asm = assembly(with_site=True)
     views = safe_project_views(asm, work)
     bb = asm.bounding_box()
-    s = Sheet(project="LeakListen", title="General arrangement, logger installed", dwg_no="LKL-DWG-001", rev="P2",
+    s = Sheet(project="LeakListen", title="General arrangement, logger installed", dwg_no="LKL-DWG-001", rev="P3",
               author="Amish Chadha", date=DATE, scale=None, theme="technical",
               material="PVC, aluminium, stainless; bought-in parts per bom/bom.csv. PRELIMINARY, NOT FOR FABRICATION",
               revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", DATE, "AC"),
-                         ("P2", "42 mm pot magnet (LKL-DDR-002)", DATE, "AC")])
+                         ("P2", "42 mm pot magnet (LKL-DDR-002)", DATE, "AC"),
+                         ("P3", "Layout and labels tidied", DATE, "AC")])
     s.add_ortho(views)
     k = s.scale
     c = ortho_cells(s, views)
@@ -117,16 +118,16 @@ def main():
         xd = xl0 - 6 * i
         L += [ext(X(lx - P["tube_od"] / 2) if zz != P["cap_top_z"] else X(-P["cap_sq"] / 2), Z(zz), xd - 1, Z(zz))]
         L += dim_v(xd, zs, Z(zz), label)
-    xl = X(lx + P["tube_od"] / 2) + 5
-    L += dim_v(xl, Z(top), Z(bot), f"{P['logger_len']:.0f}", side=1)
+    xl = X(lx + P["tube_od"] / 2) + 12
+    L += dim_v(xl, Z(top), Z(bot), f"{P['logger_len']:.0f}", side=1.8)
     L += leader(X(15), Z(D["puck_bot_z"] + 25), X(40), Z(-300), "SENSOR PUCK")
     L += leader(X(-P["frame_open"] / 2 - 45), Z(-45), X(-P["frame_open"] / 2 - 45) + 6, Z(35), "COVER FRAME (EXISTING)")
-    L += leader(X(-115), Z(-393), X(-235), Z(-455), "CABLE SHOWN DIRECT; 2 m FITTED", "end")
+    L += leader(X(-115), Z(-393), X(-320), Z(-500), "CABLE SHOWN DIRECT; 2 m FITTED")
 
     # top view (from +Z): X to the right, Y up the sheet; logger to spindle offset
     x, y, w, h = c["top"]
     Xt = lambda mx: x + (mx - bb.min.X) * k
-    yt = y - 5
+    yt = y - 11
     L += [ext(Xt(lx), y + h / 2, Xt(lx), yt - 1), ext(Xt(0), y + h / 2, Xt(0), yt - 1)]
     L += dim_h(Xt(lx), Xt(0), yt, f"{-lx:.0f} logger to spindle axis")
 
@@ -136,7 +137,9 @@ def main():
     Zr = lambda mz: y + h - (mz - bb.min.Z) * k
     r = P["tube_od"] / 2
     zd = (top + bot) / 2
-    L += dim_h(Yr(-r), Yr(r), Zr(zd), f"{P['tube_od']:.0f} OD")
+    dy = 5.2  # the view box is wider than the drawn tube; center the dimension on the tube
+    L += dim_h(Yr(-r) + dy, Yr(r) + dy, Zr(zd), "")
+    L.append(_t(Yr(r) + dy + 6, Zr(zd) + 0.8, f"{P['tube_od']:.0f} OD", 2.3, 400, INK, "start", mono=True))
 
     s._layers += L
     s.add_svg(views["iso"], 276, 32, 140, 100, label="Isometric view", sublabel="Not to scale; spindle cap and frame edge grey context")
