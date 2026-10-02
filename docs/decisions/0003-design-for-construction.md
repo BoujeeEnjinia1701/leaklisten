@@ -3,9 +3,9 @@ doc_id: LKL-DDR-003
 title: LeakListen design for construction
 project: LeakListen
 doc_type: Design decision record
-version: "0.1"
+version: "0.2"
 status: Draft
-date: '2026-10-01'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -13,12 +13,16 @@ revisions:
   date: '2026-10-01'
   author: Amish Chadha
   change: Changes that make the concept physically buildable, with the reason for each; made under Amish's 2026-09-30 instruction to make the design physically buildable; open for his review
+- version: "0.2"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "Accepted by Amish on 2026-10-02 (Tables 1 to 3); record stays Draft"
 ---
 
 # 0003: Design for construction
 
 - **Date:** 2026-10-01
-- **Status:** draft. Every change in Table 1 was made under Amish's 2026-09-30 instruction to make the design physically buildable; open for his review. The items in Table 3 are Proposed, awaiting Amish, and are carried in the design decisions register (LKL-DEC-001).
+- **Status:** accepted. Every change in Table 1 was made under Amish's 2026-09-30 instruction to make the design physically buildable. Amish, 2026-10-02: "i approve your recommendations for all 555 open decisions." This covers every change in Tables 1 and 2 and the recommendations in Table 3 (A1 and A2), recorded in the design decisions register (LKL-DEC-001, items 1 to 3). The record stays Draft.
 
 ## Context
 
@@ -55,16 +59,16 @@ The changes keep what LeakListen does: a magnet-on piezo sensor on the valve spi
 | Drawing | LKL-DWG-001 Rev P4; making sketches LKL-DWG-101 to 109 added. | Follows the model. |
 | Calculations | LKL-CAL-001 v0.3: mass, cost, resonance, flooding, cable reach and install time re-run; every other section is unchanged. | Follows the model. |
 
-*Table 3. Proposed, awaiting Amish.*
+*Table 3. Proposed, then accepted by Amish as recommended on 2026-10-02.*
 
 | # | Question | Options | Recommendation |
 | --- | --- | --- | --- |
-| A1 | R12 limits total mass to 1.0 kg; with the neck bar the set is 1.35 kg. | (a) restate R12 as 1.0 kg for the logger, cable and sensor (0.96 kg) and count the neck bar as site hardware; (b) relax R12 to 1.5 kg in all; (c) look for a lighter hanger (1 mm wall tube saves about 55 g; still not met). | (a): R12 was set for handling the logger, and the bar stays in the neck between visits. |
-| A2 | The neck bar needs a neck of about 570 to 710 mm with two sound opposite walls. | (a) neck bar as modelled, with a longer inner tube for wider necks; (b) a bracket on two concrete screws in the neck wall, which needs the utility's consent to drill. | (a) for the prototype; confirm the neck sizes of the pilot district before any deployment. |
+| A1 | R12 limits total mass to 1.0 kg; with the neck bar the set is 1.35 kg. | (a) restate R12 as 1.0 kg for the logger, cable and sensor (0.96 kg) and count the neck bar as site hardware; (b) relax R12 to 1.5 kg in all; (c) look for a lighter hanger (1 mm wall tube saves about 55 g; still not met). | (a): R12 was set for handling the logger, and the bar stays in the neck between visits. Accepted 2026-10-02; the logger set is weighed at TRL 4, since the margin is 0.04 kg. |
+| A2 | The neck bar needs a neck of about 570 to 710 mm with two sound opposite walls. | (a) neck bar as modelled, with a longer inner tube for wider necks; (b) a bracket on two concrete screws in the neck wall, which needs the utility's consent to drill. | (a) for the prototype; confirm the neck sizes of the pilot district before any deployment. Accepted 2026-10-02; a longer inner tube is designed only if the pilot utility's neck sizes go past 710 mm, and the drilled bracket stays the fallback. |
 
 ## Consequences
 
 - `design_state: constructable` in `project.yaml`. The build plan LKL-BLD-001 shows every component and step in pictures generated from the model (`cad/src/build_plan_media.py`).
-- Requirement status (LKL-CAL-001 v0.3): 1 not met (R12, mass, see A1), 4 at risk (R1, R3, R4, R7), 1 open (R2), 2 not verifiable at TRL 3 (R10, R13), 3 met on paper (R5, R6, R9), 3 met by design (R8, R11, R14), and R15 reported against the value-engineering target: USD 11 over it.
+- With A1 accepted, R12 is met on paper (0.96 kg for the logger, cable and sensor against 1.0 kg; LKL-REQ-001 v0.6, LKL-CAL-001 v0.4). Before it, the requirement status (LKL-CAL-001 v0.3) was: 1 not met (R12, mass, see A1), 4 at risk (R1, R3, R4, R7), 1 open (R2), 2 not verifiable at TRL 3 (R10, R13), 3 met on paper (R5, R6, R9), 3 met by design (R8, R11, R14), and R15 reported against the value-engineering target: USD 11 over it.
 - The photoreal renders (`media/render-*.png`), `media/card.png`, `media/social-preview.png` and the appearance model `cad/src/product_model.py` still show the concept strap hanger, the fused plugs and the single top gland; they need updating on Amish's Mac, where Blender is. `cad/src/model.py` keeps the concept strap parameters only so `product_model.py` still runs.
 - The pot magnet's stud length, the antenna's stud size, the SMA bulkhead's hole size and the M12 socket's thread are confirmed when parts are bought (LKL-DEC-001).

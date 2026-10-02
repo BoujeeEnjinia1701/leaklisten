@@ -1,5 +1,47 @@
 # Review note: LeakListen
 
+## Session 2026-10-02: open decisions decided by Amish
+
+Amish wrote on 2026-10-02: "i approve your recommendations for all 555 open decisions." Every open decision in this repo's register was decided as recommended and moved to "Decisions made" in `docs/06-design-decisions.md`, dated 2026-10-02.
+
+### Decisions recorded
+
+6 decisions recorded (register items 1 to 6). The register's "Open decisions" section now reads: "None. All open decisions were decided on 2026-10-02."
+
+### Documents changed
+
+- `docs/06-design-decisions.md` v0.2
+- `docs/decisions/0003-design-for-construction.md` v0.2
+- `docs/decisions/0001-trl2-review-decisions.md` v0.3
+- `docs/decisions/0002-recommendations-accepted.md` v0.2
+- `docs/03-requirements.md` v0.6
+- `docs/04-calcs/01-sizing.md` v0.4
+- `docs/02-concept.md` v0.6
+- `docs/01-problem.md` v0.5
+- `docs/05-build-plan.md` v0.2
+- `README.md` (R12 figure and DDR-003 status; not a controlled document)
+
+PDFs re-rendered with `python3 .kit/render.py`. The CAD model, BOM quantities and prices, and pictures were not changed.
+
+### Follow-up actions to carry approved decisions into the design
+
+1. Decision 1 (build plan pictures and renders): Update `cad/src/product_model.py` to the constructable design (neck bar, flanged plugs, eye bolt and SMA bulkhead) and regenerate `media/render-*.png`, `media/card.png` and `media/social-preview.png` on Amish's Mac; then drop the concept strap parameters that `cad/src/model.py` keeps only for the appearance model.
+2. Decision 2 (calculations): Change the R12 check in `docs/04-calcs/sizing.py` to 1.0 kg for the logger, cable and sensor (neck bar excluded) and rerun, so that LKL-CAL-001 matches the hand-edited v0.4.
+3. Decision 5 (documents): Write LeakListen's vibration acceptance test (frequency range, level and pass band) in this repo, and raise the small shaker bay with the CalRig project; CalRig was not edited.
+4. Decision 6 (model): Add the light pipe and its hole to the top plug in `cad/src/model.py` and rerun the constructability checks.
+5. Decision 6 (drawings): Regenerate the top plug making sketch and LKL-DWG-001 with the light pipe hole.
+6. Decision 6 (BOM): Add the light pipe to BOM line 7 (description and price) in `bom/bom.csv` and rerun the cost line [M1].
+7. Decision 6 (calculations): Add the power-up and magnet-swipe blink to the daily charge in LKL-CAL-001, section C (expected to be negligible).
+8. Decision 6 (build plan pictures and renders): Show the light pipe in the top plug step pictures of LKL-BLD-001 and in the renders.
+
+### Points found in the review
+
+- R10 (install in 10 min or less) is shown as 'not verifiable at TRL 3' although the task estimate is now 11 min; on the register's own figures it should read 'at risk'.
+- Item 2's restated limit leaves 0.04 kg of margin on the logger set (0.96 kg against 1.0 kg) on estimated masses.
+- The 2026-09-26 note that the hanger plate overlapped the antenna by about 10 mm is resolved by LKL-DDR-003, P2 and can be closed in REVIEW.md.
+
+TRL 4 remains on hold by Amish's instruction.
+
 ## Session 2026-10-01: kit 1.7.0, constructable design and prototype build plan
 
 Kit 1.7.0 installed (`.kit/`, `.claude/commands/`, `CLAUDE.md` replaced by `.kit/CLAUDE.md`). Following `/build-plan` and STANDARDS section 18, under Amish's 2026-09-30 instruction to make the design physically buildable and his 2026-10-01 instruction to treat the budget as a value-engineering target.

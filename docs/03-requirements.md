@@ -3,9 +3,9 @@ doc_id: LKL-REQ-001
 title: LeakListen requirements
 project: LeakListen
 doc_type: Requirements
-version: "0.5"
+version: "0.6"
 status: Draft
-date: '2026-10-01'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -29,6 +29,10 @@ revisions:
   date: '2026-10-01'
   author: Amish Chadha
   change: "Constructable design (LKL-DDR-003): status from LKL-CAL-001 v0.3; R12 not met on mass with the neck bar; R15 reported against the value-engineering target; R3 and R10 figures updated"
+- version: "0.6"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "R12 restated by Amish on 2026-10-02 (LKL-DDR-003 A1): 1.0 kg for the logger, cable and sensor, neck bar counted as site hardware; met on paper"
 ---
 
 # LeakListen requirements
@@ -50,16 +54,16 @@ Table 1. Requirements and status at TRL 3 (LKL-CAL-001).
 | R9 | Attachment | Magnet holds 100 N or more on a steel or iron spindle cap, with no tools or pipe work | Hold estimate (LKL-CAL-001 section I); a pull test later | Met on paper with the 42 mm magnet (LKL-DDR-002): 125 N on a 0.5 mm coating, 187 N on 0.3 mm. Non-ferrous fittings, outside this target, need an adapter |
 | R10 | Install from the surface | Placed and recovered in 10 min or less without entering the chamber, for chambers up to 1.5 m deep | Task estimate (LKL-CAL-001 section K); a walk-through with the partner utility | Not verifiable at TRL 3: 11 min estimate with the neck bar assembled beforehand; cable reaches caps 2.18 m down |
 | R11 | Survive the chamber | IP68: 1 m submersion for 7 days; operate from -20 to +50 °C | Design review (LKL-CAL-001 section J) | Met by design; the logger floats on its lanyard when flooded |
-| R12 | Size and mass | Logger 70 mm diameter or less and 300 mm long or less; total mass 1.0 kg or less | Parametric model (LKL-CAL-001 section K) | **Not met (mass):** 68 x 283 mm overall meets the size limits; 1.35 kg with the neck bar hanger (LKL-DDR-003), of which the logger, cable and sensor are 0.96 kg. Restating the mass limit is proposed (LKL-DDR-003, A1) |
+| R12 | Size and mass | Logger 70 mm diameter or less and 300 mm long or less; logger, cable and sensor 1.0 kg or less. The neck bar is site hardware that stays in the chamber and is not counted (restated by Amish on 2026-10-02, LKL-DDR-003 A1) | Parametric model (LKL-CAL-001 section K); weighing at TRL 4 | Met on paper: 68 x 283 mm overall; logger, cable and sensor 0.96 kg (0.04 kg margin); the neck bar is 0.32 kg |
 | R13 | Leak flag quality | 1 false alarm or fewer per 20 loggers per month after a 14-night baseline | Field data from a partner network | Not verifiable at TRL 3 |
 | R14 | Open and interoperable | Standard LoRaWAN 1.0.x uplink (1.0.3 for the time request), documented 24-byte payload, works with any network server and TwinKit | Design review (LKL-CAL-001 sections A and B) | Met by design |
 | R15 | Cost | Parts cost per logger against a value-engineering target of USD 130 (`budget_usd`, a hypothetical control target) | Priced BOM (LKL-CAL-001 section M) | USD 141, USD 11 over the value-engineering target |
 
 ## Requirements at risk or open
 
-Summary (LKL-CAL-001 v0.3, Table 6): 1 not met (R12, mass), 4 at risk, 1 open (R2, variant not sized), 2 not verifiable at TRL 3, 3 met on paper, 3 met by design, and R15 USD 11 over its value-engineering target. Before LKL-DDR-003 R12 and R15 were met on paper; before LKL-DDR-002 there were 2 not met (R2, R7) and 4 at risk (R1, R3, R4, R9).
+Summary (LKL-CAL-001 v0.4, Table 6): none not met, 4 at risk, 1 open (R2, variant not sized), 2 not verifiable at TRL 3, 4 met on paper, 3 met by design, and R15 USD 11 over its value-engineering target. R12 was not met on mass after LKL-DDR-003 until Amish restated it on 2026-10-02 (A1); before LKL-DDR-003 R12 and R15 were met on paper; before LKL-DDR-002 there were 2 not met (R2, R7) and 4 at risk (R1, R3, R4, R9).
 
-- **R12 not met on mass.** The concept's strap hanger could not be built (it had nothing to hook over except the seat under the cover), and the neck bar that replaces it (LKL-DDR-003) weighs 0.32 kg. The set is 1.35 kg; the logger, cable and sensor are 0.96 kg. Proposed, awaiting Amish: restate the limit for the logger, cable and sensor and count the bar as site hardware (LKL-DDR-003, A1).
+- **R12 thin margin on mass.** The concept's strap hanger could not be built (it had nothing to hook over except the seat under the cover), and the neck bar that replaces it (LKL-DDR-003) weighs 0.32 kg. The set is 1.35 kg; the logger, cable and sensor are 0.96 kg. Amish decided on 2026-10-02 (LKL-DDR-003, A1) to restate R12 as 1.0 kg for the logger, cable and sensor and count the bar as site hardware, so R12 is met on paper with a 0.04 kg margin; the logger set is weighed at TRL 4.
 
 - **R7 at risk.** At an assumed 20 dB cover loss the link closes to about 0.53 km in EU868 and 0.46 km in US915. Under LKL-DDR-002 a gateway is planned within 0.5 km of each district with iron covers, which EU868 SF12 reaches with +0.9 dB to spare and US915 SF9 misses by 1.2 dB. The cover loss must be measured first; that is TRL 4 work and on hold.
 - **R2 open.** Leak noise attenuates quickly on plastic pipes (0.42 dB/m at 100 Hz on PVC against 0.011 dB/m on ductile iron), and a contact sensor on a valve hears the reference leak only a few metres along PVC or PE. Under LKL-DDR-002 R2 applies to the hydrophone variant (LKL-DDR-001 D3), which is not yet sized.

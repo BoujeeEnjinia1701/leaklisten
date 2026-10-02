@@ -3,9 +3,9 @@ doc_id: LKL-CAL-001
 title: LeakListen sizing calculations
 project: LeakListen
 doc_type: Calculation
-version: "0.3"
+version: "0.4"
 status: Draft
-date: '2026-10-01'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -21,11 +21,15 @@ revisions:
   date: '2026-10-01'
   author: Amish Chadha
   change: "Constructable design (LKL-DDR-003): mass, cost, resonance, flooding, cable reach and install time re-run; R12 not met on mass; cost reported against the value-engineering target"
+- version: "0.4"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "R12 status from Amish's 2026-10-02 restatement (LKL-DDR-003 A1): met on paper. Figures not rerun; sizing.py still prints the 1.0 kg total-mass target"
 ---
 
 # LeakListen sizing calculations
 
-On paper, LeakListen meets six of its fifteen requirements (three on paper, three by design), has four at risk, misses one (R12, mass, since the constructable design added a neck bar hanger, LKL-DDR-003), is USD 11 over its value-engineering target on cost (R15), leaves two that cannot be checked until there is field data and leaves one (R2) open until the hydrophone variant is sized. Version 0.1 of this note found two misses. R7 (radio link) was not met at 1 km: with a flat antenna under a cast-iron cover, and an assumed 20 dB cover loss, the link closes to about 0.53 km. Under LKL-DDR-002 a gateway is now planned within 0.5 km of each district with iron covers, and R7 is at risk rather than not met, because the margin at 0.5 km is only +0.9 dB and the cover loss is unmeasured. R2 (plastic mains) was not met: a contact sensor on a valve hears the reference leak only a few metres along PVC or PE pipe. R2 now applies to the hydrophone variant, and the contact sensor's scope is metallic mains. The 42 mm magnet fitted under LKL-DDR-002 moves R9 to met on paper. On iron mains the central estimate is about 185 m against the 100 m target, but the range spans about 93 to 370 m for plausible pipe losses, so R1 is at risk rather than met. The calculations changed four things in the TRL 2 concept: the seismic mass grows from about 11 g to about 53 g so that the sensor meets its noise target, the nightly summary shrinks from about 50 to 24 bytes so that it fits every LoRaWAN region, transmit power follows the regional limit (+14 dBm in EU868, not +20 dBm), and the clock is corrected weekly by the network. Every number in this note is printed by `docs/04-calcs/sizing.py`; the tag in brackets, for example [C1], is the line of that script's output that carries it.
+On paper, LeakListen meets seven of its fifteen requirements (four on paper, three by design), has four at risk, misses none (R12, mass, was missed once the constructable design added a neck bar hanger, LKL-DDR-003, until Amish restated it for the logger, cable and sensor on 2026-10-02), is USD 11 over its value-engineering target on cost (R15), leaves two that cannot be checked until there is field data and leaves one (R2) open until the hydrophone variant is sized. Version 0.1 of this note found two misses. R7 (radio link) was not met at 1 km: with a flat antenna under a cast-iron cover, and an assumed 20 dB cover loss, the link closes to about 0.53 km. Under LKL-DDR-002 a gateway is now planned within 0.5 km of each district with iron covers, and R7 is at risk rather than not met, because the margin at 0.5 km is only +0.9 dB and the cover loss is unmeasured. R2 (plastic mains) was not met: a contact sensor on a valve hears the reference leak only a few metres along PVC or PE pipe. R2 now applies to the hydrophone variant, and the contact sensor's scope is metallic mains. The 42 mm magnet fitted under LKL-DDR-002 moves R9 to met on paper. On iron mains the central estimate is about 185 m against the 100 m target, but the range spans about 93 to 370 m for plausible pipe losses, so R1 is at risk rather than met. The calculations changed four things in the TRL 2 concept: the seismic mass grows from about 11 g to about 53 g so that the sensor meets its noise target, the nightly summary shrinks from about 50 to 24 bytes so that it fits every LoRaWAN region, transmit power follows the regional limit (+14 dBm in EU868, not +20 dBm), and the clock is corrected weekly by the network. Every number in this note is printed by `docs/04-calcs/sizing.py`; the tag in brackets, for example [C1], is the line of that script's output that carries it.
 
 > **Safety:** These are first-principles estimates for a paper proof of concept. They do not replace confined space procedures, a lithium cell safety review or the utility's permission. Valve chambers can hold low-oxygen or toxic air; nothing in this note needs anyone to enter one. See LKL-PRC-001, Safety.
 
@@ -159,7 +163,7 @@ The reference leak (5 L/min at 3 bar) is a 24.5 m/s jet through a 2.7 mm orifice
 
 ## K. Size, mass and installation (R10, R12)
 
-- **Size and mass.** The logger is 63 mm in diameter (68 mm over the radial screw heads) and 240 mm long flange to flange, 283 mm with its socket and eye bolt, within R12's 70 x 300 mm. Made parts are weighed from their model volume and material, bought parts from catalogue figures. The whole set weighs 1.35 kg [K1]: the housing with its acetal plugs 365 g, the neck bar with feet and lanyard 322 g, the cable 140 g, the magnet 126 g, the cell 90 g, the puck body 78 g and the antenna 70 g. The logger, cable and sensor alone weigh 0.96 kg. **R12 is not met** on mass: the neck bar that replaced the concept's 51 g strap (LKL-DDR-003, P1) puts the set 0.35 kg over 1.0 kg. Restating R12 for the logger, cable and sensor, with the bar counted as site hardware, is proposed in LKL-DDR-003 (A1).
+- **Size and mass.** The logger is 63 mm in diameter (68 mm over the radial screw heads) and 240 mm long flange to flange, 283 mm with its socket and eye bolt, within R12's 70 x 300 mm. Made parts are weighed from their model volume and material, bought parts from catalogue figures. The whole set weighs 1.35 kg [K1]: the housing with its acetal plugs 365 g, the neck bar with feet and lanyard 322 g, the cable 140 g, the magnet 126 g, the cell 90 g, the puck body 78 g and the antenna 70 g. The logger, cable and sensor alone weigh 0.96 kg. The neck bar that replaced the concept's 51 g strap (LKL-DDR-003, P1) puts the whole set 0.35 kg over 1.0 kg. On 2026-10-02 Amish restated R12 as 1.0 kg for the logger, cable and sensor, with the bar counted as site hardware (LKL-DDR-003, A1), so **R12 is met on paper** at 0.96 kg, a margin of 0.04 kg on estimated masses; the logger set is weighed at TRL 4.
 - **Reach.** The cable plug sits 0.48 m below the street, so the 2 m cable with 0.3 m of slack reaches a spindle cap 2.18 m down, covering chambers up to the 1.5 m of R10 [K2].
 - **Time.** The task estimate is 11 min: 3 min for cones and cover, 2 min to lower the puck on a pole, 2 min to set the neck bar with the logger and antenna already fitted and plug in the cable, 2 min to check the network join and 2 min to close up [K3]. It is 1 min over the R10 target and has not been shown with a crew, so **R10 is not verifiable at TRL 3**.
 
@@ -177,7 +181,7 @@ Thirteen BOM lines, every one priced [M1]. Value-engineering target: USD 130 (`b
 
 | ID | Requirement | Value | Target | Status |
 | --- | --- | --- | --- | --- |
-| R12 | Size and mass | 68 x 283 mm; 1.35 kg with the neck bar (logger, cable and sensor 0.96 kg) | 70 x 300 mm, 1.0 kg | **Not met (mass)** |
+| R12 | Size and mass | 68 x 283 mm; logger, cable and sensor 0.96 kg (1.35 kg with the neck bar) | 70 x 300 mm; 1.0 kg for the logger, cable and sensor (restated 2026-10-02) | Met on paper (0.04 kg margin) |
 | R1 | Hear a leak on metallic mains | 185 m on ductile iron at central efficiency (105 to 325 m over source efficiency, 93 to 370 m over pipe loss) | 100 m | **At risk** |
 | R3 | Sensor bandwidth | Mounted resonance 676 to 1,352 Hz; flat to 366 to 732 Hz | 5 Hz to 2 kHz, ±3 dB after correction | **At risk** |
 | R4 | Sensor self-noise | 1.03 µg/√Hz worst from 100 Hz to 1 kHz | 1 µg/√Hz | **At risk** |

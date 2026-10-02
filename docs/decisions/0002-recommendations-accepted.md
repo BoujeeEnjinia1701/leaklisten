@@ -3,9 +3,9 @@ doc_id: LKL-DDR-002
 title: LeakListen recommendations accepted
 project: LeakListen
 doc_type: Design decision record
-version: "0.1"
+version: "0.2"
 status: Draft
-date: '2026-09-25'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -13,12 +13,16 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: Record the recommendations accepted by Amish on 2026-09-25, what changed in the repo and the items still open
+- version: "0.2"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "O1 and O2 decided by Amish on 2026-10-02 (LKL-DEC-001, items 4 and 5)"
 ---
 
 # 0002: Recommendations accepted
 
 - **Date:** 2026-09-25
-- **Status:** accepted. Every item below marked "Decided by Amish, 2026-09-25: go with recommendation" is a decision by Amish. Items without a recommendation stay "Proposed, awaiting Amish".
+- **Status:** accepted. Every item below marked "Decided by Amish, 2026-09-25: go with recommendation" is a decision by Amish. Items without a recommendation stayed "Proposed, awaiting Amish" at this record; O1 and O2 were decided by Amish on 2026-10-02 (LKL-DEC-001, items 4 and 5): "i approve your recommendations for all 555 open decisions."
 
 ## Context
 
@@ -48,8 +52,8 @@ The options for D1 to D6 are in LKL-DDR-001 and the TRL 2 section of `docs/REVIE
 
 | # | Item | Status |
 | --- | --- | --- |
-| O1 | First partner utility and region for co-design and a pilot district. No recommendation was made. | Proposed, awaiting Amish |
-| O2 | Whether a vibration calibration check belongs in LeakListen or in CalRig. No recommendation was made. | Proposed, awaiting Amish |
+| O1 | First partner utility and region for co-design and a pilot district. No recommendation was made. | Decided by Amish, 2026-10-02 (LKL-DEC-001, item 4): a water utility with metallic mains, district metered areas and a leakage target; first candidate region to approach, the UK (radio band EU868). Nothing is agreed. |
+| O2 | Whether a vibration calibration check belongs in LeakListen or in CalRig. No recommendation was made. | Decided by Amish, 2026-10-02 (LKL-DEC-001, item 5): a small shaker bay in CalRig, with LeakListen defining the acceptance test (frequency range, level and pass band) in its own repo. |
 
 ## Consequences
 

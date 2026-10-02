@@ -3,9 +3,9 @@ doc_id: LKL-PRB-001
 title: LeakListen problem statement
 project: LeakListen
 doc_type: Problem statement
-version: "0.4"
+version: "0.5"
 status: Draft
-date: '2026-09-25'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -25,6 +25,10 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: "Recommendations accepted by Amish (DDR-002): open questions on plastic mains and cover loss updated; LKL-DDR-001 items now decided"
+- version: "0.5"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "First partner question answered by Amish's 2026-10-02 decision (first candidate region: the UK)"
 ---
 
 # LeakListen problem statement
@@ -83,6 +87,7 @@ Many leaks never reach the surface and can run for months because nobody hears t
 - [ ] How much does a cast-iron cover attenuate LoRa in practice? LKL-CAL-001 assumes 20 dB, which limits the link to about 0.5 km. The response is decided (LKL-DDR-002): measure first, then a gateway within about 0.5 km of each such district by default, with a through-cover antenna where a utility agrees.
 - [ ] What night-time background noise (pumps, pressure reducing valves, traffic, customer use) will cause false alarms?
 - [ ] Will the partner utility allow magnets on valve spindle caps and hydrants, and who may place loggers?
+- [x] Which partner first? Decided by Amish, 2026-10-02 (LKL-DDR-002, O1): a water utility with metallic mains, district metered areas and a leakage target it reports against; the first candidate region to approach is the UK, where water companies run district metered areas and report leakage to the regulator. Nothing is agreed.
 - [ ] Is a nightly noise-level flag enough for the utility, or is correlation between loggers needed to be useful?
 
 ## Safety

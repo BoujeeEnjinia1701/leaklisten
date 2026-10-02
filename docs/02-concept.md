@@ -3,9 +3,9 @@ doc_id: LKL-PRC-001
 title: LeakListen design precis
 project: LeakListen
 doc_type: Design precis
-version: "0.5"
+version: "0.6"
 status: Draft
-date: '2026-10-01'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -29,6 +29,10 @@ revisions:
   date: '2026-10-01'
   author: Amish Chadha
   change: "Constructable design (LKL-DDR-003): neck bar hanger in place of the strap, flanged end plugs, eye bolt and SMA bulkhead, internal chassis, 8 mm puck base; numbers from LKL-CAL-001 v0.3; LKL-DWG-001 Rev P4; cost against the value-engineering target"
+- version: "0.6"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "Decisions of 2026-10-02: R12 restated (met on paper), calibration check in CalRig, first candidate partner region"
 ---
 
 # LeakListen design precis
@@ -100,7 +104,7 @@ Table 2. Key numbers.
 | Mounted resonance | About 676 to 1,350 Hz with the 42 mm magnet and 8 mm puck base | R3 at risk |
 | Magnet hold on iron, 42 mm magnet | 309 N bare, 187 N at 0.3 mm, 125 N at a 0.5 mm coating | R9 met on paper |
 | Clock | 20 s worst with a weekly time correction | R5 |
-| Size and mass | 63 mm tube (68 mm over the screw heads), 283 mm overall; 1.35 kg with the neck bar, 0.96 kg for the logger, cable and sensor | R12 not met on mass (restatement proposed, LKL-DDR-003 A1) |
+| Size and mass | 63 mm tube (68 mm over the screw heads), 283 mm overall; 1.35 kg with the neck bar, 0.96 kg for the logger, cable and sensor | R12 met on paper: 0.96 kg against 1.0 kg for the logger, cable and sensor (restated 2026-10-02, LKL-DDR-003 A1); the bar is site hardware |
 | Parts cost | About $141 against a value-engineering target of $130 | R15: USD 11 over the target |
 
 **Energy.** Listening, 12 mA for about 252 s a night, is 59 % of the worst day; sleep at 4 µA and the cell's own self-discharge make up most of the rest. The radio adds only 0.005 to 0.08 mAh a day at +14 dBm.
@@ -128,4 +132,5 @@ Table 2. Key numbers.
 - [ ] Threshold rules for the leak flag, and how to handle pumps, pressure reducing valves and night-time customer use (R13).
 - [ ] Adapter for brass, bronze and plastic fittings (the 42 mm magnet for coated caps is decided, LKL-DDR-002).
 - [ ] Whether time synchronization for correlation between neighboring loggers is worth adding later.
-- [ ] Whether a logger calibration check (a small shaker bench) belongs in this repo or in CalRig, which today covers temperature, humidity and particles only (proposed, awaiting Amish).
+- [x] Logger calibration check: a small shaker bay in CalRig, which today covers temperature, humidity and particles only; LeakListen defines the acceptance test (frequency range, level and pass band) in its own repo (decided by Amish, 2026-10-02).
+- [x] First partner: a water utility with metallic mains, district metered areas and a leakage target it reports against; the first candidate region to approach is the UK, which would set the radio band to EU868 (decided by Amish, 2026-10-02; nothing agreed). The pilot utility is asked for its range of chamber neck sizes before any deployment.

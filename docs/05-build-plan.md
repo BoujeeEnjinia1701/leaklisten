@@ -3,9 +3,9 @@ doc_id: LKL-BLD-001
 title: LeakListen prototype build plan
 project: LeakListen
 doc_type: Build plan
-version: "0.1"
+version: "0.2"
 status: Draft
-date: '2026-10-01'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -13,6 +13,10 @@ revisions:
     date: '2026-10-01'
     author: Amish Chadha
     change: First build plan, with pictures by component and step; design made constructable (LKL-DDR-003)
+  - version: "0.2"
+    date: '2026-10-02'
+    author: Amish Chadha
+    change: "LKL-DDR-003 recorded as accepted and the R12 acceptance figure set to the restatement, both decided by Amish on 2026-10-02 (LKL-DEC-001, items 1 and 2)"
 ---
 
 # LeakListen prototype build plan
@@ -31,7 +35,7 @@ The prototype is one LeakListen set in three parts. The sensor puck is a small t
 
 ## 2. What changed to make it buildable
 
-The concept showed what LeakListen does; some of its parts could not be made or fixed as drawn. Each change below keeps what LeakListen does, and all of them are recorded in decision record LKL-DDR-003, open for Amish's review.
+The concept showed what LeakListen does; some of its parts could not be made or fixed as drawn. Each change below keeps what LeakListen does, and all of them are recorded in decision record LKL-DDR-003, accepted by Amish on 2026-10-02.
 
 *Table 1. Changes from the concept.*
 
@@ -408,7 +412,7 @@ These are the checks a TRL 4 test report would record; this plan only lists them
 | Cell and supply | R6 | Cell plugged in; measure current in sleep and while listening | Near the 4 µA and 12 mA of LKL-CAL-001 |
 | Radio | R7, R14 | Logger and antenna on the bar under a steel plate in place of the cover; one uplink to a nearby gateway | The 24-byte summary is received |
 | Bar holds | R10 | Bar set in a 600 mm bench frame; logger hung; push and pull on the logger | The bar does not move; the pads do not slip |
-| Size and mass | R12 | Measure and weigh the logger, cable and puck, then the bar | 70 mm or less across, 300 mm or less long; record both masses |
+| Size and mass | R12 | Measure and weigh the logger, cable and puck, then the bar | 70 mm or less across, 300 mm or less long; logger, cable and puck 1.0 kg or less; record the bar's mass |
 | Install time | R10 | Time steps 14 and 15 at the bench frame | Recorded against the 10 min target |
 
 ## 6. Safety stops

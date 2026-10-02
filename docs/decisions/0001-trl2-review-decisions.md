@@ -3,9 +3,9 @@ doc_id: LKL-DDR-001
 title: LeakListen TRL 2 review decisions
 project: LeakListen
 doc_type: Design decision record
-version: "0.2"
+version: "0.3"
 status: Draft
-date: '2026-09-25'
+date: '2026-10-02'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -17,12 +17,16 @@ revisions:
   date: '2026-09-25'
   author: Amish Chadha
   change: "Recommendations accepted by Amish (DDR-002): D1 to D6 decided; O1 and O2 still open"
+- version: "0.3"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: "O1 and O2 decided by Amish on 2026-10-02 (LKL-DEC-001, items 4 and 5)"
 ---
 
 # 0001: TRL 2 review decisions
 
 - **Date:** 2026-09-25
-- **Status:** accepted for D1 to D6. On 2026-09-25 Amish wrote "i accept all your recommendations, go with them across all repos", so D1 to D6 are "Decided by Amish, 2026-09-25: go with recommendation" (see LKL-DDR-002). Items O1 and O2 had no recommendation and remain "Proposed, awaiting Amish".
+- **Status:** accepted for D1 to D6. On 2026-09-25 Amish wrote "i accept all your recommendations, go with them across all repos", so D1 to D6 are "Decided by Amish, 2026-09-25: go with recommendation" (see LKL-DDR-002). Items O1 and O2 had no recommendation and remain "Proposed, awaiting Amish". O1 and O2 were decided by Amish on 2026-10-02 as recommended in the design decisions register (LKL-DEC-001, items 4 and 5): "i approve your recommendations for all 555 open decisions."
 
 ## Context
 
@@ -49,8 +53,8 @@ The options for each item are those listed in `docs/REVIEW.md` (session 2026-09-
 
 | # | Item | Status |
 | --- | --- | --- |
-| O1 | First partner utility and region for co-design and a pilot district. No recommendation was made. | Proposed, awaiting Amish |
-| O2 | Whether a vibration calibration check belongs in LeakListen or in CalRig (CalRig covers temperature, humidity and particles only). No recommendation was made. | Proposed, awaiting Amish |
+| O1 | First partner utility and region for co-design and a pilot district. No recommendation was made. | Decided by Amish, 2026-10-02 (LKL-DEC-001, item 4): a water utility with metallic mains, district metered areas and a leakage target; first candidate region to approach, the UK (radio band EU868). Nothing is agreed. |
+| O2 | Whether a vibration calibration check belongs in LeakListen or in CalRig (CalRig covers temperature, humidity and particles only). No recommendation was made. | Decided by Amish, 2026-10-02 (LKL-DEC-001, item 5): a small shaker bay in CalRig, with LeakListen defining the acceptance test (frequency range, level and pass band) in its own repo. |
 
 ## Consequences
 
