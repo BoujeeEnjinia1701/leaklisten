@@ -1,19 +1,24 @@
 """LeakListen product appearance model (build123d), TRL 3.
 
-Finished-product look for photoreal renders: the IP68 logger tube with filleted end plugs and
-their parting grooves, owner and lithium warning label, teal name band, antenna gland, M12 panel
-socket and a lit status light pipe; the main board, C-size cell and desiccant inside; the flat
-LoRa antenna radome and its lead; the stainless hanger strap and lanyard; the sensor cable with
-its knurled M12 plug; and the bead-blasted aluminium sensor puck with grip flutes, cable gland
-and teal ring on its 42 mm pot magnet, with the piezo disc, seismic mass and preamplifier inside.
-Context is compact: the cover frame edge with a slice of roof slab and street, and the top of
-the gate valve bonnet with its spindle and square spindle cap. The chamber cover is left off so
-the antenna shows; the main itself (about 520 mm further down) is not drawn.
-APPEARANCE MODEL ONLY: no tolerances, no fabrication detail. CONCEPT, NOT FOR FABRICATION.
+Finished-product look for photoreal renders, updated 2026-10-02 to the constructable design
+(LKL-DDR-003): the IP68 logger, a PVC tube closed by two flanged turned acetal plugs with O-rings
+and three radial M4 screws each; owner and lithium warning label and teal name band; on the top
+plug an M6 eye bolt, an IP67 SMA bulkhead and a 3 mm clear status light pipe rod (lit); under the
+bottom plug an M12 panel socket. Inside: the printed chassis hung on two standoffs from the top
+plug, carrying the main board on four short standoffs, the hybrid layer capacitor, the C-size cell
+and the desiccant pack. The telescopic aluminium neck bar with its levelling feet, pin and
+antenna bracket, the wire rope lanyard with its snap hook and the flat LoRa antenna on the bar.
+The sensor cable with its knurled M12 plug and the bead-blasted aluminium puck on its 42 mm pot
+magnet, with the piezo disc, seismic mass, round preamplifier board on its step and the potting.
+Context is compact: the cover frame edge with a slice of roof slab and street, a patch of chamber
+neck wall behind each bar foot, and the top of the gate valve bonnet with its spindle and cap. The
+chamber cover is left off so the antenna shows; the main itself (about 520 mm further down) is not
+drawn. APPEARANCE MODEL ONLY: no tolerances, no fabrication detail. CONCEPT, NOT FOR FABRICATION.
 
-Every main dimension, position and interface comes from PARAMS, derived() and site_context()
-in model.py; axes as model.py (street surface Z = 0, chamber opening centred on X = Y = 0,
-front is -Y). See docs/REVIEW.md, session 2026-09-26.
+Every main dimension, position and interface comes from PARAMS, derived() and build_components()
+in model.py (plain parts are the model.py shapes themselves); axes as model.py (street surface
+Z = 0, chamber opening centred on X = Y = 0, front is -Y). See docs/REVIEW.md, sessions 2026-09-26
+and 2026-10-02.
 
     from product_model import product_parts
     for p in product_parts(): print(p["name"], p["group"], p["material"])
@@ -26,21 +31,21 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from build123d import (Axis, Box, Cylinder, Plane, Pos, RegularPolygon, Rot, Solid, Sphere, Vector,
                        extrude, fillet)
-from model import PARAMS, derived
+from model import PARAMS, build_components, derived
 
 TITLE = "LeakListen: acoustic leak logger for water valve chambers"
 
 RENDER_VIEWS = [
     {"name": "hero", "groups": ["shell", "internal", "context"], "explode": False, "el": 30, "az": -40,
      "note": "Product render from the front right and above (about 30 deg elevation); logger hanging from "
-             "the cover frame at left, sensor puck on the valve spindle cap at right, cover lifted off"},
+             "the neck bar below the cover frame, sensor puck on the valve spindle cap at right, cover lifted off"},
     {"name": "exploded", "groups": ["shell", "internal", "accessory"], "explode": True, "el": 28, "az": -55,
      "note": "Exploded view from the front right and above (about 28 deg elevation): logger tube and end "
-             "plugs, main board, C cell and desiccant, antenna, hanger strap, sensor cable, sensor puck, "
+             "plugs, chassis, main board, C cell and desiccant, antenna, neck bar and lanyard, sensor cable, sensor puck, "
              "piezo and mass, preamplifier and pot magnet"},
     {"name": "detail", "groups": ["shell", "internal"], "explode": False, "el": 18, "az": -35,
      "note": "Detail from the front right, slightly above (about 18 deg elevation): logger, antenna and "
-             "hanger at left, sensor puck on its magnet at right, without the chamber; status light lit"},
+             "neck bar at left, sensor puck on its magnet at right, without the chamber; status light lit"},
 ]
 
 # Colours (restrained product palette; kit accent)
@@ -150,49 +155,68 @@ def _ring_on_cyl(x, y, z, r, h, arc_deg, face_deg, t=0.4):
 
 def product_parts(P=PARAMS):
     D = derived(P)
+    MC = build_components(P)                       # model.py components, used as they are where they are plain
     out = []
 
     def add(name, shape, color, material, bom, group, explode):
         out.append({"name": name, "shape": shape, "color": color, "material": material,
                     "bom": bom, "group": group, "explode": tuple(float(v) for v in explode)})
 
-    # ------------------------------------------------------------ logger (BOM 6, 7, 8, 11)
+    def mc(key):
+        return MC[key].shape
+
+    # ------------------------------------------------------------ logger (BOM 6, 7, 8, 11, 12, 13)
     lx, top, bot = P["logger_x"], P["logger_top_z"], D["logger_bot_z"]
     ro, ri = P["tube_od"] / 2, D["tube_id"] / 2
-    pt = P["plug_t"]
-    zin_top, zin_bot = top - pt, bot + pt
+    pf, pt = P["plug_flange"], P["plug_t"]
+    t0, t1 = bot + pf, top - pf                     # tube ends, flanges outside them (model.py)
     EL = (-40, -40, 0)                              # logger body explode: slightly left, toward camera
-    ETP = (EL[0], EL[1], 95)                        # top plug up
+    ETP = (EL[0], EL[1], 95)                        # top plug and its fittings up
     EBP = (EL[0], EL[1], -95)                       # bottom plug down
 
-    shell = _zcyl(lx, 0, (zin_top + zin_bot) / 2, ro, zin_top - zin_bot)
-    shell -= _zcyl(lx, 0, (zin_top + zin_bot) / 2, ri, zin_top - zin_bot + 2)
+    shell = _zcyl(lx, 0, (t0 + t1) / 2, ro, t1 - t0)
+    shell -= _zcyl(lx, 0, (t0 + t1) / 2, ri, t1 - t0 + 2)
+    for z_, scr in ((t1 - P["screw_z"], True), (t0 + P["screw_z"], True)):
+        for a in P["screw_ang"]:
+            shell -= Pos(lx, 0, z_) * Rot(0, 0, a) * Pos(ro - 1.5, 0, 0) * Rot(0, 90, 0) * Cylinder(2.0, 5.0)
     add("Logger tube (PVC)", shell, C_TUBE, "plastic", 6, "shell", EL)
 
-    def plug(z0, z1, up):
-        p = _zcyl(lx, 0, (z0 + z1) / 2, ro, z1 - z0)
-        p = _fillet_try(p, _top(p) if up else _bottom(p), [4.0, 3.0, 2.0])
-        # parting groove where the plug shoulder meets the tube, and an O-ring line
-        zg = z0 + 1.0 if up else z1 - 1.0
-        p -= _zcyl(lx, 0, zg, ro + 1, 1.0) - _zcyl(lx, 0, zg, ro - 0.6, 2.0)
-        zo = z0 + 7.0 if up else z1 - 7.0
-        p -= _zcyl(lx, 0, zo, ro + 1, 0.8) - _zcyl(lx, 0, zo, ro - 0.4, 2.0)
-        return p
+    def plug(end):
+        """Flanged turned plug: 63 mm flange 4 mm thick and a 57 mm spigot 18 mm long, two O-ring grooves."""
+        if end > 0:
+            f0, f1, s0, s1 = t1, top, t1 - pt, t1
+        else:
+            f0, f1, s0, s1 = bot, t0, t0, t0 + pt
+        fl = _zcyl(lx, 0, (f0 + f1) / 2, ro, f1 - f0)
+        fl = _fillet_try(fl, _top(fl) if end > 0 else _bottom(fl), [2.5, 2.0, 1.0])
+        sp = _zcyl(lx, 0, (s0 + s1) / 2, ri, s1 - s0)
+        for dz, cs in zip(P["oring_z"], P["oring_cs"]):
+            zc_ = (t1 - dz) if end > 0 else (t0 + dz)
+            sp -= _zcyl(lx, 0, zc_, ri + 1, cs) - _zcyl(lx, 0, zc_, ri - 1.8, cs + 2)
+        pl = fl + sp
+        z_ = (t1 - P["screw_z"]) if end > 0 else (t0 + P["screw_z"])
+        for a in P["screw_ang"]:
+            pl -= Pos(lx, 0, z_) * Rot(0, 0, a) * Pos(ri - 1.0, 0, 0) * Rot(0, 90, 0) * Cylinder(1.7, 8.0)
+        return pl
 
-    add("Logger top plug", plug(zin_top, top, True), C_PLUG, "plastic", 6, "shell", ETP)
-    add("Logger bottom plug", plug(bot, zin_bot, False), C_PLUG, "plastic", 6, "shell", EBP)
+    tp = plug(+1)
+    tp -= _zcyl(lx, 0, (top + t1 - pt) / 2, 3.0, top - t1 + pt + 2)                     # eye bolt hole
+    tp -= _zcyl(lx, 14.0, (top + t1 - pt) / 2, 3.2, top - t1 + pt + 2)                  # SMA hole
+    lpx, lpy = P["lpipe_xy"]
+    tp -= _zcyl(lx + lpx, lpy, (top + t1 - pt) / 2, P["lpipe_d"] / 2, top - t1 + pt + 2)    # light pipe hole
+    add("Logger top plug (acetal)", tp, C_PLUG, "plastic", 6, "shell", ETP)
+    add("Logger bottom plug (acetal)", plug(-1) - _zcyl(lx, 0, (bot + t0 + pt) / 2, 8.0, t0 + pt - bot + 2), C_PLUG, "plastic", 6, "shell", EBP)
+    add("Plug O-rings, top", mc("top_orings"), C_BLACK, "rubber", 6, "internal", ETP)
+    add("Plug O-rings, bottom", mc("bot_orings"), C_BLACK, "rubber", 6, "internal", EBP)
+    add("Radial M4 screws, top", mc("screws_top"), C_STEEL, "metal", 6, "shell", ETP)
+    add("Radial M4 screws, bottom", mc("screws_bot"), C_STEEL, "metal", 6, "shell", EBP)
 
-    # antenna and lanyard gland on the top plug (model.py: r 6, 12 mm tall)
-    gl = _hex_z(lx, 0, top + 2.5, 14.0, 5.0) + _zcyl(lx, 0, top + 7.5, 6.0, 5.0)
-    gl += Pos(lx, 0, top + 10.0) * Sphere(5.5) & _box(lx, 0, top + 12.0, 14, 14, 4.0)
-    add("Antenna gland", gl, C_BLACK, "plastic", 6, "shell", ETP)
+    # top plug fittings (LKL-DDR-003 P3): M6 eye bolt, IP67 SMA bulkhead, status light pipe rod
+    add("M6 eye bolt (stainless)", mc("eyebolt"), C_SS, "metal", 13, "shell", ETP)
+    add("SMA bulkhead (IP67)", mc("sma"), C_BRASS, "metal", 13, "shell", ETP)
+    add("Status light pipe rod (lit)", mc("lpipe"), C_LED, "emissive", 7, "shell", ETP)
 
-    # status light pipe on the top plug (appearance addition, see REVIEW.md)
-    led = _zcyl(lx + 18, -8, top + 0.8, 3.0, 1.6) + Pos(lx + 18, -8, top + 1.6) * Sphere(2.6)
-    led &= _zcyl(lx + 18, -8, top + 2.0, 4.0, 4.0)
-    add("Status light pipe (lit)", led, C_LED, "emissive", 7, "shell", ETP)
-
-    # M12 IP68 panel socket under the bottom plug (model.py: r 8, 15 mm)
+    # M12 IP68 panel socket under the bottom plug (model.py: 15 mm below the flange)
     sk = _hex_z(lx, 0, bot - 2.5, 19.0, 5.0) + _zcyl(lx, 0, bot - 10.0, 8.0, 10.0)
     for k in range(5):
         sk -= _zcyl(lx, 0, bot - 6.5 - 1.8 * k, 8.5, 0.6) - _zcyl(lx, 0, bot - 6.5 - 1.8 * k, 7.5, 1.0)
@@ -200,7 +224,8 @@ def product_parts(P=PARAMS):
 
     # labels: teal name band and white owner and lithium warning label, facing front right
     face = -45.0
-    band = _ring_on_cyl(lx, 0, top - pt - 14, ro, 8.0, 150, face)
+    zin_top, zin_bot = t1, t0
+    band = _ring_on_cyl(lx, 0, t1 - 14, ro, 8.0, 150, face)
     add("Logger name band", band, C_ACCENT, "painted", 6, "shell", EL)
     lab = _ring_on_cyl(lx, 0, (zin_top + zin_bot) / 2 + 10, ro, 70.0, 110, face, t=0.3)
     add("Owner and lithium warning label", lab, C_LABEL, "paper", 11, "shell", EL)
@@ -217,89 +242,69 @@ def product_parts(P=PARAMS):
         ink.append(Pos(cxp, cyp, zc + dz) * Rot(0, 0, face + 90) * Box(w, 0.3, h))
     add("Label print", _union(ink), C_INK, "paper", 11, "shell", EL)
 
-    # internals, as model.py
-    bx, by, bz = P["board"]
-    hd, hh = P["hlc"]
-    EB = (-40 - 70, -40 - 60, 40)
-    zb = zin_top - 4 - bz / 2
-    pcb = _box(lx, -12.0 + by / 2 - 0.8, zb, bx, 1.6, bz)       # components face the front (-Y)
-    add("Main board PCB", pcb, C_PCB, "plastic", 7, "internal", EB)
-    y_c = -12.0 + by / 2 - 1.6
-    mod = _box(lx, y_c - 1.5, zb + 30, 26, 3.0, 30)
-    add("LoRaWAN module shield can", mod, C_SS, "metal", 7, "internal", EB)
-    chips = (_box(lx - 6, y_c - 0.8, zb - 10, 12, 1.6, 12) + _box(lx + 10, y_c - 0.6, zb - 12, 6, 1.2, 8)
-             + _box(lx, y_c - 1.0, zb - 38, 24, 2.0, 7) + _box(lx - 12, y_c - 0.7, zb + 5, 5, 1.4, 3))
-    add("Main board components", chips, C_CHIP, "plastic", 7, "internal", EB)
-    hlc = _zcyl(lx - 10.0, 8.0, zin_top - 4 - hh / 2, hd / 2, hh)
+    # internals (P1, P6 of LKL-DDR-003): printed chassis on two standoffs from the top plug, main board on
+    # four short standoffs, capacitor, desiccant and cell in clips, all as model.py
+    ECH = (-100, -100, 40)
+    add("Internal chassis (printed)", mc("chassis"), "#0F766E", "plastic", 12, "internal", ECH)
+    add("Chassis standoffs (2)", mc("standoffs"), C_BRASS, "metal", 12, "internal", (ECH[0], ECH[1], 70))
+    bb = mc("board").bounding_box()
+    zb_top, zb_bot = bb.max.Z, bb.min.Z
+    y_pcb = bb.max.Y                                       # board plane against its standoffs
+    pcb = _box(lx, y_pcb - 0.8, (zb_top + zb_bot) / 2, P["board"][0], 1.6, zb_top - zb_bot)
+    add("Main board PCB", pcb, C_PCB, "plastic", 7, "internal", ECH)
+    y_c = y_pcb - 1.6
+    mod = _box(lx, y_c - 1.5, zb_top - 30, 26, 3.0, 30)
+    add("LoRaWAN module shield can", mod, C_SS, "metal", 7, "internal", ECH)
+    chips = (_box(lx - 6, y_c - 0.8, zb_top - 70, 12, 1.6, 12) + _box(lx + 10, y_c - 0.6, zb_top - 80, 6, 1.2, 8)
+             + _box(lx, y_c - 1.0, zb_top - 95, 24, 2.0, 7) + _box(lx - 12, y_c - 0.7, zb_top - 50, 5, 1.4, 3))
+    add("Main board components", chips, C_CHIP, "plastic", 7, "internal", ECH)
+    add("Board standoffs (4)", mc("board_standoffs"), C_ALU, "plastic", 12, "internal", ECH)
+    hlc = mc("hlc")
     hlc = _fillet_try(hlc, _bottom(hlc), [1.0, 0.5])
-    add("Hybrid layer capacitor", hlc, C_CELL, "plastic", 7, "internal", EB)
-
-    cd, ch = P["cell"]
-    ccx, ccy, ccz = lx + 2.0, 11.0, zin_bot + 4 + ch / 2
-    EC = (-40 - 60, -40 - 60, -45)
-    cell = _zcyl(ccx, ccy, ccz, cd / 2, ch - 1.0)
+    add("Hybrid layer capacitor", hlc, C_CELL, "plastic", 7, "internal", (-100, -60, 70))
+    cell = mc("cell")
+    cb = cell.bounding_box()
+    ccx, ccy = (cb.min.X + cb.max.X) / 2, (cb.min.Y + cb.max.Y) / 2
+    cd = P["cell"][0]
     cell = _fillet_try(cell, cell.edges(), [1.2, 0.6])
+    EC = (-100, -40, -45)
     add("Primary cell, Li-SOCl2 C", cell, C_CELL, "plastic", 8, "internal", EC)
-    caps = _zcyl(ccx, ccy, ccz + ch / 2 - 0.4, cd / 2 - 1.5, 0.8) + _zcyl(ccx, ccy, ccz - ch / 2 + 0.4, cd / 2 - 1.5, 0.8)
-    caps += _zcyl(ccx, ccy, ccz + ch / 2 + 0.6, 4.0, 1.2)
-    add("Cell terminals", caps, C_SS, "metal", 8, "internal", EC)
-    cband = _zcyl(ccx, ccy, ccz + 6, cd / 2 + 0.2, 14) - _zcyl(ccx, ccy, ccz + 6, cd / 2 - 1, 16)
+    cband = _zcyl(ccx, ccy, cb.min.Z + 28, cd / 2 + 0.2, 14) - _zcyl(ccx, ccy, cb.min.Z + 28, cd / 2 - 1, 16)
     add("Cell label band", cband, C_LABEL, "paper", 8, "internal", EC)
+    des = _fillet_try(mc("desiccant"), mc("desiccant").edges(), [3.0, 2.0, 1.0])
+    add("Desiccant pack", des, C_DESIC, "fabric", 11, "internal", (-100, 40, -45))
 
-    dx_, dy_, dz_ = P["desiccant"]
-    des = _box(lx - 8.0, -12.0, zin_bot + 4 + dz_ / 2, dx_, dy_, dz_)
-    des = _fillet_try(des, des.edges(), [3.0, 2.0, 1.0])
-    add("Desiccant pack", des, C_DESIC, "fabric", 11, "internal", (-40 - 150, -40 - 60, -45))
-
-    # ------------------------------------------------------------ hanger and antenna (BOM 9, 10)
-    x_edge = -P["frame_open"] / 2
-    zf = -P["frame_depth"]
-    w, t = P["strap_w"], P["strap_t"]
+    # ------------------------------------------------------------ neck bar, lanyard and antenna (BOM 9, 10)
     EH = (-60, 0, 150)
-    zp = zf + 10 - t / 2
-    plate = _box(x_edge + P["strap_run"] / 2, 0, zp, P["strap_run"], w, t)
-    plate = _fillet_try(plate, plate.edges().filter_by(Axis.Z), [6.0, 4.0])
-    hook_c = zf + 10 + (P["hook_h"] - 10) / 2 - 5
-    hook = _box(x_edge - t / 2, 0, hook_c, t, w, P["hook_h"])
-    hook = _fillet_try(hook, _top(hook).filter_by(Axis.Y), [0.7, 0.5])
-    bend = Pos(x_edge - 0.01, 0, zp) * Rot(90, 0, 0) * (Cylinder(t, w) - Cylinder(0.01, w + 1))
-    bend &= _box(x_edge - t / 2, 0, zp, t + 0.02, w + 1, 2 * t)
-    strap = plate + hook
-    try:
-        s2 = strap + bend
-        if s2.is_valid:
-            strap = s2
-    except Exception:
-        pass
-    strap -= _zcyl(x_edge + P["strap_run"] - 10, 0, zp, 2.2, 4.0)     # lanyard eye
-    add("Hanger strap and hook (stainless)", strap, C_SS, "metal", 9, "shell", EH)
-    rivets = _union(_zcyl(x_edge + 15 + 22 * k, sgn * 8, zp - t / 2 - 0.5, 2.2, 1.0)
-                    for k in range(2) for sgn in (-1, 1))
-    add("Strap rivets", rivets, C_STEEL, "metal", 9, "shell", EH)
-    lan = _pipe([(x_edge + P["strap_run"] - 10, 0, zp - t / 2), (x_edge + P["strap_run"] - 10, 0, zp - 8),
-                 (lx, 0, top + 12.0)], P["lanyard_d"] / 2)
-    add("Stainless lanyard", lan, C_SS, "metal", 9, "shell", ETP)
+    add("Neck bar outer tube", mc("bar_outer"), C_ALU, "metal", 9, "shell", EH)
+    add("Neck bar inner tube", mc("bar_inner"), C_ALU, "metal", 9, "shell", (EH[0], EH[1] + 60, EH[2]))
+    add("Tube end inserts with M10 nuts", mc("inserts"), C_STEEL, "metal", 9, "shell", EH)
+    add("Levelling feet with rubber pads", mc("feet"), "#2E3338", "rubber", 9, "shell", EH)
+    add("Locking pin with R-clip", mc("lockpin"), C_SS, "metal", 9, "shell", (EH[0], EH[1], EH[2] + 40))
+    add("Antenna bracket (aluminium flat bar)", mc("bracket"), C_ALU, "metal", 9, "shell", (EH[0], EH[1], EH[2] + 40))
+    add("M5 bolt and nyloc nut", mc("bracket_bolt"), C_STEEL, "metal", 9, "shell", (EH[0], EH[1], EH[2] + 40))
+    add("Wire rope lanyard with snap hook", mc("lanyard"), C_SS, "metal", 9, "shell", (0, 0, 120))
 
     za = D["ant_z"]
-    ax = x_edge + P["strap_run"] + P["ant_d"] / 2 - 10
-    EA = (40, -30, 150)
-    ant = _zcyl(ax, 0, za, P["ant_d"] / 2, P["ant_t"])
+    ax, ay = lx + P["ant_off"], P["ant_y"]
+    EA = (40, -30, EH[2] + 90)
+    ant = _zcyl(ax, ay, za, P["ant_d"] / 2, P["ant_t"])
     ant = _fillet_try(ant, _bottom(ant), [4.0, 3.0, 2.0])
     ant = _fillet_try(ant, _top(ant), [1.5, 1.0])
-    ant -= _zcyl(ax, 0, za - P["ant_t"] / 2, P["ant_d"] / 2 - 9, 1.2) - _zcyl(ax, 0, za - P["ant_t"] / 2, P["ant_d"] / 2 - 10, 2.0)
     add("Flat LoRa antenna radome", ant, C_PLUG, "plastic", 10, "shell", EA)
-    dot = _zcyl(ax + 14, -12, za - P["ant_t"] / 2 - 0.2, 5.0, 0.4)
+    dot = _zcyl(ax + 14, ay - 12, za + P["ant_t"] / 2 + 0.1, 5.0, 0.3)
     add("Antenna mark", dot, C_ACCENT, "painted", 10, "shell", EA)
-    lead = _pipe([(ax - 20, 0, za - P["ant_t"] / 2 + 1), (ax - 20, 0, za - P["ant_t"] / 2 - 8), (lx + 8, 0, top + 12.0)], 2.5)
-    add("Antenna lead", lead, C_BLACK, "rubber", 10, "shell", ETP)
+    add("Antenna stud nut", mc("ant_nut"), C_STEEL, "metal", 10, "shell", (EA[0], EA[1], EA[2] - 40))
+    add("Antenna lead with SMA plug", mc("ant_lead"), C_BLACK, "rubber", 10, "shell", ETP)
 
     # ------------------------------------------------------------ sensor cable (BOM 5)
     zt = D["puck_top_z"]
     zs = bot - 15.0 - P["m12_len"]
     ECB = (40, -20, -40)
-    route = _smooth([(0, 0, zt + 12), (0, 0, zt + 40), (-60, 0, zt + 70), (lx + 30, 0, zs - 40),
-                     (lx, 0, zs - 10), (lx, 0, zs + 1)])
-    cable = _pipe([(0, 0, zt - 1)] + route, P["cable_d"] / 2)
+    zp1 = D["puck_bot_z"] + P["puck_base"] + P["puck_step"] + P["preamp_t"]
+    pts = [(0, 0, zp1), (0, 0, zt + 31), (-70, 0, zt + 41), (-130, 0, zt - 44), (-165, 0, zt - 104),
+           (lx, 0, zs - 35), (lx, 0, zs)]
+    cable = _pipe(_smooth(pts, 2), P["cable_d"] / 2)
     add("Sensor cable (PUR)", cable, C_BLACK, "rubber", 5, "shell", ECB)
     mb = _zcyl(lx, 0, zs + 14, P["m12_d"] / 2 - 2, 28)
     mb = _fillet_try(mb, _bottom(mb), [5.0, 4.0, 2.0])
@@ -315,36 +320,34 @@ def product_parts(P=PARAMS):
     pr = P["puck_d"] / 2
     zpb = D["puck_bot_z"]
     EPK = (170, -40, 0)
+    z_base = zpb + P["puck_base"]
+    z_step = z_base + P["puck_step"]
+    r_up = pr - P["puck_wall"]
     body = _zcyl(0, 0, zpb + P["puck_h"] / 2, pr, P["puck_h"])
     body = _fillet_try(body, _top(body), [2.5, 2.0, 1.0])
     body = _fillet_try(body, _bottom(body), [0.8, 0.5])
-    cav_h = P["puck_h"] - P["puck_base"] - 3.0
-    body -= _zcyl(0, 0, zpb + P["puck_base"] + cav_h / 2, pr - P["puck_wall"], cav_h)
+    body -= _zcyl(0, 0, (z_base + z_step) / 2, P["puck_bore_low"] / 2, z_step - z_base)    # lower bore
+    body -= _zcyl(0, 0, (z_step + zt + 1) / 2, r_up, zt + 1 - z_step)                      # upper bore, open top
     for k in range(16):                                           # grip flutes on the lower half
         a = 2 * math.pi * k / 16
         body -= _zcyl(math.cos(a) * (pr + 0.6), math.sin(a) * (pr + 0.6), zpb + 14, 1.4, 18)
-    body -= _zcyl(0, 0, zpb + 27, pr + 1, 0.8) - _zcyl(0, 0, zpb + 27, pr - 0.5, 2)   # lid seam line
     add("Sensor puck body (aluminium)", body, C_ALU, "metal", 1, "shell", EPK)
     ring = _zcyl(0, 0, zpb + 33, pr + 0.3, 4.0) - _zcyl(0, 0, zpb + 33, pr - 0.5, 6.0)
     add("Puck accent ring", ring, C_ACCENT, "painted", 1, "shell", EPK)
-    pg = _hex_z(0, 0, zt + 2.5, 13.0, 5.0) + _zcyl(0, 0, zt + 7.5, 5.5, 5.0)
-    pg = _fillet_try(pg, _top(pg), [1.5, 1.0])
-    add("Puck cable gland", pg, C_SS, "metal", 1, "shell", EPK)
+    pot = mc("potting")
+    add("Potting above the board", pot, "#262A30", "rubber", 11, "shell", (170, -40, 190))
 
-    zp0 = zpb + P["puck_base"]
     E3 = (170, -40, 105)
-    piezo = _zcyl(0, 0, zp0 + P["piezo_t"] / 2, P["piezo_d"] / 2, P["piezo_t"])
+    piezo = mc("piezo")
     add("Piezo disc (brass backed)", piezo, C_BRASS, "metal", 3, "internal", (170, -40, 75))
-    cer = _zcyl(0, 0, zp0 + P["piezo_t"] + 0.2, 10.0, 0.4)
+    cer = _zcyl(0, 0, z_base + P["piezo_t"] + 0.2, 10.0, 0.4)
     add("Piezo ceramic", cer, "#E7E2D6", "plastic", 3, "internal", (170, -40, 75))
-    mass = _zcyl(0, 0, zp0 + P["piezo_t"] + P["mass_h"] / 2, P["mass_d"] / 2, P["mass_h"])
+    mass = mc("mass")
     mass = _fillet_try(mass, _top(mass), [1.0, 0.5])
     add("Seismic mass (brass)", mass, C_BRASS, "metal", 3, "internal", E3)
-    px, py, pz = P["preamp"]
-    zpa = zp0 + P["piezo_t"] + P["mass_h"] + 6 + pz / 2
-    pa = _box(0, 0, zpa, px, py, pz)
-    add("Charge preamplifier board", pa, C_PCB, "plastic", 4, "internal", (170, -40, 150))
-    pac = _box(-3, 2, zpa + pz / 2 + 0.6, 7, 5, 1.2) + _box(6, -5, zpa + pz / 2 + 0.5, 4, 3, 1.0)
+    pa = mc("preamp")
+    add("Charge preamplifier board (round, on the step)", pa, C_PCB, "plastic", 4, "internal", (170, -40, 150))
+    pac = _box(-4, 4, zp1 + 0.6, 7, 5, 1.2) + _box(5, -6, zp1 + 0.5, 4, 3, 1.0)
     add("Preamplifier components", pac, C_CHIP, "plastic", 4, "internal", (170, -40, 150))
 
     mag = _zcyl(0, 0, zc + P["magnet_h"] / 2, P["magnet_d"] / 2, P["magnet_h"])
@@ -355,6 +358,8 @@ def product_parts(P=PARAMS):
 
     # ------------------------------------------------------------ context (existing assets, not in the BOM)
     s = P["cap_sq"]
+    x_edge = -P["frame_open"] / 2
+    half = P["frame_open"] / 2
     cap = _box(0, 0, zc - P["cap_h"] / 2, s, s, P["cap_h"])
     cap = _fillet_try(cap, cap.edges().filter_by(Axis.Z), [3.0, 2.0])
     cap = _fillet_try(cap, _top(cap), [1.5, 1.0])
@@ -378,6 +383,9 @@ def product_parts(P=PARAMS):
     add("Chamber roof slab (section)", slab, C_CONC, "clay", None, "context", (0, 0, 0))
     road = _box(x_edge - 60 - 55, 0, -P["frame_depth"] / 2, 110, 220, P["frame_depth"])
     add("Street surface (section)", road, C_ASPH, "clay", None, "context", (0, 0, 0))
+    # chamber neck wall behind each foot of the neck bar (section patches, so the feet are not in mid air)
+    walls = _union([_box(lx, sy * (half + 10), P["bar_z"], 140, 20, 150) for sy in (-1, 1)])
+    add("Chamber neck wall at the bar feet (section)", walls, C_CONC, "clay", None, "context", (0, 0, 0))
     return out
 
 

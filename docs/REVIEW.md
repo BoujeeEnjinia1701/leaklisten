@@ -317,3 +317,42 @@ Appearance only: no tolerances, no fabrication detail, no PCB layout and no TRL 
 - Kit 1.5.0 synced: STANDARDS v1.5 (sections 12 to 15: product renders, storefront images and image quality, public release, authorship and signing), `.kit/cards.py`, `.kit/image_qc.py`, `.kit/release_gate.py`, issue templates, and the `/render-product` and `/release` commands. `CLAUDE.md` now matches `.kit/CLAUDE.md`.
 - Every `media/render-*.png` recaptioned from its original render with the new layout: the title, concept label and repository sit in a band above the render and the view note in a band below it, each line wrapped to the image width, so no text overlaps other text or the render or runs off the image. `media/card.png` and `media/social-preview.png` regenerated with the same rules.
 - `python .kit/image_qc.py` and `python .kit/release_gate.py` pass. trl stays 3.
+
+## Session 2026-10-02: approved follow-ups carried out
+
+Amish approved on 2026-10-02 that every follow-up action from the open-decision sign-off be carried out. trl stays 3; no build or test work was done. `budget_usd` is unchanged.
+
+### Follow-ups
+
+1. Done (pictures, appearance model): `cad/src/product_model.py` rebuilt on the constructable design: neck bar with feet, pin and bracket, lanyard, flanged plugs with O-rings and radial screws, eye bolt, SMA bulkhead, light pipe, chassis on standoffs, round preamplifier board on its step, and the model.py cable route. The concept strap parameters and the concept board size are dropped from `cad/src/model.py`. The photoreal renders, `media/card.png` and `media/social-preview.png` are made on Amish's Mac next from the exported scenes.
+2. Done (calculations): the R12 check in `sizing.py` counts the logger, cable and sensor against 1.0 kg: 0.96 kg (margin 38 g). The 70 g antenna rides on the neck bar and is counted with the bar, as in the 0.96 kg of the register. With the bar and antenna the set is 1.35 kg.
+3. Not done: LeakListen's vibration acceptance test (frequency range, level and pass band) is a test plan, which is TRL 4 work under the portfolio cap; raising the shaker bay with CalRig is Amish's to start. See Cross-repo actions.
+4. Done (model): a 3 mm light pipe rod through a 3 mm hole in the top plug, 13 mm from the axis toward the board side and 10 mm along the standoff line, ending 1.5 mm above the board's top edge. All 75 constructability checks pass (3 new). STEP and STL regenerated.
+5. Done (drawings): top plug making sketch LKL-DWG-104 (Rev P2) and general arrangement LKL-DWG-001 (Rev P5) show the light pipe hole and rod.
+6. Done (BOM): line 7 includes the light pipe, USD 30.00 to USD 31.00 (basis in `bom/bom-notes.md`).
+7. Done (calculations): the status light blink is in the daily charge (section C, [C4]): 5 mA for 2 s, 10 times a day, adds 0.028 mAh a day (1.9 % of the worst case). Battery life on energy is now 10.1 years or more (was 10.3); R6 stays met on paper.
+8. Done (pictures): the light pipe is in step pictures 5, 7, 8 and 10, joint 8, the overview and the wiring figure, and in the appearance model.
+
+### Results
+
+- Cost: Value-engineering target: USD 130. Estimated cost of the constructable design: USD 142.00 (USD 12.00 over the target); it was USD 141.00 before the light pipe.
+- Mass: logger, cable and sensor 0.96 kg; whole set 1.35 kg.
+- Requirement status changes: none. R12 stays met on paper (restated); R15 stays over the target; R6 stays met on paper.
+- Pictures regenerated: LKL-DWG-001 (Rev P5), LKL-DWG-104 (Rev P2), concept media (hero, exploded, cutaway, flow, concept blueprint, model.glb), overview, steps 5, 7, 8 and 10, joint 8, wiring figure.
+- Render scenes exported to `/home/claude/renders/leaklisten` for the views hero, exploded and detail, with `leaklisten__jobs.json`.
+
+### Documents changed
+
+- `docs/04-calcs/01-sizing.md` (LKL-CAL-001 v0.5), `docs/03-requirements.md` (LKL-REQ-001 v0.7), `docs/02-concept.md` (LKL-PRC-001 v0.7), `docs/05-build-plan.md` (LKL-BLD-001 v0.3), `bom/bom.csv`, `bom/bom-notes.md`, `README.md`, `docs/04-calcs/sizing.py`, `docs/04-calcs/results.csv`, `cad/src/model.py`, `cad/src/sheets.py`, `cad/src/build_plan_media.py`, `cad/src/product_model.py`.
+
+### Cross-repo actions
+
+- CalRig: add a small shaker bay for the vibration calibration check of LeakListen (decision of 2026-10-02). LeakListen's acceptance test (frequency range, level, pass band) is to be written at TRL 4. CalRig was not edited.
+
+### Recommended next step
+
+Render the three views on Amish's Mac, then run the card script.
+
+## 2026-10-02: photoreal renders redone on the constructable design
+
+Rendered with Blender Cycles on Amish's Mac from the updated appearance model; captioned with `.kit/photo_caption.py`; `media/card.png` and `media/social-preview.png` regenerated with `.kit/cards.py`. Views: hero, exploded, detail. image_qc passes. Appearance deviations are those logged above as proposed, awaiting Amish.

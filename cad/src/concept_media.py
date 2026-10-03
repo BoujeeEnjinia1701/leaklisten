@@ -127,7 +127,7 @@ render_all(
                  "About 1.2 mAh/day; C cell life 10 years or more",
                  "One 24-byte LoRaWAN summary a night; raw audio stays on device",
                  "Hears about 185 m on iron (estimate); hydrophone variant for plastic",
-                 "Hangs from a neck bar; placed from the surface; about $141 in parts"],
+                 "Hangs from a neck bar; placed from the surface; about $142 in parts"],
     scale_figure=False, context=lifted_context,
     flow={"title": "nightly data flow per logger, kB (LKL-CAL-001 estimates: 240 s at 8 kS/s, 16 bit; 12 spectra of 64 bands)", "unit": "kB",
           "stages": [("Pipe vibration", "5 Hz to 2 kHz"),

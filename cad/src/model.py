@@ -22,7 +22,8 @@ frame's seat, so a strap there would sit under the cover and rock it. The constr
     a bracket on top of it, 20 mm under the cover;
     flanged, turned acetal end plugs with two O-rings each, held in the PVC tube by three radial
     screws outboard of the O-rings;
-    an M6 eye bolt (lanyard) and an IP67 SMA bulkhead (antenna) on the top plug, in place of the
+    an M6 eye bolt (lanyard), an IP67 SMA bulkhead (antenna) and a 3 mm status light pipe rod on the top
+    plug (the rod added 2026-10-02, LKL-DDR-003 follow-up), in place of the
     one "antenna and lanyard gland";
     a printed internal chassis on two standoffs from the top plug, carrying the board, the cell
     and capacitor in snap clips and the desiccant in a pocket, so the electronics lift out with
@@ -56,7 +57,6 @@ PARAMS = {
     # 3 piezo disc and seismic mass; 4 preamplifier, round board on the step
     "piezo_d": 27.0, "piezo_t": 0.5, "mass_d": 20.0, "mass_h": 20.0,
     "preamp_d": 31.0, "preamp_t": 1.6,
-    "preamp": (22.0, 22.0, 1.6),    # concept board size, kept for cad/src/product_model.py only
     # 5 sensor cable: 4-core shielded PUR, M12 plug at the logger end
     "cable_d": 6.0, "cable_len": 2000.0, "m12_d": 20.0, "m12_len": 45.0,
     # 6 logger housing: PVC pipe (OD, wall); overall length flange to flange; end plug flange
@@ -78,8 +78,9 @@ PARAMS = {
     #   its centre offset from the bar axis and its position along the bar
     "ant_d": 70.0, "ant_t": 12.0, "ant_bracket": (40.0, 3.0, 100.0), "ant_off": 45.0, "ant_y": -150.0,
     "lanyard_d": 3.0,
-    # concept hanger, kept only so cad/src/product_model.py (appearance model, now stale) still runs
-    "strap_w": 30.0, "strap_t": 1.5, "strap_run": 80.0, "hook_h": 56.0, "ant_gap": 8.0,
+    # 7 status light pipe: clear acrylic rod from 1.5 mm above the main board's top edge, through the
+    #   top plug, flush with its top face (lit for a brief blink at power-up or magnet swipe)
+    "lpipe_d": 3.0, "lpipe_xy": (10.0, -13.0), "lpipe_gap": 1.5,
 }
 
 BOM = {  # BOM line: name
@@ -358,6 +359,10 @@ def build_components(p=PARAMS):
             s_ = boxspan(lx + xx - 2.5, lx + xx + 2.5, sy0 - 3, sy0, zz - 2.5, zz + 2.5)
             bst = s_ if bst is None else bst + s_
     add("board", "Main board", board, 7, "bought", 0)
+    lpx, lpy = p["lpipe_xy"]
+    lpr = p["lpipe_d"] / 2
+    C["topplug"].shape = C["topplug"].shape - zspan(lx + lpx, lpy, pin - 1, top + 1, lpr)
+    add("lpipe", "Status light pipe rod", zspan(lx + lpx, lpy, bz1 + p["lpipe_gap"], top, lpr), 7, "bought", 1.19)
     add("board_standoffs", "Board standoffs (4)", bst, 12, "fixing", 0)
     add("hlc", "Hybrid layer capacitor", cap_s, 7, "bought", 0)
     add("desiccant", "Desiccant pack", des, 11, "bought", 0)
@@ -455,7 +460,7 @@ def build_parts(p=PARAMS):
 
 GROUPS = {
     "sensor-puck": ("puck", "magnet", "piezo", "mass", "preamp", "potting"),
-    "logger": ("tube", "botplug", "socket", "bot_orings", "topplug", "top_orings", "eyebolt", "sma", "screws_top",
+    "logger": ("tube", "botplug", "socket", "bot_orings", "topplug", "top_orings", "eyebolt", "sma", "lpipe", "screws_top",
                "screws_bot", "chassis", "standoffs", "board", "board_standoffs", "hlc", "desiccant", "cell"),
     "neck-bar": ("bar_outer", "bar_inner", "inserts", "feet", "lockpin", "bracket", "bracket_bolt", "antenna", "ant_nut",
                  "lanyard"),
@@ -537,6 +542,10 @@ def checks(p=PARAMS):
     # chassis and electronics
     chk("Standoffs on the top plug", S("standoffs"), S("topplug"), "touch")
     chk("Standoffs on the chassis", S("standoffs"), S("chassis"), "touch")
+    chk("Light pipe in the top plug", S("lpipe"), S("topplug"), "touch")
+    chk("Light pipe clear of the board", S("lpipe"), S("board"), 1.0)
+    chk("Light pipe clear of the eye bolt, SMA bulkhead, standoffs, chassis and radial screws", S("lpipe"),
+        S("eyebolt") + S("sma") + S("standoffs") + S("chassis") + S("screws_top"), 2.0)
     chk("Standoffs clear of the eye bolt nut", S("standoffs"), S("eyebolt"), 1.0)
     chk("Standoffs clear of the SMA bulkhead", S("standoffs"), S("sma"), 1.0)
     chk("Chassis clear of the tube bore", S("chassis"), S("tube"), 0.5)

@@ -4,13 +4,13 @@ R2,hydrophone variant not sized; contact sensor 4 m on PVC (out of its scope),"3
 R3,mounted resonance 676 to 1352 Hz,5 Hz to 2 kHz within 3 dB,At risk
 R4,1.03 ug/rtHz,1 ug/rtHz or less,At risk
 R5,20 s with weekly time sync,under 60 s a month,Met on paper
-R6,10.3 years or more on energy,5 years,Met on paper
+R6,10.1 years or more on energy,5 years,Met on paper
 R7,range 0.53 km under an iron cover at 20 dB (EU868 SF12); 0.46 km US915 SF9; cover loss unmeasured,90 % delivery to a gateway within 0.5 km (iron cover),At risk
 R8,raw samples processed and deleted on device,only levels leave,Met by design
 R9,125 N at a 0.5 mm coating (187 N at 0.3 mm),100 N,Met on paper
 R10,11 min task estimate,"10 min, no entry",Not verifiable at TRL 3
 R11,IP68 by design; logger floats on its lanyard,"IP68, -20 to +50 degC",Met by design
-R12,"68 x 283 mm, 1.35 kg with the neck bar","70 x 300 mm, 1.0 kg",Not met (mass)
+R12,"68 x 283 mm, 0.96 kg for logger, cable and sensor (1.35 kg with the neck bar and antenna)","70 x 300 mm, 1.0 kg for logger, cable and sensor",Met on paper (margin 38 g)
 R13,random variation negligible; site events unknown,1 per 20 loggers per month,Not verifiable at TRL 3
 R14,24 B LoRaWAN 1.0.3 uplink,standard LoRaWAN,Met by design
-R15,$141.00,$130 value-engineering target,$11.00 over the value-engineering target
+R15,$142.00,$130 value-engineering target,$12.00 over the value-engineering target

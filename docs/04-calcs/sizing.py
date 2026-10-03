@@ -94,6 +94,7 @@ I_LISTEN = 12e-3
 T_LISTEN = NWIN * (WIN + 1.0)          # 1 s preamp settling per window (3 Hz high-pass, 10 time constants 0.53 s)
 RX = (2, 0.2, 5e-3)                     # receive windows per uplink, s each, A
 SELF = 0.01                             # per year
+I_LED, T_BLINK, N_BLINK = 5e-3, 2.0, 10   # status light: 5 mA for 2 s, 10 times a day (power-up and magnet swipes; far more than real use)
 CELL_AH, USABLE = 7.7, 0.70
 CASES = {"EU868 SF7 +14 dBm": (7, 45e-3), "EU868 SF12 +14 dBm": (12, 45e-3),
          "US915 SF9 +20 dBm": (9, 120e-3), "TRL 2 case, 50 B SF12 +20 dBm": (12, 120e-3)}
@@ -104,12 +105,16 @@ for name, (sf, itx) in CASES.items():
     q_listen = I_LISTEN * T_LISTEN / 3.6
     q_radio = TX_PER_NIGHT * (toa(sf, pl) * itx + RX[0] * RX[1] * RX[2]) / 3.6
     q_self = SELF * CELL_AH * 1000 / 365
-    tot = q_sleep + q_listen + q_radio + q_self
+    q_blink = N_BLINK * I_LED * T_BLINK / 3.6
+    tot = q_sleep + q_listen + q_radio + q_self + q_blink
     yrs = CELL_AH * USABLE * 1000 / tot / 365
     life[name] = (tot, yrs)
     tag("C1", f"{name}: sleep {q_sleep:.3f} + listening {q_listen:.3f} + radio {q_radio:.3f} + self-discharge "
-              f"{q_self:.3f} = {tot:.2f} mAh/day; {yrs:.1f} years on {CELL_AH * USABLE:.2f} Ah usable")
+              f"{q_self:.3f} + status light {q_blink:.3f} = {tot:.2f} mAh/day; {yrs:.1f} years on {CELL_AH * USABLE:.2f} Ah usable")
 worst = max(v[0] for v in life.values())
+tag("C4", f"status light blink (light pipe, LKL-DDR-003 follow-up): {I_LED * 1000:.0f} mA for {T_BLINK:.0f} s is {I_LED * T_BLINK / 3.6:.4f} mAh; "
+          f"{N_BLINK} blinks a day (power-up and magnet swipes, a generous allowance) is {N_BLINK * I_LED * T_BLINK / 3.6:.3f} mAh a day, "
+          f"{N_BLINK * I_LED * T_BLINK / 3.6 / worst * 100:.1f} % of the worst-case day: negligible")
 tag("C2", f"listening is {I_LISTEN * T_LISTEN / 3.6 / worst * 100:.0f} % of the worst-case day; life taken as "
           f"10 years (cell and seal ageing), energy alone gives {min(v[1] for v in life.values()):.1f} years or more")
 I_CELL = 30e-3
@@ -329,7 +334,7 @@ masses = {
     4: 0.004,                                   # preamplifier board
     5: 0.055 * P["cable_len"] / 1000 + 0.030,   # cable and molded M12 plug
     6: MM[6] + 0.020 + 0.010,                   # tube and acetal plugs (model), M12 socket, O-rings and screws
-    7: 0.035,                                   # main board and capacitor
+    7: 0.035 + MM.get(7, 0.0),                  # main board and capacitor, light pipe rod (model)
     8: 0.090,                                   # C cell
     9: MM[9] + 2 * 0.030 + 0.010 + 0.030,       # neck bar tubes, inserts, bracket (model); feet, pin and bolt, lanyard
     10: 0.040 + 0.030,                          # antenna with stud and nut, lead
@@ -337,6 +342,9 @@ masses = {
     12: MM[12] + 0.006,                         # printed chassis (model), standoffs and screws
     13: 0.012 + 0.008,                          # eye bolt with washer and nut, SMA bulkhead
 }
+# R12 (restated 2026-10-02, LKL-DDR-003 A1): logger, cable and sensor; the neck bar (line 9) and the antenna
+# on it (line 10) are site hardware that stays in the chamber
+carried_m = sum(masses.values()) - masses[9] - masses[10]
 logger_m = masses[6] + masses[7] + masses[8] + masses[11] - MM.get(11, 0.0) + masses[12] + masses[13]
 buoy = D["logger_vol_l"]
 tag("J2", f"logger body {logger_m * 1000:.0f} g against {buoy * 1000:.0f} g of displaced water: "
@@ -350,7 +358,7 @@ print("\nK. Size, mass and installation")
 total_m = sum(masses.values())
 tag("K1", f"logger {P['tube_od']:.0f} mm diameter ({P['tube_od'] + 5:.0f} mm over the radial screw heads), "
           f"{P['logger_len']:.0f} mm flange to flange, {D['overall_len']:.0f} mm with socket and eye bolt; mass by BOM line: "
-          + ", ".join(f"{k} {masses[k] * 1000:.0f} g" for k in sorted(masses)) + f"; total {total_m:.2f} kg")
+          + ", ".join(f"{k} {masses[k] * 1000:.0f} g" for k in sorted(masses)) + f"; total {total_m:.2f} kg; logger, cable and sensor {carried_m:.3f} kg (neck bar and antenna excluded, R12)")
 SLACK = 300.0
 plug_depth = abs(D["logger_bot_z"]) + 15.0 + P["m12_len"]
 reach = plug_depth + P["cable_len"] - SLACK
@@ -402,8 +410,8 @@ STATUS = [
     ("R9", f"{P['magnet_rated_n'] * IRON / (1 + 0.5 / G0) ** 2:.0f} N at a 0.5 mm coating ({P['magnet_rated_n'] * IRON / (1 + 0.3 / G0) ** 2:.0f} N at 0.3 mm)", "100 N", "Met on paper" if P['magnet_rated_n'] * IRON / (1 + 0.5 / G0) ** 2 >= 100 else "At risk"),
     ("R10", f"{sum(TASKS.values())} min task estimate", "10 min, no entry", "Not verifiable at TRL 3"),
     ("R11", "IP68 by design; logger floats on its lanyard", "IP68, -20 to +50 degC", "Met by design"),
-    ("R12", f"{P['tube_od'] + 5:.0f} x {D['overall_len']:.0f} mm, {total_m:.2f} kg with the neck bar", "70 x 300 mm, 1.0 kg",
-     "Met on paper" if total_m <= 1.0 else "Not met (mass)"),
+    ("R12", f"{P['tube_od'] + 5:.0f} x {D['overall_len']:.0f} mm, {carried_m:.2f} kg for logger, cable and sensor ({total_m:.2f} kg with the neck bar and antenna)", "70 x 300 mm, 1.0 kg for logger, cable and sensor",
+     "Met on paper (margin " + f"{(1.0 - carried_m) * 1000:.0f} g)" if carried_m <= 1.0 else "Not met (mass)"),
     ("R13", "random variation negligible; site events unknown", "1 per 20 loggers per month", "Not verifiable at TRL 3"),
     ("R14", f"{APP} B LoRaWAN 1.0.3 uplink", "standard LoRaWAN", "Met by design"),
     ("R15", f"${cost:.2f}", f"${budget:.0f} value-engineering target",

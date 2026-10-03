@@ -1,4 +1,4 @@
-"""LeakListen general arrangement sheet LKL-DWG-001, Rev P4 (TRL 3, constructable design, LKL-DDR-003).
+"""LeakListen general arrangement sheet LKL-DWG-001, Rev P5 (TRL 3, constructable design, LKL-DDR-003).
 
 Run from the repo root:  python cad/src/sheets.py
 Writes cad/drawings/LKL-DWG-001.svg, .pdf and .png from the parametric model in
@@ -101,13 +101,14 @@ def main():
     asm = assembly(with_site=True)
     views = safe_project_views(asm, work)
     bb = asm.bounding_box()
-    s = Sheet(project="LeakListen", title="General arrangement, logger installed", dwg_no="LKL-DWG-001", rev="P4",
-              author="Amish Chadha", date=DATE4, scale=None, theme="technical",
+    s = Sheet(project="LeakListen", title="General arrangement, logger installed", dwg_no="LKL-DWG-001", rev="P5",
+              author="Amish Chadha", date="2026-10-02", scale=None, theme="technical",
               material="PVC, aluminium, stainless; bought-in parts per bom/bom.csv. PRELIMINARY, NOT FOR FABRICATION",
               revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", DATE, "AC"),
                          ("P2", "42 mm pot magnet (LKL-DDR-002)", DATE, "AC"),
                          ("P3", "Layout and labels tidied", DATE, "AC"),
-                         ("P4", "Constructable design: neck bar, end plugs, chassis (LKL-DDR-003)", DATE4, "AC")])
+                         ("P4", "Constructable design: neck bar, end plugs, chassis (LKL-DDR-003)", DATE4, "AC"),
+                         ("P5", "Status light pipe added to the top plug (decision of 2026-10-02)", "2026-10-02", "AC")])
     s.add_ortho(views)
     k = s.scale
     c = ortho_cells(s, views)
@@ -156,7 +157,7 @@ def main():
     L.append(_t(Yr(r) + dy + 6, Zr(zd) + 0.8, f"{P['tube_od']:.0f} OD", 2.3, 400, INK, "start", mono=True))
 
     s._layers += L
-    s.add_svg(views["iso"], 276, 40, 140, 92, label="Isometric view", sublabel="Not to scale; spindle cap and frame edge grey context")
+    s.add_svg(views["iso"], 276, 48, 140, 88, label="Isometric view", sublabel="Not to scale; spindle cap and frame edge grey context")
     s.add_notes("Main dimensions and interfaces (mm)", [
         f"Logger PVC tube {P['tube_od']:.0f} OD x {P['tube_wall']:.0f} wall, flanged acetal end plugs; {P['logger_len']:.0f} flange to flange, {D['overall_len']:.0f} with socket and eye bolt",
         f"Sensor puck {P['puck_d']:.0f} x {P['puck_h']:.0f} aluminium on a {P['magnet_d']:.0f} mm pot magnet (keeper plate in transport); stack {D['sensor_stack_h']:.0f}",
@@ -164,9 +165,9 @@ def main():
         f"Spindle cap {P['cap_sq']:.0f} square, top {-P['cap_top_z']:.0f} below street (example site)",
         f"Neck bar {P['bar_out'][0]:.0f} and {P['bar_in'][0]:.0f} square aluminium tube, rubber feet on the neck walls; lanyard {P['lanyard_d']:.0f}",
         f"Flat antenna {P['ant_d']:.0f} dia on a bracket on the bar, {D['ant_gap']:.0f} gap below the {P['cover_t']:.0f} cover",
+        "Top plug: eye bolt, SMA bulkhead and a 3 mm status light pipe rod",
         "Sensor cable 2 m, M12 IP68; reaches caps to about 2.2 m deep",
         "No chamber entry; nothing touches drinking water",
-        "Third-angle; front view from -Y; street at Z = 0",
     ], x=276, y=158, width=146)
     out = s.save(ROOT / "cad" / "drawings" / "LKL-DWG-001")
     shutil.rmtree(work, ignore_errors=True)

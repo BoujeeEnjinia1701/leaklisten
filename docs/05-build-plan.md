@@ -3,7 +3,7 @@ doc_id: LKL-BLD-001
 title: LeakListen prototype build plan
 project: LeakListen
 doc_type: Build plan
-version: "0.2"
+version: "0.3"
 status: Draft
 date: '2026-10-02'
 author: Amish Chadha
@@ -17,6 +17,10 @@ revisions:
     date: '2026-10-02'
     author: Amish Chadha
     change: "LKL-DDR-003 recorded as accepted and the R12 acceptance figure set to the restatement, both decided by Amish on 2026-10-02 (LKL-DEC-001, items 1 and 2)"
+  - version: "0.3"
+    date: '2026-10-02'
+    author: Amish Chadha
+    change: 'Status light pipe added to the top plug text, parts list and steps 5 and 8; step pictures 5, 7, 8 and 10, joint 8, overview and wiring figure redrawn; general arrangement Rev P5; cost USD 142; no open decisions'
 ---
 
 # LeakListen prototype build plan
@@ -29,7 +33,7 @@ revisions:
 
 *Figure 1. Every component pulled apart and numbered in build order: the sensor puck (1 to 5), the logger (6 to 12) and the neck bar that hangs it in the chamber (13 to 18).*
 
-The prototype is one LeakListen set in three parts. The sensor puck is a small turned aluminium cup with a pot magnet under it; inside, a piezo disc and a brass weight turn pipe vibration into a signal, and a small amplifier board, potted in, sends it up a 2 m cable. The logger is a sealed 63 mm PVC tube with a turned plastic plug in each end; inside, a printed frame carries the radio and processing board, a lithium cell and a desiccant pack. The neck bar is a telescopic aluminium bar that wedges across the chamber's neck, just below the cover frame, on two rubber feet; the logger hangs from it on a short wire rope, and a flat antenna sits on a bracket on top of it, just under the cover. Nine components are made in a small workshop: the puck body and the brass weight (turned), the logger tube (cut and drilled), the two end plugs (turned from plastic bar), the frame inside the logger (3D printed), the two bar tubes and the antenna bracket (cut and drilled). Everything else is bought and fitted. The parts cost about USD 141, from the bill of materials.
+The prototype is one LeakListen set in three parts. The sensor puck is a small turned aluminium cup with a pot magnet under it; inside, a piezo disc and a brass weight turn pipe vibration into a signal, and a small amplifier board, potted in, sends it up a 2 m cable. The logger is a sealed 63 mm PVC tube with a turned plastic plug in each end; inside, a printed frame carries the radio and processing board, a lithium cell and a desiccant pack. The neck bar is a telescopic aluminium bar that wedges across the chamber's neck, just below the cover frame, on two rubber feet; the logger hangs from it on a short wire rope, and a flat antenna sits on a bracket on top of it, just under the cover. Nine components are made in a small workshop: the puck body and the brass weight (turned), the logger tube (cut and drilled), the two end plugs (turned from plastic bar), the frame inside the logger (3D printed), the two bar tubes and the antenna bracket (cut and drilled). Everything else is bought and fitted. The parts cost about USD 142, from the bill of materials.
 
 > **Safety:** The logger holds a lithium thionyl chloride primary cell. It must never be charged, shorted, crushed or heated; keep it in its packaging until stop point S2 (section 6). The pot magnet pulls hard enough to trap fingers and can affect pacemakers; keep its keeper plate on until the puck is at the spindle cap. Valve chambers can be confined spaces: everything in this plan is done at a bench or from the surface, and nobody enters a chamber. Turning, drilling and cutting need eye protection.
 
@@ -44,7 +48,7 @@ The concept showed what LeakListen does; some of its parts could not be made or 
 | Hanger | A stainless strap "hooked over the cover frame", which had nothing to hook over except the seat under the cover | A telescopic aluminium bar wedged across the chamber neck below the frame by two rubber feet; the logger hangs from it on a wire rope lanyard (Figures 15 and 17, steps 11 to 14) | The cover stays seated and nothing is drilled; still placed from the surface |
 | Antenna mounting | Overlapping the strap, with no fixing | A small aluminium bracket bolted across the bar, the antenna's own stud through it; the antenna sits 20 mm under the cover (Figure 19) | Nothing overlaps; one bolt and one nut |
 | Logger end plugs | Drawn solid with the tube, no way to hold them | Flanged plastic plugs with two O-rings each, held by three screws through the tube outboard of the O-rings (Figures 8 and 10) | Seals for submersion; the screws never cross the seal |
-| Top of the logger | One gland for both the lanyard and the antenna lead | An eye bolt for the lanyard and a sealed antenna bulkhead connector, each in its own hole (Figures 6 and 12) | A rope and a connector cannot share a gland |
+| Top of the logger | One gland for both the lanyard and the antenna lead | An eye bolt for the lanyard and a sealed antenna bulkhead connector, each in its own hole, and a glued-in light pipe rod for the status light (Figures 6 and 12) | A rope and a connector cannot share a gland |
 | Inside the logger | Board, cell and desiccant floating | A printed frame hung from the top plug, with clips and a pocket (Figures 9 and 11) | Everything is fixed and lifts out with the top plug |
 | Puck base | 3 mm thick, too thin for the magnet's stud | 8 mm thick, tapped for the stud (Figures 2 and 4) | The magnet is screwed on |
 | Inside the puck | Amplifier board floating above the weight; "potted" without saying where | A stepped bore: the board sits on the step clear of the weight, and potting fills only the space above the board (Figure 4) | The weight must stand free to sense correctly |
@@ -132,15 +136,16 @@ A thin film of rigid epoxy bonds the weight, centred, to the brass face of the p
 
 *Figure 6. Top end plug making sketch (LKL-DWG-104).*
 
-**What it is and what it is made from.** The plug that closes the top of the logger and carries the eye bolt, the antenna connector and the internal frame. Acetal (POM) round bar, 65 mm.
+**What it is and what it is made from.** The plug that closes the top of the logger and carries the eye bolt, the antenna connector, the status light pipe and the internal frame. Acetal (POM) round bar, 65 mm.
 
 **How to make it.**
 
 1. Turn a flange 63 mm in diameter and 4 mm thick, and a spigot 57 mm in diameter and 18 mm long that pushes into the tube by hand.
 2. Cut two O-ring grooves in the spigot, 2.5 mm wide and 1.8 mm deep, centred 10 and 15 mm below the flange.
 3. Drill a 6.5 mm hole on the axis for the eye bolt, and a 6.5 mm hole 14 mm off the axis for the antenna connector (check its datasheet for the size).
-4. On the inner face, drill and tap two M3 holes 6 mm deep for the standoffs: 18 mm each side of the axis, on a line 6 mm from the axis on the side away from the antenna connector.
-5. With the plug pushed into the tube and the antenna connector hole pointing where you want it, drill the tube's three top holes 4.5 mm (section 3.4), then drill on into the plug 3.3 mm and tap M4. Put the antenna connector between two screws, not over one.
+4. Drill a 3.0 mm hole right through for the status light pipe: 13 mm from the axis on the side away from the antenna connector, and 10 mm toward the right-hand standoff as Figure 6 shows it. It sits over the top edge of the board once the frame is hung.
+5. On the inner face, drill and tap two M3 holes 6 mm deep for the standoffs: 18 mm each side of the axis, on a line 6 mm from the axis on the side away from the antenna connector.
+6. With the plug pushed into the tube and the antenna connector hole pointing where you want it, drill the tube's three top holes 4.5 mm (section 3.4), then drill on into the plug 3.3 mm and tap M4. Put the antenna connector between two screws, not over one.
 
 **How it fits the parts next to it.** See Figure 10 and Figure 12. The flange sits on the tube end; the screws go through the tube 4 mm below the flange.
 
@@ -199,6 +204,7 @@ A thin film of rigid epoxy bonds the weight, centred, to the brass face of the p
 ### 3.8 Bought parts for the logger
 
 - **Eye bolt.** M6 by 20 mm stainless eye bolt with a bonded sealing washer and a nyloc nut.
+- **Status light pipe.** A 3 mm clear acrylic rod about 48 mm long with both ends cut square and polished. It is glued into its hole in the top plug with a drop of clear epoxy, flush with the top face, and its lower end stops 1.5 mm above the status light on the board's top edge. The light is lit only for a short blink at power-up or when the magnet is swiped over the logger.
 - **Antenna connector.** IP67 SMA female bulkhead with its O-ring and nut, with a short pigtail to the board.
 - **Panel socket.** M12 A-coded IP68 front-mount panel socket with an M16 x 1.5 thread, its O-ring and lock nut, and a short four-pin lead to the board.
 - **O-rings.** Four nitrile O-rings of 2.5 mm section to suit the 57 mm spigot grooves, and silicone grease.
@@ -335,7 +341,7 @@ Medium threadlocker on the stud; screw the magnet into the base hand tight. Leav
 
 ![Step 5](05-build-plan/step-05.png)
 
-Eye bolt with its sealing washer outside and nyloc nut inside; antenna connector with its O-ring outside and nut inside; the two standoffs into the inner face; greased O-rings into both grooves.
+Eye bolt with its sealing washer outside and nyloc nut inside; antenna connector with its O-ring outside and nut inside; the light pipe rod glued into its hole, flush with the top face; the two standoffs into the inner face; greased O-rings into both grooves.
 
 ### Step 6: fit the bottom end plug
 
@@ -353,7 +359,7 @@ Two M3 screws up through the frame's tab into the standoffs, before anything els
 
 ![Step 8](05-build-plan/step-08.png)
 
-Board on its four standoffs on the board face; antenna pigtail to the board; capacitor into its clips; desiccant into its pocket; the cell into its clips last, its plug left unplugged. **Hold point:** stop point S2 before the cell is plugged in.
+Board on its four standoffs on the board face; antenna pigtail to the board, with the status light 1.5 mm below the end of the light pipe; capacitor into its clips; desiccant into its pocket; the cell into its clips last, its plug left unplugged. **Hold point:** stop point S2 before the cell is plugged in.
 
 ### Step 9: bottom plug into the tube
 
@@ -439,7 +445,7 @@ Stop at each point. Carry on only when everything listed is true.
 
 - Model and constructability checks: `cad/src/model.py` (`python cad/src/model.py --check`); STEP and STL exports in `cad/step/` and `cad/stl/`.
 - Pictures: `cad/src/build_plan_media.py`, using `.kit/build_views.py`; written to `docs/05-build-plan/` and `cad/drawings/LKL-DWG-101` to `LKL-DWG-109`.
-- General arrangement: `cad/drawings/LKL-DWG-001.pdf`, Rev P4.
+- General arrangement: `cad/drawings/LKL-DWG-001.pdf`, Rev P5.
 - Calculations: `docs/04-calcs/01-sizing.md` (LKL-CAL-001 v0.3) and `docs/04-calcs/sizing.py`; mass [K1], cable reach [K2], install time [K3], flooding [J2], resonance [F6].
 - Bill of materials: `bom/bom.csv`.
 - Decisions: `docs/decisions/0003-design-for-construction.md` (LKL-DDR-003), with LKL-DDR-001 and LKL-DDR-002; open items in `docs/06-design-decisions.md` (LKL-DEC-001).

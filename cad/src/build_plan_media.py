@@ -68,7 +68,7 @@ def lay_x(shape):
     return b.Rot(0, 0, -90) * shape
 
 
-LOGGER_KEYS = ("tube", "botplug", "socket", "bot_orings", "topplug", "top_orings", "eyebolt", "sma", "screws_top",
+LOGGER_KEYS = ("tube", "botplug", "socket", "bot_orings", "topplug", "top_orings", "eyebolt", "sma", "lpipe", "screws_top",
                "screws_bot", "chassis", "standoffs", "board", "board_standoffs", "hlc", "desiccant", "cell")
 PUCK_KEYS = ("puck", "magnet", "piezo", "mass", "preamp", "potting")
 FEET_A = lambda: win(S("feet", "inserts"), -1000, 1000, -400, 0, -1000, 1000)  # noqa: E731
@@ -84,7 +84,7 @@ def overview():
         part("Sensor cable with M12 plug", S("cable", "m12_plug"), COL["cable"], (0, 0, -170)),
         part("Pot magnet", S("magnet"), COL["magnet"], (90, 0, -70)),
         part("Logger tube", S("tube"), COL["tube"], (0, 0, 0)),
-        part("Top end plug, eye bolt, SMA bulkhead", S("topplug", "top_orings", "eyebolt", "sma", "screws_top"), COL["plug"], (0, 0, 150)),
+        part("Top end plug, eye bolt, SMA bulkhead, light pipe", S("topplug", "top_orings", "eyebolt", "sma", "lpipe", "screws_top"), COL["plug"], (0, 0, 150)),
         part("Bottom end plug and M12 socket", S("botplug", "bot_orings", "socket", "screws_bot"), COL["socket"], (0, 0, -120)),
         part("Internal chassis and standoffs", S("chassis", "standoffs", "board_standoffs"), COL["chassis"], (-170, 0, 0)),
         part("Main board and capacitor", S("board", "hlc"), COL["board"], (-170, -110, 0)),
@@ -166,8 +166,11 @@ def sheets(only=None):
                "  in the 25 mm at each end where the O-rings seal."]))
 
     job("LKL-DWG-104", lambda: CS(
-        Part("Top end plug", S("topplug"), COL["plug"]), [part("p", S("tube", "eyebolt", "sma", "standoffs", "chassis"), COL["ctx"])],
+        Part("Top end plug", S("topplug"), COL["plug"]), [part("p", S("tube", "eyebolt", "sma", "lpipe", "standoffs", "chassis"), COL["ctx"])],
         dwg_no="LKL-DWG-104", title="LeakListen top end plug: making sketch", material="Acetal (POM) round bar, 65 mm",
+        rev="P2", date="2026-10-02",
+        revisions=[("P1", "Making sketch for the prototype build plan", DATE, "AC"),
+                   ("P2", "Light pipe hole added (decision of 2026-10-02)", "2026-10-02", "AC")],
         view_shape=at_origin(S("topplug"), x=LX, z=TOP - 22), inset_view=(25, -60),
         notes=["Turn from 65 mm acetal bar: flange 63 mm diameter, 4 mm thick;",
                "  spigot 57 mm diameter (a light push fit in the tube), 18 mm long.",
@@ -176,6 +179,8 @@ def sheets(only=None):
                "Eye bolt hole 6.5 mm on the axis, right through.",
                "SMA bulkhead hole 6.5 mm, 14 mm from the axis, right through;",
                "  check the size against the bulkhead's datasheet.",
+               "Light pipe hole 3.0 mm, right through, 13 mm from the axis on the side",
+               "  away from the SMA and 10 mm toward the right-hand standoff in the top view.",
                "Inner face: two M3 tapped holes 6 mm deep for the standoffs,",
                "  18 mm each side of the axis, 6 mm toward the side away from the SMA.",
                "Radial holes: drill 3.3 mm, tap M4, through the tube's holes,",
@@ -345,9 +350,10 @@ def joints(only=None):
         part("Wire rope loop and snap hook", S("lanyard"), COL["lanyard"]),
         part("M6 eye bolt", S("eyebolt"), COL["eyebolt"]),
         part("Top end plug", win(S("topplug", "tube"), LX - 40, LX + 40, -40, 40, TOP - 25, TOP), COL["plug"]),
-        part("SMA bulkhead and antenna lead", S("sma") + win(S("ant_lead"), LX - 40, LX + 60, -20, 40, TOP, TOP + 40), COL["sma"])],
+        part("SMA bulkhead and antenna lead", S("sma") + win(S("ant_lead"), LX - 40, LX + 60, -20, 40, TOP, TOP + 40), COL["sma"]),
+        part("Status light pipe rod", win(S("lpipe"), LX - 40, LX + 40, -40, 40, TOP - 25, TOP), "#38BDF8")],
         OUT / "joint-08.png", "Joint 8: lanyard from the neck bar to the eye bolt",
-        subtitle="The loop goes round the bar; the snap hook clips into the eye. The antenna lead plugs into the SMA bulkhead",
+        subtitle="The loop goes round the bar; the snap hook clips into the eye. The antenna lead plugs into the SMA bulkhead; the light pipe rod sits flush in the plug",
         elev=15, azim=-35, size=(8, 6.5))
     for n, fn in J.items():
         if only is None or only == f"joint-{n:02d}":
@@ -390,10 +396,11 @@ def steps(only=None):
     st(5, [part("Top end plug", S("topplug"), COL["plug"])],
        [mv(part("M6 eye bolt", S("eyebolt"), COL["eyebolt"]), (0, 0, 70)),
         mv(part("SMA bulkhead", S("sma"), COL["sma"]), (0, 0, 70)),
+        mv(part("Light pipe rod", S("lpipe"), "#38BDF8"), (0, 0, 70)),
         mv(part("Standoffs (2)", S("standoffs"), COL["bolt"]), (0, 0, -50)),
         mv(part("O-rings (2), greased", S("top_orings"), COL["orings"]), (0, 0, -30))],
        "fit the top end plug",
-       "Eye bolt with its sealing washer, nyloc nut inside; SMA bulkhead with its O-ring; standoffs into the inner face",
+       "Eye bolt with its sealing washer, nyloc nut inside; SMA bulkhead with its O-ring; light pipe rod glued in flush; standoffs into the inner face",
        elev=20, azim=-60, label_done=False)
     st(6, [part("Bottom end plug", S("botplug"), COL["socket"])],
        [mv(part("M12 panel socket", S("socket"), "#D4A017"), (0, 0, -60)),
@@ -401,7 +408,7 @@ def steps(only=None):
        "fit the bottom end plug",
        "Socket in from outside with its O-ring, lock nut inside; O-rings in both grooves",
        elev=20, azim=-60, label_done=False)
-    topset = [part("Top end plug with fittings", S("topplug", "eyebolt", "sma", "top_orings"), COL["plug"])]
+    topset = [part("Top end plug with fittings", S("topplug", "eyebolt", "sma", "lpipe", "top_orings"), COL["plug"])]
     st(7, topset, [mv(part("Internal chassis and standoffs", S("chassis", "standoffs"), COL["chassis"]), (0, 0, -80))],
        "chassis onto the top plug",
        "Two M3 screws up through the chassis tab into the standoffs, before anything else goes on the chassis",
@@ -421,7 +428,7 @@ def steps(only=None):
        "Push in until the flange meets the tube end; three M4 screws through the tube into the plug",
        elev=15, azim=-60, label_done=False)
     st(10, [part("Tube with bottom plug", S("tube", "botplug", "socket", "bot_orings", "screws_bot"), COL["tube"])],
-       [mv(part("Top plug with chassis", S("topplug", "eyebolt", "sma", "top_orings", "standoffs", "chassis", "board",
+       [mv(part("Top plug with chassis", S("topplug", "eyebolt", "sma", "lpipe", "top_orings", "standoffs", "chassis", "board",
                                             "board_standoffs", "hlc", "desiccant", "cell"), COL["plug"]), (0, 0, 220)),
         mv(part("Radial M4 screws (3)", S("screws_top"), COL["bolt"]), (0, 0, 220))],
        "close the logger",
@@ -507,7 +514,7 @@ def wiring():
     ax.add_patch(FancyBboxPatch((40, 8.5), 77, 45.5, boxstyle="round,pad=0.4", fc="#F8FAFC", ec="#94A3B8", lw=1, ls="--"))
     ax.text(41.5, 52.8, "In the logger", fontsize=8, color=MUT, va="top")
     blk(43, 15, 12, 12, "M12 socket", "in the bottom\nplug", "#4B5563")
-    blk(64, 13, 28, 32, "Main board", "STM32WL LoRaWAN module,\n24-bit audio ADC, clock,\nfuse and reverse\nprotection", "#2563EB")
+    blk(64, 13, 28, 32, "Main board", "STM32WL LoRaWAN module,\n24-bit audio ADC, clock,\nfuse and reverse\nprotection, status LED\n(light pipe to the\ntop plug)", "#2563EB")
     blk(100, 39, 15, 10, "SMA bulkhead", "in the top plug;\nlead outside", RF)
     blk(100, 26, 15, 9, "Capacitor", "about 0.1 F", "#7C3AED")
     blk(100, 11, 15, 11, "C cell", "Li-SOCl2, 3.6 V;\n2-pin plug", "#C2410C")

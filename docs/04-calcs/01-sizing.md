@@ -3,7 +3,7 @@ doc_id: LKL-CAL-001
 title: LeakListen sizing calculations
 project: LeakListen
 doc_type: Calculation
-version: "0.4"
+version: "0.5"
 status: Draft
 date: '2026-10-02'
 author: Amish Chadha
@@ -25,11 +25,15 @@ revisions:
   date: '2026-10-02'
   author: Amish Chadha
   change: "R12 status from Amish's 2026-10-02 restatement (LKL-DDR-003 A1): met on paper. Figures not rerun; sizing.py still prints the 1.0 kg total-mass target"
+- version: "0.5"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: 'Rerun with the R12 check on logger, cable and sensor (0.96 kg, neck bar and antenna excluded), the status light blink added to the daily charge (section C), the light pipe added to BOM line 7 (cost USD 142, USD 12 over the target); no requirement status changed'
 ---
 
 # LeakListen sizing calculations
 
-On paper, LeakListen meets seven of its fifteen requirements (four on paper, three by design), has four at risk, misses none (R12, mass, was missed once the constructable design added a neck bar hanger, LKL-DDR-003, until Amish restated it for the logger, cable and sensor on 2026-10-02), is USD 11 over its value-engineering target on cost (R15), leaves two that cannot be checked until there is field data and leaves one (R2) open until the hydrophone variant is sized. Version 0.1 of this note found two misses. R7 (radio link) was not met at 1 km: with a flat antenna under a cast-iron cover, and an assumed 20 dB cover loss, the link closes to about 0.53 km. Under LKL-DDR-002 a gateway is now planned within 0.5 km of each district with iron covers, and R7 is at risk rather than not met, because the margin at 0.5 km is only +0.9 dB and the cover loss is unmeasured. R2 (plastic mains) was not met: a contact sensor on a valve hears the reference leak only a few metres along PVC or PE pipe. R2 now applies to the hydrophone variant, and the contact sensor's scope is metallic mains. The 42 mm magnet fitted under LKL-DDR-002 moves R9 to met on paper. On iron mains the central estimate is about 185 m against the 100 m target, but the range spans about 93 to 370 m for plausible pipe losses, so R1 is at risk rather than met. The calculations changed four things in the TRL 2 concept: the seismic mass grows from about 11 g to about 53 g so that the sensor meets its noise target, the nightly summary shrinks from about 50 to 24 bytes so that it fits every LoRaWAN region, transmit power follows the regional limit (+14 dBm in EU868, not +20 dBm), and the clock is corrected weekly by the network. Every number in this note is printed by `docs/04-calcs/sizing.py`; the tag in brackets, for example [C1], is the line of that script's output that carries it.
+On paper, LeakListen meets seven of its fifteen requirements (four on paper, three by design), has four at risk, misses none (R12, mass, was missed once the constructable design added a neck bar hanger, LKL-DDR-003, until Amish restated it for the logger, cable and sensor on 2026-10-02), is USD 12 over its value-engineering target on cost (R15), leaves two that cannot be checked until there is field data and leaves one (R2) open until the hydrophone variant is sized. Version 0.1 of this note found two misses. R7 (radio link) was not met at 1 km: with a flat antenna under a cast-iron cover, and an assumed 20 dB cover loss, the link closes to about 0.53 km. Under LKL-DDR-002 a gateway is now planned within 0.5 km of each district with iron covers, and R7 is at risk rather than not met, because the margin at 0.5 km is only +0.9 dB and the cover loss is unmeasured. R2 (plastic mains) was not met: a contact sensor on a valve hears the reference leak only a few metres along PVC or PE pipe. R2 now applies to the hydrophone variant, and the contact sensor's scope is metallic mains. The 42 mm magnet fitted under LKL-DDR-002 moves R9 to met on paper. On iron mains the central estimate is about 185 m against the 100 m target, but the range spans about 93 to 370 m for plausible pipe losses, so R1 is at risk rather than met. The calculations changed four things in the TRL 2 concept: the seismic mass grows from about 11 g to about 53 g so that the sensor meets its noise target, the nightly summary shrinks from about 50 to 24 bytes so that it fits every LoRaWAN region, transmit power follows the regional limit (+14 dBm in EU868, not +20 dBm), and the clock is corrected weekly by the network. Every number in this note is printed by `docs/04-calcs/sizing.py`; the tag in brackets, for example [C1], is the line of that script's output that carries it.
 
 > **Safety:** These are first-principles estimates for a paper proof of concept. They do not replace confined space procedures, a lithium cell safety review or the utility's permission. Valve chambers can hold low-oxygen or toxic air; nothing in this note needs anyone to enter one. See LKL-PRC-001, Safety.
 
@@ -76,14 +80,15 @@ The design case is a DN150 gate valve in a concrete chamber under a cast-iron co
 
 *Table 2. Daily charge and battery life [C1].*
 
-| Case | Sleep | Listening | Radio | Self-discharge | Total | Life on energy |
-| --- | --- | --- | --- | --- | --- | --- |
-| EU868 SF7 +14 dBm | 0.096 | 0.840 | 0.005 | 0.211 | 1.15 mAh | 12.8 years |
-| EU868 SF12 +14 dBm | 0.096 | 0.840 | 0.076 | 0.211 | 1.22 mAh | 12.1 years |
-| US915 SF9 +20 dBm | 0.096 | 0.840 | 0.028 | 0.211 | 1.18 mAh | 12.6 years |
-| TRL 2 case, 50 bytes at SF12, +20 dBm | 0.096 | 0.840 | 0.281 | 0.211 | 1.43 mAh | 10.3 years |
+| Case | Sleep | Listening | Radio | Self-discharge | Status light | Total | Life on energy |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| EU868 SF7 +14 dBm | 0.096 | 0.840 | 0.005 | 0.211 | 0.028 | 1.18 mAh | 12.5 years |
+| EU868 SF12 +14 dBm | 0.096 | 0.840 | 0.076 | 0.211 | 0.028 | 1.25 mAh | 11.8 years |
+| US915 SF9 +20 dBm | 0.096 | 0.840 | 0.028 | 0.211 | 0.028 | 1.20 mAh | 12.3 years |
+| TRL 2 case, 50 bytes at SF12, +20 dBm | 0.096 | 0.840 | 0.281 | 0.211 | 0.028 | 1.46 mAh | 10.1 years |
 
-- **R6 is met on paper.** Every case gives 10.3 years or more on 5.39 Ah usable; life is still taken as 10 years, limited by cell and seal ageing. Listening, not radio, dominates: 59 % of the worst day [C2]. The TRL 2 figure of about 1.15 mAh a day stands for the EU868 case.
+- **R6 is met on paper.** Every case gives 10.1 years or more on 5.39 Ah usable; life is still taken as 10 years, limited by cell and seal ageing. Listening, not radio, dominates: 58 % of the worst day [C2]. The TRL 2 figure of about 1.15 mAh a day stands for the EU868 case before the status light is added.
+- **Status light blink.** The status light pipe (LKL-DDR-003, decision of 2026-10-02) is lit only for a brief blink at power-up or when the magnet is swiped. At 5 mA for 2 s a blink costs 0.0028 mAh; 10 blinks a day, a generous allowance, add 0.028 mAh a day, 1.9 % of the worst-case day [C4], and are included in Table 2. The effect is negligible.
 - **Pulse capacitor.** A bobbin cell carrying 30 mA leaves 0.06 F of capacitance to cover an EU868 SF12 burst and 0.05 F for US915 SF9, over a 0.5 V droop; a +20 dBm burst as long as SF12 would need 0.36 F [C3]. The main board specifies a hybrid layer capacitor of 0.1 F or more.
 
 ## D. Radio link from under the cover (R7)
@@ -163,7 +168,7 @@ The reference leak (5 L/min at 3 bar) is a 24.5 m/s jet through a 2.7 mm orifice
 
 ## K. Size, mass and installation (R10, R12)
 
-- **Size and mass.** The logger is 63 mm in diameter (68 mm over the radial screw heads) and 240 mm long flange to flange, 283 mm with its socket and eye bolt, within R12's 70 x 300 mm. Made parts are weighed from their model volume and material, bought parts from catalogue figures. The whole set weighs 1.35 kg [K1]: the housing with its acetal plugs 365 g, the neck bar with feet and lanyard 322 g, the cable 140 g, the magnet 126 g, the cell 90 g, the puck body 78 g and the antenna 70 g. The logger, cable and sensor alone weigh 0.96 kg. The neck bar that replaced the concept's 51 g strap (LKL-DDR-003, P1) puts the whole set 0.35 kg over 1.0 kg. On 2026-10-02 Amish restated R12 as 1.0 kg for the logger, cable and sensor, with the bar counted as site hardware (LKL-DDR-003, A1), so **R12 is met on paper** at 0.96 kg, a margin of 0.04 kg on estimated masses; the logger set is weighed at TRL 4.
+- **Size and mass.** The logger is 63 mm in diameter (68 mm over the radial screw heads) and 240 mm long flange to flange, 283 mm with its socket and eye bolt, within R12's 70 x 300 mm. Made parts are weighed from their model volume and material, bought parts from catalogue figures. The whole set weighs 1.35 kg [K1]: the housing with its acetal plugs 365 g, the neck bar with feet and lanyard 322 g, the cable 140 g, the magnet 126 g, the cell 90 g, the puck body 78 g and the antenna 70 g. The logger, cable and sensor alone weigh 0.96 kg; the 70 g antenna rides on the bar and is counted with it. The neck bar that replaced the concept's 51 g strap (LKL-DDR-003, P1) puts the whole set 0.35 kg over 1.0 kg. On 2026-10-02 Amish restated R12 as 1.0 kg for the logger, cable and sensor, with the bar counted as site hardware (LKL-DDR-003, A1), so **R12 is met on paper** at 0.96 kg, a margin of 0.04 kg (38 g) on estimated masses; the logger set is weighed at TRL 4.
 - **Reach.** The cable plug sits 0.48 m below the street, so the 2 m cable with 0.3 m of slack reaches a spindle cap 2.18 m down, covering chambers up to the 1.5 m of R10 [K2].
 - **Time.** The task estimate is 11 min: 3 min for cones and cover, 2 min to lower the puck on a pole, 2 min to set the neck bar with the logger and antenna already fitted and plug in the cable, 2 min to check the network join and 2 min to close up [K3]. It is 1 min over the R10 target and has not been shown with a crew, so **R10 is not verifiable at TRL 3**.
 
@@ -173,7 +178,7 @@ Random night-to-night scatter in the minimum level does not cause false alarms: 
 
 ## M. Cost (R15)
 
-Thirteen BOM lines, every one priced [M1]. Value-engineering target: USD 130 (`budget_usd`, a hypothetical control target, not a limit). Estimated cost of the constructable design: USD 141 (USD 11 over the target). The constructable design added USD 28 to the USD 113 of v0.2: the neck bar (USD 12 more than the strap), the turned plugs, O-rings and screws (USD 4), the chassis (USD 4), the eye bolt and SMA bulkhead (USD 7) and the thicker puck (USD 1). **R15 is USD 11 over the value-engineering target.**
+Thirteen BOM lines, every one priced [M1]. Value-engineering target: USD 130 (`budget_usd`, a hypothetical control target, not a limit). Estimated cost of the constructable design: USD 142 (USD 12 over the target). The constructable design added USD 28 to the USD 113 of v0.2 (USD 141 before the light pipe): the neck bar (USD 12 more than the strap), the turned plugs, O-rings and screws (USD 4), the chassis (USD 4), the eye bolt and SMA bulkhead (USD 7), the thicker puck (USD 1) and, added on 2026-10-02, the status light pipe (USD 1). **R15 is USD 12 over the value-engineering target.**
 
 ## N. Requirement status
 
@@ -190,9 +195,9 @@ Thirteen BOM lines, every one priced [M1]. Value-engineering target: USD 130 (`b
 | R10 | Install from the surface | 11 min task estimate; reach to 2.18 m | 10 min, 1.5 m, no entry | Not verifiable at TRL 3 |
 | R13 | Leak flag quality | Random scatter negligible; site events unknown | 1 per 20 loggers per month | Not verifiable at TRL 3 |
 | R5 | Night listening | 20 s worst with weekly time correction | 12 windows, under 1 min a month | Met on paper |
-| R6 | Battery life | 10.3 years or more on energy | 5 years | Met on paper |
+| R6 | Battery life | 10.1 years or more on energy | 5 years | Met on paper |
 | R9 | Attachment | 125 N at a 0.5 mm coating (187 N at 0.3 mm, 309 N bare) | 100 N | Met on paper |
-| R15 | Cost | $141.00 | $130 value-engineering target | USD 11 over the value-engineering target |
+| R15 | Cost | $142.00 | $130 value-engineering target | USD 12 over the value-engineering target |
 | R8 | Data and privacy | Processed as sampled, deleted on device | Only levels and spectra leave | Met by design |
 | R11 | Survive the chamber | IP68 parts; floats on its lanyard when flooded | IP68, -20 to +50 °C | Met by design |
 | R14 | Open and interoperable | 24-byte LoRaWAN 1.0.3 uplink, documented | Standard LoRaWAN | Met by design |
@@ -205,9 +210,9 @@ Thirteen BOM lines, every one priced [M1]. Value-engineering target: USD 130 (`b
 | --- | --- | --- |
 | 3.84 MB sampled a night | 3.84 MB [A1] | Stands |
 | About 50 bytes sent a night | 24 bytes [A4] | Changed; the precis is updated |
-| About 1.15 mAh a day | 1.15 to 1.22 mAh [C1] | Stands |
-| About 12.8 years on energy, about 10 years life | 10.3 to 12.8 years [C1] | Stands |
+| About 1.15 mAh a day | 1.18 to 1.25 mAh [C1], with the status light blink | Stands |
+| About 12.8 years on energy, about 10 years life | 10.1 to 12.5 years [C1] | Stands |
 | Radio at 20 dBm, 120 mA | +14 dBm in EU868 [D4] | Changed |
 | Magnet hold about 95 N, marginal | 90 N at 0.3 mm, 60 N at 0.5 mm [I1] | Stood; 42 mm magnet fitted (LKL-DDR-002) |
 | 63 x 240 mm, about 0.7 kg | 63 x 240 mm (283 mm overall), 1.35 kg with the neck bar [K1] | Mass changed (v0.2: 0.98 kg); the precis is updated |
-| About $108 in parts | $141.00 [M1] | Changed: $113.00 in v0.2 (mass $1, magnet $4); constructable design $28 more |
+| About $108 in parts | $142.00 [M1] | Changed: $113.00 in v0.2 (mass $1, magnet $4); constructable design $28 more |

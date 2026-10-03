@@ -3,7 +3,7 @@ doc_id: LKL-REQ-001
 title: LeakListen requirements
 project: LeakListen
 doc_type: Requirements
-version: "0.6"
+version: "0.7"
 status: Draft
 date: '2026-10-02'
 author: Amish Chadha
@@ -33,6 +33,10 @@ revisions:
   date: '2026-10-02'
   author: Amish Chadha
   change: "R12 restated by Amish on 2026-10-02 (LKL-DDR-003 A1): 1.0 kg for the logger, cable and sensor, neck bar counted as site hardware; met on paper"
+- version: "0.7"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: 'R6 figure and R15 cost updated for the status light pipe (LKL-DDR-003 follow-up); no status changed'
 ---
 
 # LeakListen requirements
@@ -48,7 +52,7 @@ Table 1. Requirements and status at TRL 3 (LKL-CAL-001).
 | R3 | Sensor bandwidth | 5 Hz to 2 kHz, within ±3 dB after correction | Resonance estimate (LKL-CAL-001 section F); later a shaker comparison | **At risk:** with the 42 mm magnet and the 8 mm puck base the mount resonates at about 676 to 1,350 Hz, flat only to 370 to 730 Hz |
 | R4 | Sensor self-noise | Equivalent input noise 1 µg/√Hz or less from 100 Hz to 1 kHz | Noise calculation (LKL-CAL-001 section F) | **At risk:** 1.03 µg/√Hz worst case with the 53 g seismic mass |
 | R5 | Night listening | 12 windows of 20 s between 02:00 and 04:00 local time, clock drift under 1 min per month | Clock drift estimate (LKL-CAL-001 section H) | Met on paper with a weekly network time correction (20 s worst); 87 s a month free running |
-| R6 | Battery life | 5 years or more on one primary cell at the R5 schedule and one uplink a night | Power budget (LKL-CAL-001 section C) | Met on paper: 10.3 years or more on energy; taken as 10 years |
+| R6 | Battery life | 5 years or more on one primary cell at the R5 schedule and one uplink a night | Power budget (LKL-CAL-001 section C) | Met on paper: 10.1 years or more on energy; taken as 10 years |
 | R7 | Radio link | 90 % or more of nightly summaries delivered from a chamber with a cast-iron cover to a gateway planned within 0.5 km of each such district; 1 km where the utility agrees to a composite cover or a through-cover antenna (LKL-DDR-002) | Link budget (LKL-CAL-001 section D); cover loss measurement and field check later (TRL 4, on hold) | **At risk:** +0.9 dB at 0.5 km under a 20 dB iron cover (EU868 SF12), -1.2 dB for US915 SF9, -9.1 dB for a tight 30 dB cover; cover loss unmeasured |
 | R8 | Data and privacy | Only band levels and spectra leave the logger; raw vibration samples are deleted on the device after processing. Fixed requirement (LKL-DDR-001 D6) | Design review | Met by design |
 | R9 | Attachment | Magnet holds 100 N or more on a steel or iron spindle cap, with no tools or pipe work | Hold estimate (LKL-CAL-001 section I); a pull test later | Met on paper with the 42 mm magnet (LKL-DDR-002): 125 N on a 0.5 mm coating, 187 N on 0.3 mm. Non-ferrous fittings, outside this target, need an adapter |
@@ -57,11 +61,11 @@ Table 1. Requirements and status at TRL 3 (LKL-CAL-001).
 | R12 | Size and mass | Logger 70 mm diameter or less and 300 mm long or less; logger, cable and sensor 1.0 kg or less. The neck bar is site hardware that stays in the chamber and is not counted (restated by Amish on 2026-10-02, LKL-DDR-003 A1) | Parametric model (LKL-CAL-001 section K); weighing at TRL 4 | Met on paper: 68 x 283 mm overall; logger, cable and sensor 0.96 kg (0.04 kg margin); the neck bar is 0.32 kg |
 | R13 | Leak flag quality | 1 false alarm or fewer per 20 loggers per month after a 14-night baseline | Field data from a partner network | Not verifiable at TRL 3 |
 | R14 | Open and interoperable | Standard LoRaWAN 1.0.x uplink (1.0.3 for the time request), documented 24-byte payload, works with any network server and TwinKit | Design review (LKL-CAL-001 sections A and B) | Met by design |
-| R15 | Cost | Parts cost per logger against a value-engineering target of USD 130 (`budget_usd`, a hypothetical control target) | Priced BOM (LKL-CAL-001 section M) | USD 141, USD 11 over the value-engineering target |
+| R15 | Cost | Parts cost per logger against a value-engineering target of USD 130 (`budget_usd`, a hypothetical control target) | Priced BOM (LKL-CAL-001 section M) | USD 142, USD 12 over the value-engineering target |
 
 ## Requirements at risk or open
 
-Summary (LKL-CAL-001 v0.4, Table 6): none not met, 4 at risk, 1 open (R2, variant not sized), 2 not verifiable at TRL 3, 4 met on paper, 3 met by design, and R15 USD 11 over its value-engineering target. R12 was not met on mass after LKL-DDR-003 until Amish restated it on 2026-10-02 (A1); before LKL-DDR-003 R12 and R15 were met on paper; before LKL-DDR-002 there were 2 not met (R2, R7) and 4 at risk (R1, R3, R4, R9).
+Summary (LKL-CAL-001 v0.4, Table 6): none not met, 4 at risk, 1 open (R2, variant not sized), 2 not verifiable at TRL 3, 4 met on paper, 3 met by design, and R15 USD 12 over its value-engineering target. R12 was not met on mass after LKL-DDR-003 until Amish restated it on 2026-10-02 (A1); before LKL-DDR-003 R12 and R15 were met on paper; before LKL-DDR-002 there were 2 not met (R2, R7) and 4 at risk (R1, R3, R4, R9).
 
 - **R12 thin margin on mass.** The concept's strap hanger could not be built (it had nothing to hook over except the seat under the cover), and the neck bar that replaces it (LKL-DDR-003) weighs 0.32 kg. The set is 1.35 kg; the logger, cable and sensor are 0.96 kg. Amish decided on 2026-10-02 (LKL-DDR-003, A1) to restate R12 as 1.0 kg for the logger, cable and sensor and count the bar as site hardware, so R12 is met on paper with a 0.04 kg margin; the logger set is weighed at TRL 4.
 

@@ -3,7 +3,7 @@ doc_id: LKL-PRC-001
 title: LeakListen design precis
 project: LeakListen
 doc_type: Design precis
-version: "0.6"
+version: "0.7"
 status: Draft
 date: '2026-10-02'
 author: Amish Chadha
@@ -33,13 +33,17 @@ revisions:
   date: '2026-10-02'
   author: Amish Chadha
   change: "Decisions of 2026-10-02: R12 restated (met on paper), calibration check in CalRig, first candidate partner region"
+- version: "0.7"
+  date: '2026-10-02'
+  author: Amish Chadha
+  change: 'Daily charge, battery life and cost updated for the status light pipe; general arrangement Rev P5; no requirement status changed'
 ---
 
 # LeakListen design precis
 
 ## Summary
 
-LeakListen is a battery-powered acoustic leak logger that hangs under a valve chamber cover, sticks a magnetic vibration sensor onto the valve spindle cap, listens to the pipe for a few minutes each night, and sends one small LoRaWAN summary a day. A leak on a pressurized main makes a steady hiss that travels along the pipe wall; when a logger's quietest night-time level rises and stays up for several nights, the server flags that street for a follow-up survey. The TRL 3 calculations (LKL-CAL-001 v0.3) give about 1.2 mAh a day, 10 years or more on one C-size lithium cell, 1.35 kg with the neck bar hanger and about $141 in parts for the constructable design (LKL-DDR-003). They also show the two weak points, now answered by decisions Amish accepted on 2026-09-25 (LKL-DDR-002). The reference leak is heard about 185 m along an iron main but only a few metres along a plastic one, so the magnet-on sensor is scoped to metallic mains and plastic networks are left to a hydrophone variant (R2, not yet sized). The radio reaches about 0.5 km, not 1 km, from under a cast-iron cover, so a gateway is planned within 0.5 km of each such district (R7, at risk until the cover loss is measured).
+LeakListen is a battery-powered acoustic leak logger that hangs under a valve chamber cover, sticks a magnetic vibration sensor onto the valve spindle cap, listens to the pipe for a few minutes each night, and sends one small LoRaWAN summary a day. A leak on a pressurized main makes a steady hiss that travels along the pipe wall; when a logger's quietest night-time level rises and stays up for several nights, the server flags that street for a follow-up survey. The TRL 3 calculations (LKL-CAL-001 v0.3) give about 1.2 mAh a day, 10 years or more on one C-size lithium cell, 1.35 kg with the neck bar hanger and about $142 in parts for the constructable design (LKL-DDR-003). They also show the two weak points, now answered by decisions Amish accepted on 2026-09-25 (LKL-DDR-002). The reference leak is heard about 185 m along an iron main but only a few metres along a plastic one, so the magnet-on sensor is scoped to metallic mains and plastic networks are left to a hydrophone variant (R2, not yet sized). The radio reaches about 0.5 km, not 1 km, from under a cast-iron cover, so a gateway is planned within 0.5 km of each such district (R7, at risk until the cover loss is measured).
 
 Figure 1. Concept in a valve chamber, street and chamber shown in section ([media/hero.png](../media/hero.png)). Figure 2. Exploded view with BOM numbers ([media/exploded.png](../media/exploded.png)). Figure 3. Cutaway of the logger and sensor ([media/cutaway.png](../media/cutaway.png)). Figure 4. Nightly data flow ([media/flow.png](../media/flow.png)). Figure 5. General arrangement, drawing LKL-DWG-001 Rev P4 ([cad/drawings/LKL-DWG-001.pdf](../cad/drawings/LKL-DWG-001.pdf)), from the parametric model [cad/src/model.py](../cad/src/model.py).
 
@@ -70,7 +74,7 @@ Table 1. Main components.
 | 9 | Neck bar hanger | Telescopic 20 and 16 mm square aluminium tube with two rubber levelling feet, wedged across the chamber neck below the frame; wire rope lanyard and snap hook | Surface installation (R10) without disturbing the cover |
 | 10 | Flat LoRa antenna | About 70 mm disc on a bracket on the neck bar, 20 mm under the cover; 1 m lead with an SMA plug | Radio as close to the cover as possible (R7) |
 | 12 | Internal chassis | Printed PETG spine hung from the top plug, clips for the cell and capacitor, desiccant pocket | Holds the electronics; lifts out with the top plug |
-| 13 | Top plug fittings | M6 eye bolt (lanyard) and IP67 SMA bulkhead (antenna) | Each sealed on its own washer or O-ring |
+| 13 | Top plug fittings | M6 eye bolt (lanyard) and IP67 SMA bulkhead (antenna); the status light pipe rod, part of line 7, shows a short blink at power-up or magnet swipe | Each sealed on its own washer or O-ring |
 
 ## Key design choices
 
@@ -95,8 +99,8 @@ Table 2. Key numbers.
 | Quantity | Value | Requirement |
 | --- | --- | --- |
 | Data sampled and sent per night | 3.84 MB sampled and deleted; 24 bytes sent | R8, R14 |
-| Daily charge | 1.15 mAh (EU868 SF7) to 1.22 mAh (EU868 SF12) | R6 |
-| Battery life on energy | 10.3 to 12.8 years; taken as 10 years | R6 (5 years) |
+| Daily charge | 1.18 mAh (EU868 SF7) to 1.25 mAh (EU868 SF12), with the status light blink | R6 |
+| Battery life on energy | 10.1 to 12.5 years; taken as 10 years | R6 (5 years) |
 | Airtime | 1.97 s per uplink at SF12; 5.9 s a day worst case | R14 |
 | Link under an iron cover (20 dB assumed) | About 0.53 km range (EU868 SF12); +0.9 dB at the planned 0.5 km gateway distance, -1.2 dB for US915 SF9 | R7 at risk |
 | Detection distance, reference leak | About 185 m on ductile iron (93 to 370 m); about 4 m on PVC with the contact sensor, out of its scope | R1 at risk; R2 open (hydrophone variant) |
@@ -105,13 +109,13 @@ Table 2. Key numbers.
 | Magnet hold on iron, 42 mm magnet | 309 N bare, 187 N at 0.3 mm, 125 N at a 0.5 mm coating | R9 met on paper |
 | Clock | 20 s worst with a weekly time correction | R5 |
 | Size and mass | 63 mm tube (68 mm over the screw heads), 283 mm overall; 1.35 kg with the neck bar, 0.96 kg for the logger, cable and sensor | R12 met on paper: 0.96 kg against 1.0 kg for the logger, cable and sensor (restated 2026-10-02, LKL-DDR-003 A1); the bar is site hardware |
-| Parts cost | About $141 against a value-engineering target of $130 | R15: USD 11 over the target |
+| Parts cost | About $142 against a value-engineering target of $130 | R15: USD 12 over the target |
 
 **Energy.** Listening, 12 mA for about 252 s a night, is 59 % of the worst day; sleep at 4 µA and the cell's own self-discharge make up most of the rest. The radio adds only 0.005 to 0.08 mAh a day at +14 dBm.
 
 **Radio.** The flat antenna under the cover is the weak link. To close 1 km, the cover may cost no more than about 10 dB. Decided by Amish, 2026-09-25 (LKL-DDR-002): measure the cover loss first, then plan a gateway within about 0.5 km of each district with iron covers, with a through-cover antenna or composite cover where a utility agrees. At 0.5 km the EU868 link has +0.9 dB to spare at a 20 dB cover loss, and the US915 SF9 link misses by 1.2 dB.
 
-**Cost.** Value-engineering target: USD 130. Estimated cost of the constructable design: USD 141 (USD 11 over the target), see [bom/bom.csv](../bom/bom.csv). The neck bar, the turned end plugs, the chassis and the top plug fittings added USD 28 to the concept's USD 113.
+**Cost.** Value-engineering target: USD 130. Estimated cost of the constructable design: USD 142 (USD 12 over the target), see [bom/bom.csv](../bom/bom.csv). The neck bar, the turned end plugs, the chassis and the top plug fittings added USD 28 to the concept's USD 113.
 
 ## Safety
 
