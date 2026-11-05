@@ -12,7 +12,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT / ".kit"), str(ROOT / "cad" / "src")]
 from drawing import Sheet, _viewbox, _t, M, TB_Y, INK, MUTED  # noqa: E402
-from model import PARAMS as P, assembly, derived  # noqa: E402
+from model import PARAMS as P, components, derived  # noqa: E402
+import build123d as _b  # noqa: E402
+
+
+def assembly(with_site=True):
+    """Kit 1.9 detailed model of option A (all parts) for the general arrangement."""
+    kids = []
+    for q in components("A"):
+        if q["kind"] == "context" and not with_site:
+            continue
+        kids.append(q["shape"])
+    return _b.Compound(children=kids)
 
 DATE = "2026-09-25"
 DATE4 = "2026-10-01"
@@ -24,8 +35,9 @@ def safe_project_views(part, workdir, line_weight=0.35):
     workdir = Path(workdir); workdir.mkdir(parents=True, exist_ok=True)
     bb = part.bounding_box()
     c = bb.center(); d = max(bb.size.X, bb.size.Y, bb.size.Z) * 10
-    setups = {"front": ((c.X, c.Y - d, c.Z), (0, 0, 1)), "top": ((c.X, c.Y, c.Z + d), (0, 1, 0)),
-              "right": ((c.X + d, c.Y, c.Z), (0, 0, 1)), "iso": ((c.X + d, c.Y - d, c.Z + d * 0.8), (0, 0, 1))}
+    e = d * 1e-4     # a viewpoint exactly on an axis makes the hidden-line pass crawl on 70+ parts; 0.006 deg is invisible
+    setups = {"front": ((c.X + e, c.Y - d, c.Z + e), (0, 0, 1)), "top": ((c.X + e, c.Y + e, c.Z + d), (0, 1, 0)),
+              "right": ((c.X + d, c.Y + e, c.Z + e), (0, 0, 1)), "iso": ((c.X + d, c.Y - d, c.Z + d * 0.8), (0, 0, 1))}
     out, skipped = {}, 0
     for name, (origin, up) in setups.items():
         visible, hidden = part.project_to_viewport(origin, up, (c.X, c.Y, c.Z))
@@ -101,14 +113,15 @@ def main():
     asm = assembly(with_site=True)
     views = safe_project_views(asm, work)
     bb = asm.bounding_box()
-    s = Sheet(project="LeakListen", title="General arrangement, logger installed", dwg_no="LKL-DWG-001", rev="P5",
-              author="Amish Chadha", date="2026-10-02", scale=None, theme="technical",
+    s = Sheet(project="LeakListen", title="General arrangement, logger installed", dwg_no="LKL-DWG-001", rev="P6",
+              author="Amish Chadha", date="2026-11-01", scale=None, theme="technical",
               material="PVC, aluminium, stainless; bought-in parts per bom/bom.csv. PRELIMINARY, NOT FOR FABRICATION",
               revisions=[("P1", "Preliminary GA for TRL 3 (from cad/src/model.py)", DATE, "AC"),
                          ("P2", "42 mm pot magnet (LKL-DDR-002)", DATE, "AC"),
                          ("P3", "Layout and labels tidied", DATE, "AC"),
                          ("P4", "Constructable design: neck bar, end plugs, chassis (LKL-DDR-003)", DATE4, "AC"),
-                         ("P5", "Status light pipe added to the top plug (decision of 2026-10-02)", "2026-10-02", "AC")])
+                         ("P5", "Status light pipe added to the top plug (decision of 2026-10-02)", "2026-10-02", "AC"),
+                         ("P6", "Drawn from the kit 1.9 detailed model (72 parts)", "2026-11-01", "AC")])
     s.add_ortho(views)
     k = s.scale
     c = ortho_cells(s, views)

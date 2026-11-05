@@ -8,7 +8,7 @@ An acoustic leak sensor that clamps onto water mains and valves and listens over
 
 ![LeakListen: acoustic leak logger for water valve chambers, product render](media/render-hero.png)
 
-[Exploded render](media/render-exploded.png) · [Detail render](media/render-detail.png) · [Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement LKL-DWG-001 (PDF)](cad/drawings/LKL-DWG-001.pdf) · [Sizing calculations](docs/04-calcs/01-sizing.md) · [Prototype build plan](docs/05-build-plan.md) · [Design decisions](docs/06-design-decisions.md) · [Review note](docs/REVIEW.md)
+[Exploded render](media/render-exploded.png) · [Detail render](media/render-detail.png) · [Interactive 3D model](media/viewer.html) · [Concept blueprint (PDF)](media/concept-blueprint.pdf) · [General arrangement LKL-DWG-001 (PDF)](cad/drawings/LKL-DWG-001.pdf) · [STEM check](docs/01b-stem-check.md) · [Concept options](docs/02a-concept-options.md) · [User](docs/03a-user-requirements.md) and [product requirements](docs/03-requirements.md) · [Traceability](docs/03b-traceability.md) · [Sizing calculations](docs/04-calcs/01-sizing.md) · [Prototype build plan](docs/05-build-plan.md) · [Design decisions](docs/06-design-decisions.md) · [Review note](docs/REVIEW.md)
 
 ## Concept rationale
 
@@ -57,9 +57,23 @@ A large share of treated city water is lost to leaks before it reaches customers
 
 A magnetic piezo sensor clips onto a valve spindle cap and a sealed logger hangs under the chamber cover, placed from the surface with no chamber entry. Each night between 02:00 and 04:00 the logger records twelve 20 s windows, computes levels and a 64-band spectrum from 5 Hz to 2 kHz, deletes the raw samples and sends a 24-byte summary over LoRaWAN. A server (or the lab's TwinKit gateway) flags a logger whose night-time minimum level rises and stays up, and a crew then pinpoints the leak with standard tools.
 
-Estimated performance at TRL 3 ([LKL-CAL-001](docs/04-calcs/01-sizing.md)): about 1.2 mAh a day and 10 years or more on one C-size lithium cell; 0.96 kg for the logger, cable and sensor against R12's 1.0 kg (met on paper), plus a 0.32 kg neck bar that stays in the chamber; about $142 in parts against a $130 value-engineering target. The reference leak (5 L/min at 3 bar) is heard about 185 m along an iron main, with a wide uncertainty. The magnet-on sensor is for metallic mains; plastic networks are served by a hydrophone variant on hydrants, not yet sized (R2). Under a cast-iron cover the radio reaches about 0.5 km, so a gateway is planned within 0.5 km of each such district (R7, at risk until cover loss is measured). Also at risk: detection on iron (R1), sensor bandwidth (R3) and noise (R4). A 42 mm magnet now holds 125 N on a coated cap (R9 met on paper). Install time and the false alarm rate need field work.
+Estimated performance at TRL 3 ([LKL-CAL-001](docs/04-calcs/01-sizing.md)): about 1.2 mAh a day and 10 years or more on one C-size lithium cell; 0.96 kg for the logger, cable and sensor against R12's 1.0 kg (met on paper), plus a 0.31 kg neck bar that stays in the chamber; about $142 in parts against a $130 value-engineering target. The reference leak (5 L/min at 3 bar) is heard about 185 m along an iron main, with a wide uncertainty. The magnet-on sensor is for metallic mains; plastic networks are served by a hydrophone variant on hydrants, not yet sized (R2). Under a cast-iron cover the radio reaches about 0.5 km, so a gateway is planned within 0.5 km of each such district (R7, at risk until cover loss is measured). Also at risk: detection on iron (R1), sensor bandwidth (R3) and noise (R4). A 42 mm magnet now holds 125 N on a coated cap (R9 met on paper). Install time and the false alarm rate need field work.
 
-Full design precis: [docs/02-concept.md](docs/02-concept.md) · Requirements: [docs/03-requirements.md](docs/03-requirements.md) · Decisions: [DDR-001](docs/decisions/0001-trl2-review-decisions.md), [DDR-002](docs/decisions/0002-recommendations-accepted.md) · Model: [cad/src/model.py](cad/src/model.py)
+Full design precis: [docs/02-concept.md](docs/02-concept.md) · Requirements: [docs/03a-user-requirements.md](docs/03a-user-requirements.md), [docs/03-requirements.md](docs/03-requirements.md) · Decisions: [DDR-001](docs/decisions/0001-trl2-review-decisions.md), [DDR-002](docs/decisions/0002-recommendations-accepted.md), [DDR-004 (concept choice, proposed)](docs/decisions/0004-concept-selection.md) · Model: [cad/src/model.py](cad/src/model.py)
+
+## Concept options
+
+Three working principles were compared against the user requirements ([LKL-OPT-001](docs/02a-concept-options.md)); each is modelled in detail (72, 89 and 80 parts) in [cad/src/model.py](cad/src/model.py). **Proposed, awaiting Amish:** option A for the product and option B as the plastic-main variant ([LKL-DDR-004](docs/decisions/0004-concept-selection.md)).
+
+| Option | Working principle | Score (of 205) | Model mass | Main trade-off |
+| --- | --- | --- | --- | --- |
+| A, magnet-on contact sensor (the design above) | Piezo accelerometer on a valve spindle cap | 155 | 1.3 kg | Light, cheap, no water contact; short reach on plastic mains |
+| B, hydrant cap hydrophone | Piezoceramic tube in the water column through a hydrant cap | 127 | 6.0 kg | Hears any pipe material; sits in drinking water, heavy, unpriced |
+| C, ground spike geophone | Geophone on a spike in the verge, logger in a ground box | 123 | 15.3 kg | No pipe access needed; hears only a few metres from the main |
+
+## STEM check
+
+Every physical, chemical and biological claim was checked against known science ([LKL-STM-001](docs/01b-stem-check.md), `docs/04-calcs/stem_check.py`): 9 within known science, 13 plausible (they need field data or datasheets), 1 failed in a detail (a contact sensor hears only about 4 m along PVC) and was fixed by the earlier decision to scope it to metallic mains. `stem_check` is open, not failed. An independent reviewer agent refuted or weakened several headline numbers (for example the iron reach is about 140 m, not 185 m, once the leak must lift the night level by the 6 dB of the flag rule); the changes are in the document.
 
 ## Key components
 

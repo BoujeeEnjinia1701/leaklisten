@@ -3,9 +3,9 @@ doc_id: LKL-CAL-001
 title: LeakListen sizing calculations
 project: LeakListen
 doc_type: Calculation
-version: "0.5"
+version: "0.6"
 status: Draft
-date: '2026-10-02'
+date: '2026-11-01'
 author: Amish Chadha
 license: CERN-OHL-S-2.0
 revisions:
@@ -29,6 +29,11 @@ revisions:
   date: '2026-10-02'
   author: Amish Chadha
   change: 'Rerun with the R12 check on logger, cable and sensor (0.96 kg, neck bar and antenna excluded), the status light blink added to the daily charge (section C), the light pipe added to BOM line 7 (cost USD 142, USD 12 over the target); no requirement status changed'
+- version: "0.6"
+  date: '2026-11-01'
+  author: Amish Chadha
+  change: 'Re-run on the kit 1.9 detailed model (cad/src/model.py, option A at D3): the neck bar weighs 0.31 kg and the set 1.34 kg (was 0.32 and 1.34 kg); no requirement status changed; requirement numbers cross-referenced to LKL-PRS-001 (PR-001 to PR-020) in the new section P'
+
 ---
 
 # LeakListen sizing calculations
@@ -168,7 +173,7 @@ The reference leak (5 L/min at 3 bar) is a 24.5 m/s jet through a 2.7 mm orifice
 
 ## K. Size, mass and installation (R10, R12)
 
-- **Size and mass.** The logger is 63 mm in diameter (68 mm over the radial screw heads) and 240 mm long flange to flange, 283 mm with its socket and eye bolt, within R12's 70 x 300 mm. Made parts are weighed from their model volume and material, bought parts from catalogue figures. The whole set weighs 1.35 kg [K1]: the housing with its acetal plugs 365 g, the neck bar with feet and lanyard 322 g, the cable 140 g, the magnet 126 g, the cell 90 g, the puck body 78 g and the antenna 70 g. The logger, cable and sensor alone weigh 0.96 kg; the 70 g antenna rides on the bar and is counted with it. The neck bar that replaced the concept's 51 g strap (LKL-DDR-003, P1) puts the whole set 0.35 kg over 1.0 kg. On 2026-10-02 Amish restated R12 as 1.0 kg for the logger, cable and sensor, with the bar counted as site hardware (LKL-DDR-003, A1), so **R12 is met on paper** at 0.96 kg, a margin of 0.04 kg (38 g) on estimated masses; the logger set is weighed at TRL 4.
+- **Size and mass.** The logger is 63 mm in diameter (68 mm over the radial screw heads) and 240 mm long flange to flange, 283 mm with its socket and eye bolt, within R12's 70 x 300 mm. Made parts are weighed from their model volume and material, bought parts from catalogue figures. The whole set weighs 1.34 kg [K1]: the housing with its acetal plugs 364 g, the neck bar with feet and lanyard 310 g, the cable 140 g, the magnet 126 g, the cell 90 g, the puck body 78 g and the antenna 70 g. The logger, cable and sensor alone weigh 0.96 kg; the 70 g antenna rides on the bar and is counted with it. The neck bar that replaced the concept's 51 g strap (LKL-DDR-003, P1) puts the whole set 0.35 kg over 1.0 kg. On 2026-10-02 Amish restated R12 as 1.0 kg for the logger, cable and sensor, with the bar counted as site hardware (LKL-DDR-003, A1), so **R12 is met on paper** at 0.96 kg, a margin of 0.04 kg (38 g) on estimated masses; the logger set is weighed at TRL 4.
 - **Reach.** The cable plug sits 0.48 m below the street, so the 2 m cable with 0.3 m of slack reaches a spindle cap 2.18 m down, covering chambers up to the 1.5 m of R10 [K2].
 - **Time.** The task estimate is 11 min: 3 min for cones and cover, 2 min to lower the puck on a pole, 2 min to set the neck bar with the logger and antenna already fitted and plug in the cable, 2 min to check the network join and 2 min to close up [K3]. It is 1 min over the R10 target and has not been shown with a crew, so **R10 is not verifiable at TRL 3**.
 
@@ -186,7 +191,7 @@ Thirteen BOM lines, every one priced [M1]. Value-engineering target: USD 130 (`b
 
 | ID | Requirement | Value | Target | Status |
 | --- | --- | --- | --- | --- |
-| R12 | Size and mass | 68 x 283 mm; logger, cable and sensor 0.96 kg (1.35 kg with the neck bar) | 70 x 300 mm; 1.0 kg for the logger, cable and sensor (restated 2026-10-02) | Met on paper (0.04 kg margin) |
+| R12 | Size and mass | 68 x 283 mm; logger, cable and sensor 0.96 kg (1.34 kg with the neck bar) | 70 x 300 mm; 1.0 kg for the logger, cable and sensor (restated 2026-10-02) | Met on paper (0.04 kg margin) |
 | R1 | Hear a leak on metallic mains | 185 m on ductile iron at central efficiency (105 to 325 m over source efficiency, 93 to 370 m over pipe loss) | 100 m | **At risk** |
 | R3 | Sensor bandwidth | Mounted resonance 676 to 1,352 Hz; flat to 366 to 732 Hz | 5 Hz to 2 kHz, ±3 dB after correction | **At risk** |
 | R4 | Sensor self-noise | 1.03 µg/√Hz worst from 100 Hz to 1 kHz | 1 µg/√Hz | **At risk** |
@@ -214,5 +219,11 @@ Thirteen BOM lines, every one priced [M1]. Value-engineering target: USD 130 (`b
 | About 12.8 years on energy, about 10 years life | 10.1 to 12.5 years [C1] | Stands |
 | Radio at 20 dBm, 120 mA | +14 dBm in EU868 [D4] | Changed |
 | Magnet hold about 95 N, marginal | 90 N at 0.3 mm, 60 N at 0.5 mm [I1] | Stood; 42 mm magnet fitted (LKL-DDR-002) |
-| 63 x 240 mm, about 0.7 kg | 63 x 240 mm (283 mm overall), 1.35 kg with the neck bar [K1] | Mass changed (v0.2: 0.98 kg); the precis is updated |
+| 63 x 240 mm, about 0.7 kg | 63 x 240 mm (283 mm overall), 1.34 kg with the neck bar [K1] | Mass changed (v0.2: 0.98 kg); the precis is updated |
 | About $108 in parts | $142.00 [M1] | Changed: $113.00 in v0.2 (mass $1, magnet $4); constructable design $28 more |
+
+## P. Cross-reference to the product requirements (LKL-PRS-001)
+
+The requirements are now numbered PR-001 to PR-020 in LKL-PRS-001 (kit 1.9.1). Table 6 keeps the TRL 3 numbers: R-n is PR-0n (R1 is PR-001 and R15 is PR-015). The four safety requirements S1 to S4 became PR-016 to PR-019, and PR-020 (transmit power within the regional limit) is section D, line [D4]. PR-016 to PR-020 are met by design on paper and need no calculation here: PR-016 (no confined space entry, from the surface placement of R10), PR-017 (primary cell with fuse or PTC and reverse protection, no charger), PR-018 (owner, contact and lithium warning label, BOM line 11), PR-019 (no part touches the water or the pipe) and PR-020 (+14 dBm ERP in EU868, [D4]).
+
+The model behind sections F, J and K was rebuilt in the kit 1.9 detailed form (about 72 parts, with every fastener, O-ring, stock section and board). Its mass is 1.33 kg against the 1.34 kg of [K1], which uses catalogue figures for bought parts; the margin on R12 (38 g) is unchanged.

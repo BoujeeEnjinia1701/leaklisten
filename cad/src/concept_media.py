@@ -13,9 +13,25 @@ the valve chamber can be seen. Existing utility assets (pipe, valve) are grey wi
 import sys
 from pathlib import Path
 sys.path[:0] = [str(Path(__file__).resolve().parents[2] / ".kit"), str(Path(__file__).resolve().parent)]
-from build123d import Box, Cylinder, Pos, Rot, Solid, Plane, Vector
+from build123d import Box, Cylinder, Compound, Pos, Rot, Solid, Plane, Vector
 from concept import Part, render_all, human_figure
-from model import PARAMS as MP, build_components, site_context  # noqa: E402
+from model import PARAMS as MP, site_context  # noqa: E402
+import build123d as _b  # noqa: E402
+
+# An exactly axis-aligned viewpoint makes the hidden-line pass crawl on a many-part model (hours); tilt every
+# viewpoint by 0.006 deg (invisible on the sheet).
+_orig_ptv = _b.Compound.project_to_viewport
+
+
+def _ptv(self, origin, up=(0, 0, 1), look_at=None, *a, **k):
+    o = _b.Vector(*origin)
+    la = _b.Vector(*look_at) if look_at is not None else _b.Vector(0, 0, 0)
+    e = (o - la).length * 1e-4
+    o = _b.Vector(o.X + (e if abs(o.X - la.X) < 1e-6 else 0), o.Y + (e if abs(o.Y - la.Y) < 1e-6 else 0), o.Z + (e if abs(o.Z - la.Z) < 1e-6 else 0))
+    return _orig_ptv(self, (o.X, o.Y, o.Z), up, look_at, *a, **k)
+
+
+_b.Compound.project_to_viewport = _ptv
 
 # ---------------- key dimensions ----------------
 PIPE_Z = -1000.0          # main axis depth (about 0.9 m cover to crown)
@@ -77,36 +93,35 @@ bonnet = Pos(0, 0, PIPE_Z + 130 + 150) * Cylinder(75, 300)
 spindle = Pos(0, 0, -575) * Cylinder(18, 150)
 valve = flanges + body + bonnet + spindle
 
-# ---------------- LeakListen parts (from the parametric model, LKL-DDR-003 constructable design) ----------------
-C = build_components(MP)
+# ---------------- LeakListen parts (from the kit 1.9 detailed model, option A, LKL-DDR-003 constructable design) ----------------
+from model import components  # noqa: E402
+
 cap = site_context(MP)["cap"]
 assert MP["cap_top_z"] == -480.0  # the context valve spindle above is drawn for this cap height
+_OPT_A = [q for q in components("A") if q["kind"] != "context"]
 
 
-def grp(*keys):
-    out = None
-    for k in keys:
-        out = C[k].shape if out is None else out + C[k].shape
-    return out
+def bom_group(*lines, keys=None):
+    """One shape from every part of option A on the given BOM lines (and, if keys is given, with those keys)."""
+    kids = [q["shape"] for q in _OPT_A if q["bom"] in lines and (keys is None or q["key"] in keys)]
+    return Compound(children=kids) if kids else None
 
 
 parts = [
     Part("Valve spindle cap (existing)", cap, "#4B5563"),
-    Part("Sensor puck body, potted", grp("puck", "potting"), "#0F766E", 1, (170, 0, 20)),
-    Part(f"Pot magnet, {MP['magnet_d']:.0f} mm", grp("magnet"), "#B91C1C", 2, (170, 0, -50)),
-    Part("Piezo disc and seismic mass", grp("piezo", "mass"), "#D4A017", 3, (170, 0, 95)),
-    Part("Charge preamplifier", grp("preamp"), "#16A34A", 4, (170, 0, 140)),
-    Part("Sensor cable, M12 IP68", grp("cable", "m12_plug"), "#111827", 5, (60, 0, -40)),
-    Part("Logger housing, IP68", grp("tube", "botplug", "topplug", "socket", "top_orings", "bot_orings", "screws_top", "screws_bot"),
-         "#0E7490", 6, (-150, 0, 0)),
-    Part("Main board, LoRaWAN", grp("board", "hlc"), "#2563EB", 7, (100, -90, 30)),
-    Part("Primary cell, Li-SOCl2 C", grp("cell"), "#C2410C", 8, (100, 90, -40)),
-    Part("Neck bar hanger and lanyard", grp("bar_outer", "bar_inner", "inserts", "feet", "lockpin", "bracket", "bracket_bolt", "lanyard"),
-         "#A16207", 9, (0, 0, 230)),
-    Part("Flat LoRa antenna", grp("antenna", "ant_nut", "ant_lead"), "#7C3AED", 10, (150, 0, 420)),
-    Part("Desiccant", grp("desiccant"), "#E5E7EB", None, (100, 90, 60)),
-    Part("Internal chassis", grp("chassis", "standoffs", "board_standoffs"), "#94A3B8", 12, (100, 0, 0)),
-    Part("Eye bolt and SMA bulkhead", grp("eyebolt", "sma"), "#374151", 13, (-150, 0, 90)),
+    Part("Sensor puck body", bom_group(1), "#0F766E", 1, (170, 0, 20)),
+    Part(f"Pot magnet, {MP['magnet_d']:.0f} mm", bom_group(2), "#B91C1C", 2, (170, 0, -50)),
+    Part("Piezo disc and seismic mass", bom_group(3), "#D4A017", 3, (170, 0, 95)),
+    Part("Charge preamplifier", bom_group(4), "#16A34A", 4, (170, 0, 140)),
+    Part("Sensor cable, M12 IP68", bom_group(5), "#111827", 5, (60, 0, -40)),
+    Part("Logger housing, IP68", bom_group(6), "#0E7490", 6, (-150, 0, 0)),
+    Part("Main board, LoRaWAN", bom_group(7), "#2563EB", 7, (100, -90, 30)),
+    Part("Primary cell, Li-SOCl2 C", bom_group(8), "#C2410C", 8, (100, 90, -40)),
+    Part("Neck bar hanger and lanyard", bom_group(9), "#A16207", 9, (0, 0, 230)),
+    Part("Flat LoRa antenna", bom_group(10), "#7C3AED", 10, (150, 0, 420)),
+    Part("Desiccant and potting", bom_group(11), "#E5E7EB", None, (100, 90, 60)),
+    Part("Internal chassis", bom_group(12), "#94A3B8", 12, (100, 0, 0)),
+    Part("Eye bolt and SMA bulkhead", bom_group(13), "#374151", 13, (-150, 0, 90)),
 ]
 
 # The existing main and valve are shown in the hero only, so the exploded view and cutaway frame the logger
@@ -138,6 +153,6 @@ render_all(
 
 # Hero with a plain-language note (the default note would list every context part by name)
 from concept import _render  # noqa: E402
-hero_parts = [Part(p.name, keep_back(p.shape), p.color, p.bom, p.explode, p.alpha) if p.bom == 9 else p for p in parts]
+hero_parts = [Part(p.name, keep_back(p.shape), p.color, p.bom, p.explode, p.alpha) if p.bom == 9 else p for p in parts]  # bar sectioned
 _render(hero_parts + context, Path("media") / "hero.png", title="LeakListen",
         note="Grey figure: 1.75 m person for scale. Street, soil and valve chamber shown in section.")

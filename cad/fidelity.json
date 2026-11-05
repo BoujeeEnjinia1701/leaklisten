@@ -1,0 +1,47 @@
+{
+ "level": "D3",
+ "stage": "P3",
+ "hash": "58064bf2aa20b427",
+ "options": {
+  "A": {
+   "title": "Magnet-on contact sensor",
+   "parts": 72,
+   "made_or_bought": 48,
+   "fasteners": 24,
+   "welds": 0,
+   "bare": [],
+   "bare_share": 0.0,
+   "interference": [],
+   "mass_kg": 1.3,
+   "step_files": 48
+  },
+  "B": {
+   "title": "Hydrant cap hydrophone",
+   "parts": 89,
+   "made_or_bought": 41,
+   "fasteners": 40,
+   "welds": 8,
+   "bare": [],
+   "bare_share": 0.0,
+   "interference": [],
+   "mass_kg": 6.0,
+   "step_files": 0
+  },
+  "C": {
+   "title": "Ground spike geophone",
+   "parts": 80,
+   "made_or_bought": 42,
+   "fasteners": 38,
+   "welds": 0,
+   "bare": [],
+   "bare_share": 0.0,
+   "interference": [],
+   "mass_kg": 15.3,
+   "step_files": 0
+  }
+ },
+ "failures": [],
+ "warnings": [],
+ "passed": true,
+ "seconds": 51.4
+}

@@ -3,7 +3,7 @@ doc_id: LKL-DEC-001
 title: LeakListen design decisions register
 project: LeakListen
 doc_type: Design decisions register
-version: "0.2"
+version: "0.3"
 status: Draft
 date: '2026-10-02'
 author: Amish Chadha
@@ -17,6 +17,11 @@ revisions:
     date: '2026-10-02'
     author: Amish Chadha
     change: "Amish approved the recommendations for all six open decisions on 2026-10-02 (LKL-DDR-003 accepted); moved to decisions made"
+  - version: "0.3"
+    date: '2026-11-01'
+    author: Amish Chadha
+    change: "Kit 1.9.1 upgrade: concept choice proposed (D10, awaiting Amish), STEM fix record (D11), modelling notes (M1 to M4); no earlier decision changed"
+
 ---
 
 # LeakListen design decisions register
@@ -25,7 +30,12 @@ Every design decision still to be made, and every decision made, in one place. E
 
 ## Open decisions
 
-None. All open decisions were decided on 2026-10-02.
+Table 1. Decisions proposed and awaiting Amish.
+
+| # | Decision | Options | Recommendation | Record |
+| --- | --- | --- | --- | --- |
+| D10 | Concept choice | A magnet-on contact sensor (existing design, score 155 of 205); B hydrant cap hydrophone (127); C ground spike geophone (123) | Option A as the product, option B kept as the plastic-main variant; A leads B by 18 %, so no tie | LKL-DDR-004; LKL-OPT-001 |
+| D12 | Optional: raise the seismic mass from 53 g to about 56 g (20 mm brass rod, 21 mm long) to bring self-noise from 1.03 to under 1.0 µg/√Hz (PR-004) | Leave as is (PR-004 stays at risk); change the dimension | Leave as is until the ceramic and amplifier data are real; the 3 g costs 3 g of the 38 g mass margin on PR-012 | LKL-STM-001 S4; LKL-CAL-001 F3 |
 
 ## To confirm when parts are bought
 
@@ -61,3 +71,5 @@ Value-engineering target: USD 130 (a hypothetical control target, not a limit). 
 | 2026-10-02 | First partner: a water utility with metallic mains, district metered areas and a leakage target it reports against. First candidate region to approach: the UK, where water companies run district metered areas and report leakage to the regulator; that would set the radio band to EU868 | Amish: "i approve your recommendations for all 555 open decisions." | LKL-DDR-002, O1 |
 | 2026-10-02 | The vibration calibration check goes in CalRig as a small shaker bay; LeakListen defines the acceptance test (frequency range, level and pass band) in its own repo | Amish: "i approve your recommendations for all 555 open decisions." | LKL-DDR-002, O2 |
 | 2026-10-02 | Light pipe on the top plug kept, lit only for a brief blink at power-up or magnet swipe and added to BOM line 7; board orientation, cable route and render context accepted as appearance only | Amish: "i approve your recommendations for all 555 open decisions." | `docs/REVIEW.md`, 2026-09-26 |
+| 2026-11-01 | D11 (decided under Amish's standing instruction of 2026-10-23): the STEM check row S3 failed in a detail, a contact sensor hears the reference leak only about 4 m along PVC. The fix keeps the working principle and was already decided by Amish on 2026-09-25 (D8: contact sensor for metallic mains only); the hydrophone variant that answers plastic mains is now modelled at D3 as option B and screened in the STEM check (SB1). No design dimension changed. | Standing instruction, 2026-10-23, and D8 | LKL-STM-001 |
+| 2026-11-01 | M1 to M4: modelling notes, no dimension changed. M1: cad/src/model.py rebuilt to the kit 1.9 interface; the neck bar is now 0.31 kg (was 0.32 kg) because its tubes are real stock sections with holes, so the set is 1.34 kg and the logger, cable and sensor stay 0.96 kg. M2: the eye bolt is M6 x 30 (BOM line 13 said M6 x 20) so that it clears the plug and washer; the BOM text is updated. M3: the M12 coupling nut is modelled engaged 10 mm on the socket thread. M4: materials missing from the kit library (PVC, acetal, nylon, FR4, nitrile and others) are added in cad/src/lkl_parts.py. | Design lead, design-intent modelling | cad/src/lkl_parts.py; docs/REVIEW.md |

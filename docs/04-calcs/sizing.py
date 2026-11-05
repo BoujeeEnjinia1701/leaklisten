@@ -1,4 +1,4 @@
-"""LeakListen sizing calculations, LKL-CAL-001 v0.3 (TRL 3, constructable design, LKL-DDR-003).
+"""LeakListen sizing calculations, LKL-CAL-001 v0.6 (TRL 3, constructable design, LKL-DDR-003).
 
 Run from the repo root:  python docs/04-calcs/sizing.py
 Prints every number quoted in docs/04-calcs/01-sizing.md. Each line carries a tag such as
@@ -29,7 +29,7 @@ def db(x):
     return 10 * LOG10(x)
 
 
-print("LeakListen sizing, LKL-CAL-001 v0.3")
+print("LeakListen sizing, LKL-CAL-001 v0.6")
 print(f"Geometry from cad/src/model.py: logger {P['tube_od']:.0f} x {P['logger_len']:.0f} mm, "
       f"puck {P['puck_d']:.0f} x {P['puck_h']:.0f} mm, seismic mass {P['mass_d']:.0f} x {P['mass_h']:.0f} mm brass")
 

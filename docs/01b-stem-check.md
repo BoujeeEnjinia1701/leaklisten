@@ -1,0 +1,103 @@
+---
+doc_id: LKL-STM-001
+title: LeakListen STEM check
+project: LeakListen
+doc_type: STEM check
+version: "0.1"
+status: Draft
+date: 2026-11-01
+author: Amish Chadha
+license: CERN-OHL-S-2.0
+revisions:
+  - version: "0.1"
+    date: 2026-11-01
+    author: Amish Chadha
+    change: First STEM check, written in the kit 1.9.1 upgrade of a TRL 3 repo; claims of option A from LKL-CAL-001, first-order screens for options B and C
+---
+
+# LeakListen STEM check
+
+Verdict: the working principle of the current design, option A (a magnet-on contact sensor listening to the pipe's leak noise through a valve spindle cap), sits within known science. Of 23 claims, **9 are within known science, 13 are plausible and need field data or a datasheet, and 1 failed in a detail and was fixed by a decision that predates this check**: a contact sensor on a valve hears the reference leak only about 4 m along PVC (S3), so the sensor is scoped to metallic mains (decided by Amish, 2026-09-25, LKL-DDR-002 D8) and plastic mains are served by a hydrophone, now modelled as option B. No claim fails outright, so `stem_check` is **open**, not failed; the plausible rows cannot be closed by calculation. Rows S1 to S16 are for option A; SB1 to SB4 for option B (hydrant cap hydrophone); SC1 to SC3 for option C (ground spike geophone). The B and C rows are first-order screens on assumed data and are weaker evidence than the A rows. Method: STANDARDS section 20. Calculations: `docs/04-calcs/stem_check.py`, which imports `docs/04-calcs/sizing.py`.
+
+## Claims checked
+
+Table 1. Claims, governing science and verdicts (generated from `docs/04-calcs/stem_results.csv`).
+
+| # | Claim | Field | Branch | Governing law or source | First-order check | Verdict | Closed by |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| S1 | The jet of the reference leak (5 L/min at 3 bar) carries about 25 W of mechanical power, of which only a small fraction (1e-6 to 1e-4, assumed) becomes sound | Physics | Fluid mechanics | Jet power = volume flow x pressure drop (Bernoulli) | claimed 25 W, estimate 25 W (ratio 1.00) | Within known science | LKL-CAL-001 G1 |
+| S2 | A leak noise logger on a valve hears the reference leak 100 m along a ductile iron main | Physics | Acoustics and vibration | Fluid-dominated axial wave in a shell (Pinnington and Briscoe; Gao et al. 2004), flat leak spectrum, acoustic efficiency 1e-5 (assumed), 0.5 ug/rtHz background, valve coupling -10 dB (assumed). Signal equal to noise (LKL-CAL-001 G2) gives 185 m; the flag rule needs the level up 6 dB (leak 4.8 dB above the noise), which gives the value below; at efficiency 1e-6 / 1e-5 / 1e-4 it is 80 / 141 / 249 m. The mount's resonance (S6) is not applied to the signal | 141 m >= 100 m | Plausible, to confirm at TRL 3 | Open |
+| S3 | The same contact sensor hears the reference leak 30 m along a PVC main | Physics | Acoustics and vibration | Axial attenuation on PVC DN150 is 0.42 dB/m at 100 Hz against 0.011 dB/m on ductile iron (LKL-CAL-001 E1); the central estimate is 4 m | 4 m against 30 m: the detail fails. Fix already decided by Amish (2026-09-25, LKL-DDR-002 D8): the contact sensor serves metallic mains only; plastic mains are served by a hydrophone (option B, S-B rows) | Fails, fix proposed | LKL-DDR-002 D8; option B |
+| S4 | The piezo charge amplifier reaches about 1 ug/rtHz equivalent input noise from 100 Hz to 1 kHz | Physics | Electromagnetism and electronics | Charge amplifier noise: voltage noise x total input capacitance, feedback resistor and ceramic loss noise, divided by charge sensitivity (53 g mass, d33 300 pC/N, 5 nV/rtHz op-amp, all assumed): 1.03 ug/rtHz worst against 1.0, so the order is right and the margin is nil. Noise scales as 1/d33. The 24-bit audio ADC is assumed to reach about 2 uV rms over 20 kHz (adds under 0.01 ug/rtHz); a 12-bit converter would add 0.1 ug/rtHz or more | Ceramic, op-amp and ADC datasheets of the chosen parts | Plausible, to confirm at TRL 3 | Open |
+| S5 | The piezo and seismic mass resonate far above the 2 kHz band | Physics | Acoustics and vibration | Spring-mass resonance, f = sqrt(k/m) / 2 pi, k of a 20 mm ceramic in compression (E 63 GPa) | 202 kHz >= 10 kHz | Within known science | LKL-CAL-001 F5 |
+| S6 | The magnet-mounted sensor is flat within 3 dB from 5 Hz to 2 kHz after correction | Physics | Acoustics and vibration | The 277 g puck and magnet on the contact stiffness of a coated cap (5e6 to 2e7 N/m) resonate at 676 to 1,352 Hz, inside the band, and are flat only to 366 to 732 Hz (LKL-CAL-001 F6). A mounted resonance is a narrow peak that a digital equaliser can correct, if its frequency is known per mounting | Needs a shaker comparison of the mounted sensor (CalRig bay, decided 2026-10-02) at TRL 4; the contact stiffness is assumed | Plausible, to confirm at TRL 3 | Open |
+| S7 | One C-size lithium thionyl chloride cell runs the logger for 10 years | Chemistry | Electrochemistry and batteries | Charge budget: 7.7 Ah nominal x 0.70 usable (cold, pulses) divided by 3,650 days; daily charge from sleep, listening, radio, self-discharge and status light | 1.25 mAh/day <= 1.48 mAh/day | Within known science | LKL-CAL-001 C1, C2 |
+| S8 | A 0.1 F hybrid layer capacitor carries the radio pulse the cell cannot supply | Chemistry | Electrochemistry and batteries | C = (I_tx - I_cell_max) x airtime / allowed droop 0.5 V (3.6 V to 3.1 V); I_cell_max 30 mA for a C-size Li-SOCl2 cell with a hybrid capacitor (manufacturer data, to confirm) | 0.059 F <= 0.1 F | Within known science | LKL-CAL-001 C3 |
+| S9 | The lithium thionyl chloride cell keeps its capacity for 10 years at 2 to 20 degC and delivers the pulses after long rest (passivation) | Chemistry | Electrochemistry and batteries | Li-SOCl2 cells self-discharge about 1 % a year but build a passivation layer that lowers the first pulse voltage; a hybrid layer capacitor is the standard remedy (Saft and Tadiran application notes, to cite from the datasheets of the chosen cell) | Manufacturer datasheet and a pulse test of the chosen cell at TRL 4 | Plausible, to confirm at TRL 3 | Open |
+| S10 | A LoRa uplink leaves a chamber under a cast-iron cover and reaches a gateway 0.5 km away | Physics | Electromagnetism and electronics | Link budget with Hata urban path loss, 10 dB fade margin and an assumed 20 dB cover loss: +0.9 dB at 0.5 km for EU868 SF12 (LKL-CAL-001 D5), -11.8 dB at 1 km for US915 SF9 is negative; the cover loss is unmeasured and a tight flooded cover (30 dB) fails; the Hata model is stated for 1 to 20 km, so 0.5 km is an extrapolation (independent review) | Cover loss to measure on a real chamber at TRL 4; gateway placement decided (LKL-DDR-002 D7) | Plausible, to confirm at TRL 3 | Open |
+| S11 | The 42 mm pot magnet holds the puck on a spindle cap with a 0.5 mm paint and rust gap | Physics | Electromagnetism and electronics | Pull force falls with the air gap as F = F_iron / (1 + g/g0)^2, g0 0.6 mm (a rule of thumb fitted to catalogue curves, assumed); 70 % of the rated pull on a typical cap; against 100 N (about 30 x the 3 N weight of the puck and 0.5 m of cable, LKL-CAL-001 I2); a straight pull-off only: shear or peel from a snagged cable or a knock, a sliding resistance near 0.2 x the pull, and the real contact area of a spindle cap smaller than the 42 mm pole face are not checked | 125 N >= 100 N | Plausible, to confirm at TRL 3 | LKL-CAL-001 I1, I2 |
+| S12 | A flooded logger floats on its lanyard | Physics | Fluid mechanics | Archimedes: logger mass against the mass of water displaced by its 63 x 240 mm body | 0.552 kg <= 0.748 kg | Within known science | LKL-CAL-001 J2 |
+| S13 | The 24-byte summary fits every LoRaWAN rate used (EU868 SF12 limit 51 B, US915 SF9 limit 53 B) | Mathematics | Units and dimensional analysis | Application payload limits of the LoRaWAN Regional Parameters (TS001) with 13 B of protocol overhead already counted | 24 B <= 51 B | Within known science | LKL-CAL-001 B2 |
+| S14 | Random night-to-night variation (2 dB) raises fewer than 1 false flag per 20 loggers per month | Mathematics | Statistics | Gaussian tail: flag at +6 dB for 3 independent nights, p = Q(6/sigma)^3, nights taken as independent (nightly minima are in fact correlated, and the 14-night baseline error is shared); real site noise (pumps, pressure reducing valves) is not random and is not covered | 1.5e-06 per 20 loggers per month <= 1 per 20 loggers per month | Within known science | LKL-CAL-001 L1 |
+| S15 | Site noise (pumps, pressure reducing valves, night use) does not mimic a leak in a way a 14-night baseline cannot remove | Engineering and technology | Signal processing and standards practice | Commercial noise loggers rely on night-time minimum levels and trends, and still produce false positives that need a follow-up survey (Gutermann, Hunaidi and Chu 1999) | Field data from a partner network at TRL 4 | Plausible, to confirm at TRL 3 | Open |
+| S16 | Nothing in option A touches drinking water or changes its quality | Biology | Microbiology and public health | The magnet sits on a spindle cap in the chamber air; the housing is PVC pipe outside the water; no part is fixed to the pipe. A design review, not a calculation | Confirmed by the model: no part of option A passes through a pipe wall | Within known science | LKL-CAL-001 J; design review |
+| SB1 | A hydrophone on a hydrant cap hears the reference leak 30 m along a PVC main | Physics | Acoustics and vibration | Leak pressure in the water column (flat source spectrum, efficiency 1e-5, wave speed and attenuation of LKL-CAL-001 E1) against a 0.1 Pa/rtHz night background at 100 Hz and above, rising as 1/f below (assumed) and the tube's charge-amplifier noise (0.28 mPa/rtHz at 100 Hz); background 0.01 / 0.1 / 1 Pa/rtHz gives 497 / 54 / 0 m on PVC; PE100 at 0.1 Pa/rtHz 30 m; efficiency 1e-6 / 1e-5 / 1e-4 at 0.1 Pa/rtHz gives 17 / 54 / 172 m; the 6 dB flag rule is applied; branch and hydrant insertion losses are not | 54 m >= 30 m | Plausible, to confirm at TRL 3 | Open |
+| SB2 | The 16 mm stainless cap and four M12 bolts hold a 10 bar hydrant, with a 3 x margin | Physics | Strength of materials | Simply supported circular plate, sigma = 3 (3 + nu) p r^2 / (8 t^2), nu 0.3, r 32 mm; the water acts on the 64 mm bore (the plate between the bore and the 170 mm bolt circle rests on the flange); bolt preload and gasket load are not included; bolts at 3.2 kN shared by four M12 (84.3 mm2); plate 4.9 MPa and bolts 10 MPa against the 205 MPa proof of 316 and 450 MPa of A4-70, both divided by 3 | 0.07 ratio to proof <= 1 ratio to proof | Within known science | Open |
+| SB3 | A stainless cap, EPDM gasket and PU-potted hydrophone do not change drinking water quality | Biology | Microbiology and public health | Products in contact with drinking water need approval in many jurisdictions (UK Regulation 31, DWI and WRAS); stainless steel and EPDM grades with approvals exist, the potting compound and cable jacket do not yet have a chosen approved grade | Approved grades to select with the partner utility; not assessed here | Plausible, to confirm at TRL 3 | Open |
+| SB4 | The cap bolts to the hydrant outlet | Engineering and technology | Manufacturing tolerances | The model assumes a four-bolt 170 mm flange outlet (an assumption). Commercial hydrophone caps are made for threaded 2.5 inch outlets (SubSurface Enigma 3 kit lists 2.5 inch stainless hydrant caps); outlet type varies by country and utility | Outlet type and thread to confirm with the partner; the cap interface would be redesigned for it | Plausible, to confirm at TRL 3 | Open |
+| SC1 | A geophone at 0.5 m depth in the verge hears the reference leak from a main 3 m away | Physics | Acoustics and vibration | Hemispherical spreading of the leak's ground-borne power (efficiency 1e-5, soil density 1800 kg/m3, wave speed 200 m/s, Q 20) against 1e-08 m/s/rtHz urban ground noise (assumed): signal to noise +14 dB at 3 m, -6 dB with 10 x the ground noise, +4 dB at 10 x less efficiency, -6 dB at 10 m. Reach is a few metres, not the 100 m of option A | Ground noise and efficiency are unknown; a recording beside a known leak is TRL 4 work | Plausible, to confirm at TRL 3 | Open |
+| SC2 | The 10 mm HDPE wall of the ground box carries the soil pressure at 0.5 m depth | Physics | Strength of materials | One-way strip of the 0.30 m short side, sigma = 0.75 p L^2 / t^2 = 3.04 MPa at the at-rest pressure 4.5 kPa, against the 5 MPa long-term design stress used for HDPE in the sister repo TideFlap (an estimate); but the creep deflection of the strip at a long-term modulus of 250 MPa is 23 mm, about 8 % of the span, so the wall needs ribs or more thickness; traffic or foot surcharge on the verge and the lid (not rated for vehicles) are not checked | Stress passes, stiffness does not: ribs or a 15 mm wall to propose (LKL-RSK-001) | Plausible, to confirm at TRL 3 | Open |
+| SC3 | A stainless spike driven 0.5 m into soil couples the geophone to the ground and survives driving | Engineering and technology | Manufacturing tolerances | A 22 mm spike with a cone tip is a standard geophone spike geometry; driving through stony or compacted verge may bend it and a buried pipe can be struck (a strike hazard, risk register) | Soil and utility records to check at each site; no test at TRL 3 | Plausible, to confirm at TRL 3 | Open |
+
+Verdicts: **Within known science**, **Plausible, to confirm at TRL 3**, **Fails, fix proposed**, **Fails**.
+
+## Fixes made under the standing instruction
+
+| Item | What failed | Fix | Result |
+| --- | --- | --- | --- |
+| Plastic mains (S3) | A contact sensor on a valve spindle cap hears the reference 5 L/min leak about 4 m along PVC and 2 m along PE, against 30 m needed; axial leak noise decays 0.42 dB/m at 100 Hz on PVC | Scope fixed before this check by Amish on 2026-09-25 (LKL-DDR-002 D8): the contact sensor serves metallic mains. The hydrophone variant that answers plastic mains is now modelled at D3 (option B) and screened here (SB1) | SB1 plausible at 54 m on PVC with an assumed 0.1 Pa/rtHz night background, 17 m at the lowest source efficiency and nothing with 1 Pa/rtHz: the answer hinges on the background in a real hydrant |
+
+The fix changes the scope (metallic mains only), so under the fix rule it belongs to Amish, who decided it. This check proposes nothing new in the same session: option B is offered for the concept choice (LKL-OPT-001, LKL-DDR-004), not substituted for option A.
+
+## Fields not relevant
+
+None. Physics (leak hydraulics, acoustics, electronics, radio, magnetics, strength), chemistry (the lithium cell and its pulses), biology (water quality in option B, S16 and SB3), mathematics (payload, statistics) and engineering (site noise, outlets, spikes) are all touched.
+
+## Concept options
+
+- Option A, magnet-on contact sensor: the rows above (S1 to S16). Plausible rows: reach on iron (S2, 141 m once the leak must lift the level 6 dB), noise (S4), the mounted resonance (S6), the cell (S9), the radio through the cover (S10), the magnet hold (S11) and site noise (S15).
+- Option B, hydrant cap hydrophone: within known science in principle (commercial hydrophone loggers on hydrant caps are sold; see LKL-MKT-001). The 54 m on PVC depends on the water-column background noise and the leak's source efficiency, which are assumed. The cap and bolts are lightly stressed at 10 bar (SB2). Water contact raises drinking-water approval (SB3) and the hydrant outlet type is an assumption (SB4).
+- Option C, ground spike geophone: within known science (ground microphones and geophones pinpoint leaks), but the reference leak is heard only a few metres from the main (signal to noise +14 dB at 3 m, -6 dB at 10 m on assumed ground noise), so one logger covers a short length of main (SC1). The ground box wall passes on stress but creeps 23 mm on its short span (SC2).
+
+## Independent review
+
+A second agent (a separate Claude session run headless with `claude -p --model claude-opus-5-5`, given only this document, the calculation note LKL-CAL-001, the product requirements LKL-PRS-001 and `sizing.py`, none of the author's reasoning, and without being able to run code) was asked to refute the headline results on 2026-11-01. It recomputed most of them by hand. What it found and what changed:
+
+| Item | Finding | Change |
+| --- | --- | --- |
+| S5, S6, S7, S8, S12, S13, S14 arithmetic, B1 airtime, H1 and H2 clock, I1 magnet hold | Upheld on recomputation (202 kHz; 676 and 1,352 Hz; 1.25 mAh a day and 11.8 years; 0.059 F; 0.748 L displaced; 82 to 1,974 ms airtime; 125 N) | None |
+| S2, detection distance | Weakened: the range was set where the leak equals the noise, but the flag rule needs the night level up 6 dB (leak 4.8 dB above the noise); that gives about 140 m, not 185 m, and about 80 m at the low efficiency | S2 and SB1 now use the 6 dB criterion: 141 m on iron (80 to 249 m over efficiency), still plausible; PR-001 status restated; LKL-CAL-001 section G keeps the signal-equals-noise figure, and its next revision applies the 6 dB rule (open item) |
+| S2, mount | Weakened: the limiting bands are at or above the mount resonance, which is not applied to the signal and the background | Stated in S2; open item for LKL-CAL-001 |
+| S4, noise and ADC | Weakened: 1.03 against 1.0 is not "within"; the ADC noise is assumed | S4 now Plausible; ADC assumption stated (the reviewer's 12-bit figure of 0.24 ug/rtHz is for a converter this design does not use) |
+| S11, magnet | Weakened: only straight pull-off was checked; the puck weight (3 N) was misquoted as 12 N | Text corrected; shear and peel noted as not checked |
+| S10, radio | Weakened: Hata is stated for 1 to 20 km; the 20 dB cover loss has no source | Extrapolation stated in S10; the cover loss stays an assumption |
+| S1, wording | Wording refuted: 25 W is the jet's power, not sound power | Reworded |
+| S14 | Weakened: nights are not independent | Assumption stated |
+| SB1, hydrophone | Weakened: the answer comes from the 20 to 25 Hz bands where the background and flat-spectrum assumptions decide everything; at the low efficiency about 30 m; branch losses ignored | Efficiency and background sensitivity added to the row; verdict stays Plausible (54 m) |
+| SB2 | Upheld; geometry unclear | Text says the water acts on the 64 mm bore |
+| SC2, ground box | Weakened: creep deflection not checked (about 23 mm) | Added; SC2 now Plausible; ribs or a 15 mm wall to propose |
+| R12, the antenna | Refuted pending a ruling: the 0.96 kg leaves out the 70 g antenna as well as the neck bar; with it the set is 1.03 kg | PR-012 status states it; the exclusion is "Proposed, awaiting Amish" to confirm |
+| R10 | Status softened: the 11 min estimate is already over 10 min | PR-010 says at risk on the estimate |
+| D4, +20 dBm | Weakened: the EU868 limit is 14 dBm ERP, so +20 dBm conducted can be legal with a lossy antenna | PR-020 reworded; free-field antenna gain to assess |
+| Other documentation | Version and number mismatches (neck bar 322 g, PRS version history, sizing.py banner) | Fixed |
+| A2 window leakage; F4 ADC bits; L1 correlation; quiescent currents | Raised, not calculated | Carried as open items in `docs/REVIEW.md` |
+
+The reviewer's verdict list was not accepted blindly: its 12-bit ADC figure and its "1.03 kg" count were checked against the design (24-bit audio ADC assumed; the antenna was already counted with the bar in LKL-CAL-001). It could not check `stem_check.py`, the masses in the model or any datasheet.
+
+## Sources
+
+- Gao, Brennan, Joseph, Muggleton and Hunaidi, model of leak noise in buried plastic pipes as a fluid-dominated wave, *Journal of Sound and Vibration*, 2004, https://www.sciencedirect.com/science/article/pii/S0022460X03011647 (cited in LKL-PRB-001; the model form behind S2, S3 and SB1).
+- Hunaidi and Chu, leak signals in plastic pipes, *Applied Acoustics*, 1999, https://www.sciencedirect.com/science/article/pii/S0003682X99000134 (cited in LKL-PRB-001).
+- SubSurface Enigma 3 Hybrid Logger System product page (loggers with magnet base, hydrophones and 2.5 inch stainless hydrant caps), https://tigersupplies.com/products/subsurface-enigma-3-hybrid-logger-system, accessed 2026-11-01 (SB4).
+- Roark's formulas for plate and beam bending (W. C. Young and R. G. Budynas, *Roark's Formulas for Stress and Strain*, 7th ed., McGraw-Hill, 2002), cited by name, not consulted for this check (S2, SB2, SC2).
+- Ceramic, soil and background-noise data in S4, SB1 and SC1 are assumptions stated in the rows, to replace with datasheets and recordings; the lithium cell data in S7 to S9 are to be cited from the datasheet of the chosen cell.

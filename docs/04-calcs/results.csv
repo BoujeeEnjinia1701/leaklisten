@@ -10,7 +10,7 @@ R8,raw samples processed and deleted on device,only levels leave,Met by design
 R9,125 N at a 0.5 mm coating (187 N at 0.3 mm),100 N,Met on paper
 R10,11 min task estimate,"10 min, no entry",Not verifiable at TRL 3
 R11,IP68 by design; logger floats on its lanyard,"IP68, -20 to +50 degC",Met by design
-R12,"68 x 283 mm, 0.96 kg for logger, cable and sensor (1.35 kg with the neck bar and antenna)","70 x 300 mm, 1.0 kg for logger, cable and sensor",Met on paper (margin 38 g)
+R12,"68 x 283 mm, 0.96 kg for logger, cable and sensor (1.34 kg with the neck bar and antenna)","70 x 300 mm, 1.0 kg for logger, cable and sensor",Met on paper (margin 38 g)
 R13,random variation negligible; site events unknown,1 per 20 loggers per month,Not verifiable at TRL 3
 R14,24 B LoRaWAN 1.0.3 uplink,standard LoRaWAN,Met by design
 R15,$142.00,$130 value-engineering target,$12.00 over the value-engineering target
